@@ -54,10 +54,6 @@ const links = [{
 }]
 
 const footerLinks = [{
-  label: 'Invite people',
-  icon: 'i-heroicons-plus',
-  to: '/settings/members'
-}, {
   label: 'Help & Support',
   icon: 'i-heroicons-question-mark-circle',
   click: () => isHelpSlideoverOpen.value = true
@@ -96,7 +92,11 @@ const colors = computed(() => defaultColors.value.map(color => ({ ...color, acti
         :ui="{ left: 'flex-1' }"
       >
         <template #left>
-          <TeamsDropdown />
+          <AppLogo />
+        </template>
+        <template #right>
+          <!-- ~/components/UserDropdown.vue -->
+          <UserDropdown />
         </template>
       </UDashboardNavbar>
 
@@ -116,13 +116,12 @@ const colors = computed(() => defaultColors.value.map(color => ({ ...color, acti
 
         <div class="flex-1" />
 
+        <UDivider class="sticky bottom-0" />
         <UDashboardSidebarLinks :links="footerLinks" />
 
-        <UDivider class="sticky bottom-0" />
 
         <template #footer>
-          <!-- ~/components/UserDropdown.vue -->
-          <UserDropdown />
+          <!-- -->
         </template>
       </UDashboardSidebar>
     </UDashboardPanel>
