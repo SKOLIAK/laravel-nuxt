@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({
   validate: (route) => !!route.query.verify_url,
+  layout: 'auth'
 });
 
 const route = useRoute();

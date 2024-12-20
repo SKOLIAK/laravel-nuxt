@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({
   middleware: ['guest'],
+  layout: 'auth'
 });
 
 useSeoMeta({
