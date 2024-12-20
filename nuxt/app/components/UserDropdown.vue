@@ -11,11 +11,11 @@ const items = computed(() => [
   }], [{
     label: 'Settings',
     icon: 'i-heroicons-cog-8-tooth',
-    to: '/account/general'
+    to: '/settings'
   },{
     label: 'Devices',
     icon: 'i-heroicons-device-phone-mobile',
-    to: '/account/devices'
+    to: '/settings/devices'
   }], [{
     label: 'Sign out',
     icon: 'i-heroicons-arrow-left-on-rectangle',

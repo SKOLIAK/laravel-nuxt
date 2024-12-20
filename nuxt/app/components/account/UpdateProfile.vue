@@ -59,7 +59,6 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
 
 <template>
   <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
-    {{ traderTimeZone }}
     <UFormGroup label="" name="avatar" class="flex">
       <InputUploadImage
         v-model="state.avatar"
