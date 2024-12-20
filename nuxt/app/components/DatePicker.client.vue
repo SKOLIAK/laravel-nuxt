@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
-import { DatePicker as VCalendarDatePicker } from 'v-calendar'
+import { DatePicker as VCalendarDatePicker } from '@angelblanco/v-calendar'
 // @ts-expect-error - no types available
-import type { DatePickerDate, DatePickerRangeObject } from 'v-calendar/dist/types/src/use/datePicker'
-import 'v-calendar/dist/style.css'
+import type { DatePickerDate, DatePickerRangeObject } from '@angelblanco/v-calendar/dist/types/src/use/datePicker'
+import '@angelblanco/v-calendar/dist/style.css'
 
 defineOptions({
   inheritAttrs: false
