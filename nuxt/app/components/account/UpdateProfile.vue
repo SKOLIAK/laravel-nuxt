@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { timeZones, traderTimeZone } from '@/utils/global';
+
 const form = ref();
 const auth = useAuthStore();
 
@@ -7,6 +9,7 @@ const state = reactive({
     email: auth.user.email,
     name: auth.user.name,
     avatar: auth.user.avatar,
+    timezone: auth.user.timezone
   },
 });
 
@@ -46,9 +49,12 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
       state.name = auth.user.name;
       state.email = auth.user.email;
       state.avatar = auth.user.avatar;
+      state.timezone = auth.user.timezone;
+      traderTimeZone.value = auth.user.timezone;
     }
   }
 });
+
 </script>
 
 <template>
@@ -62,6 +68,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
         :width="300"
         :height="300"
       />
+      {{ traderTimeZone }}
     </UFormGroup>
 
     <UFormGroup label="Name" name="name" required>
@@ -76,6 +83,11 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
         trailing
         type="email"
       />
+    </UFormGroup>
+
+
+    <UFormGroup label="Timezone" name="timezone" required>
+      <USelect v-model="traderTimeZone" :options="timeZones" />
     </UFormGroup>
 
     <UAlert
