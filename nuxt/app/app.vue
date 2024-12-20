@@ -5,6 +5,8 @@ const auth = useAuthStore()
 /** Important methods */
 useSetTimeZone(auth.logged ? auth.user.timezone : '')
 
+
+
 const color = computed(() => colorMode.value === 'dark' ? '#111827' : 'white')
 
 useHead({

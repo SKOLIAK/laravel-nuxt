@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import type { User } from '~/types'
+const { $storage } = useNuxtApp();
+
+definePageMeta({
+  middleware: ['role-admin'],
+});
+
 
 const defaultColumns = [{
   key: 'id',
@@ -13,11 +19,11 @@ const defaultColumns = [{
   label: 'Email',
   sortable: true
 }, {
-  key: 'location',
-  label: 'Location'
+  key: 'timezone',
+  label: 'Timezone'
 }, {
-  key: 'status',
-  label: 'Status'
+  key: 'has_password',
+  label: 'Has Password'
 }]
 
 const q = ref('')
@@ -33,18 +39,18 @@ const columns = computed(() => defaultColumns.filter(column => selectedColumns.v
 
 const query = computed(() => ({ q: q.value, statuses: selectedStatuses.value, locations: selectedLocations.value, sort: sort.value.column, order: sort.value.direction }))
 
-const { data: users, pending } = await useFetch<User[]>('/api/users', { query, default: () => [] })
+const { data: users, pending } = await useFetch<User[]>('/users', { query, default: () => [] })
 
 const defaultLocations = users.value.reduce((acc, user) => {
-  if (!acc.includes(user.location)) {
-    acc.push(user.location)
+  if (!acc.includes(user.timezone)) {
+    acc.push(user.timezone)
   }
   return acc
 }, [] as string[])
 
 const defaultStatuses = users.value.reduce((acc, user) => {
-  if (!acc.includes(user.status)) {
-    acc.push(user.status)
+  if (!acc.includes(user.has_password)) {
+    acc.push(user.has_password)
   }
   return acc
 }, [] as string[])
@@ -154,10 +160,11 @@ defineShortcuts({
         <template #name-data="{ row }">
           <div class="flex items-center gap-3">
             <UAvatar
-              v-bind="row.avatar"
-              :alt="row.name"
-              size="xs"
-            />
+            size="xs"
+            :src="$storage(row.avatar)"
+            :alt="row.name"
+            :ui="{ rounded: 'rounded-md' }"
+          />
 
             <span class="text-gray-900 dark:text-white font-medium">{{ row.name }}</span>
           </div>

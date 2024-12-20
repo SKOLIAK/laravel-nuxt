@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserProvider;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
+use App\Models\UserProvider;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Auth\Events\Registered;
+use App\Http\Resources\AccountsResource;
+use Illuminate\Support\Facades\Password;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -186,6 +187,7 @@ class AuthController extends Controller
                 'roles' => $user->roles()->select('name')->pluck('name'),
                 'timezone' => $user->timezone,
                 'providers' => $user->userProviders()->select('name')->pluck('name'),
+                'accounts' => $user->accounts->all()
             ],
         ]);
     }

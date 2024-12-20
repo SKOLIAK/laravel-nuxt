@@ -1,29 +1,37 @@
 <script setup lang="ts">
-import { brokers, selectedBroker, tradovateTiers, selectedTradovateTier } from '@/utils/brokers';
-import { trades } from '@/utils/trades';
+import { TradesData, trades, blotter } from '@/utils/trades';
 import dayjs from 'dayjs';
 
-const defaultColumns = [{
-  key: 'id',
-  label: '#'
-}, {
-  key: 'name',
-  label: 'Name',
-  sortable: true
-}, {
-  key: 'email',
-  label: 'Email',
-  sortable: true
-}, {
-  key: 'location',
-  label: 'Location'
-}, {
-  key: 'status',
-  label: 'Status'
-}]
+
+onMounted(async() => {
+  await useGetExistingTradesArray()
+  await useGetExistingAccounts()
+})
 
 const isNewTradeModalOpen = ref(false)
-const sort = ref({ column: 'id', direction: 'asc' as const })
+
+async function removeTrades() {
+  console.log('Canceling trades')
+  TradesData.splice(0)
+  for (var blot in blotter) delete blotter[blot];
+  for (var p in pAndL) delete pAndL[p];
+
+  if (Object.keys(blotter) == 0) {
+    useToast().add({
+        icon: GetSuccessIcon,
+        title: "Trade data has been cleared",
+        color: GetSuccessColor,
+    })
+  } else {
+    useToast().add({
+      icon: GetInfoIcon,
+      title: "Please reload the page",
+      color: GetInfoColor,
+    })
+  }
+
+
+}
 
 </script>
 
@@ -43,32 +51,135 @@ const sort = ref({ column: 'id', direction: 'asc' as const })
         </template>
       </UDashboardNavbar>
 
-
-
       <UDashboardModal
         v-model="isNewTradeModalOpen"
         title="Import Trades"
         description="Select your orders .csv file"
         :ui="{ width: 'sm:max-w-md' }"
       >
-      <div class="max-w-sm mb-5 flex items-center mx-auto">
-      <label for="file-input" class="sr-only">Choose file</label>
-
-          <USelect v-model="selectedBroker" :options="brokers" class="mr-1" />
-          <USelect v-model="selectedTradovateTier" :options="tradovateTiers"/>
-
-          <label
-            for="tradesFileInput"
-            class="ml-1 cursor-pointer focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 aria-disabled:cursor-not-allowed aria-disabled:opacity-75 flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-700 dark:text-gray-200 bg-gray-50 hover:bg-gray-100 disabled:bg-gray-50 aria-disabled:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/50 dark:disabled:bg-gray-800 dark:aria-disabled:bg-gray-800 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center"
-            >
-              <UIcon name="akar-icons:paper" />
-              Choose Orders File
-              <input type="file" id='tradesFileInput' v-on:change="useImportTrades($event, 'file')" class="hidden" />
-          </label>
-        </div>
+        <!-- ./components/Trades/FileUpload.vue -->
+        <TradesFileupload />
       </UDashboardModal>
 
+      <UDashboardToolbar class="bg-orange-500/50" v-if="existingImports.length != 0">
+        <template #left>
+          <div class="font-medium text-xs text-white text-shadow">
+            Following dates are already imported: <span v-for="(item, index) in existingImports">
+                <span v-if="index > 0">, </span>{{ useDateCalFormat(item) }}</span>
+          </div>
+        </template>
+      </UDashboardToolbar>
+
+      <UDashboardToolbar class="bg-primary-500/25 dark:bg-primary-500/10" v-if="Object.keys(blotter).length > 0 && Object.keys(pAndL).length > 0">
+        <template #left>
+          <div class="font-medium text-xs text-primary-900/90 dark:text-white dark:text-shadow" v-for="(execution, index) in executions">
+            {{ useCreatedDateFormat(index) }}
+          </div>
+        </template>
+      </UDashboardToolbar>
+      <div
+        v-if="Object.keys(blotter).length > 0 && Object.keys(pAndL).length > 0"
+        v-for="(execution, index) in executions"
+      >
+      <div v-if="blotter[index]">
+
       <div class="h-max w-full overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-600 dark:text-gray-400 overflow-auto">
+                <thead class="text-xs text-gray-400 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Symbol
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Volume
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Gross P&L
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Commissions
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Fess
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Net P&L
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Wins (g)
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Loss (g)
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Trades
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Executions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr v-for="blot in blotter[index]" class="text-xs bg-white border-b dark:bg-gray-900 dark:border-gray-800">
+                            <td class="px-6 py-4">{{ blot.symbol }}</td>
+                            <td class="px-6 py-4">{{ useDecimalsArithmetic(blot.buyQuantity, blot.sellQuantity) }}</td>
+                            <td v-bind:class="[blot.grossProceeds > 0 ? 'green-trade' : 'red-trade']">
+                                {{ (blot.grossProceeds).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ (blot.commission).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ (blot.fees).toFixed(2) }}</td>
+                            <td class="px-6 py-4" v-bind:class="[blot.netProceeds > 0 ? 'green-trade' : 'red-trade']">
+                                {{ (blot.netProceeds).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ blot.grossWinsCount }}</td>
+                            <td class="px-6 py-4">{{ blot.grossLossCount }}</td>
+                            <td class="px-6 py-4">{{ blot.trades }}</td>
+                            <td class="px-6 py-4">{{ blot.executions }}</td>
+                        </tr>
+                        <tr v-if="index != null"  class="text-gray-700 dark:text-white text-sm text-shadow font-medium bg-gray-50 border-b dark:border-b-transparent dark:bg-gray-700 dark:border-gray-600 uppercase"> <!-- SUM ROW-->
+                            <td class="px-6 py-4">Total</td>
+                            <td class="px-6 py-4">{{ useDecimalsArithmetic(pAndL[index].buyQuantity, pAndL[index].sellQuantity) }}</td>
+                            <td class="px-6 py-4" v-bind:class="[pAndL[index].grossProceeds > 0 ? 'green-trade' : 'red-trade']">
+                                {{ (pAndL[index].grossProceeds).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ (pAndL[index].commission).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ (pAndL[index].fees).toFixed(2) }}</td>
+                            <td class="px-6 py-4" v-bind:class="[pAndL[index].netProceeds > 0 ? 'green-trade' : 'red-trade']">
+                                {{ (pAndL[index].netProceeds).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ pAndL[index].grossWinsCount }}</td>
+                            <td class="px-6 py-4">{{ pAndL[index].grossLossCount }}</td>
+                            <td class="px-6 py-4">{{ pAndL[index].trades }}</td>
+                            <td class="px-6 py-4">{{ pAndL[index].executions }}</td>
+                        </tr>
+                    </tbody>
+            </table>
+            </div>
+          </div>
+
+          <div class="flex items-center">
+            <div class="mr-auto p-6">
+              <UButton
+              label="Submit"
+              color="primary"
+              size="md"
+              class="mr-2"
+              @click="useUploadTrades"
+            />
+              <UButton
+              label="Cancel"
+              color="gray"
+              size="md"
+              @click="removeTrades"
+            />
+            </div>
+          </div>
+      </div>
+
+      <UButton
+              label="TEST UPLOAD TRADES"
+              color="primary"
+              size="md"
+              class="mr-2 inline"
+              @click="useUploadTrades"
+            />
+      <div class="h-max w-full overflow-x-auto hidden">
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 overflow-auto">
                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>

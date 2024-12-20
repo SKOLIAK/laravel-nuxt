@@ -1,6 +1,7 @@
 import { useTradovate } from "./brokers";
 import { useChartFormat } from "./global";
-import { TradesData, trades, executions } from "./trades";
+import { existingImports, pAndL, blotter, TradesData, trades, executions, filteredTradesTrades } from "./trades";
+import { accountsList } from './accounts'
 import dayjs from "dayjs";
 import _ from 'lodash'
 
@@ -17,10 +18,63 @@ let openPositionsParse = []
 
 let currentTradeId
 
+export async function useGetExistingTradesArray() {
+  console.info('\n✅ GETTING EXISTING TRADES FOR FILTER');
+  existingTradesArray.splice(0)
+  return new Promise(async (resolve, reject) => {
+    try {
+      await $fetch("/trades", {
+        method: "GET",
+        onResponse({ response }) {
+          if (response._data.ok) {
+            existingTradesArray.push(response._data.data)
+            gotExistingTradesArray.value = true
+            console.log(" -> Finished (" + response._data.data.length + ")")
+          }
+          resolve()
+        }
+      })
+    } catch (error) {
+      useToast().add({
+        icon: GetErrorIcon,
+        title: "Error retrieving existing trades",
+        color: GetErrorColor,
+      })
+      reject()
+    }
+
+  })
+
+}
+
+async function filterExisting() {
+  return new Promise(async (resolve, reject) => {
+    console.info("\n✅ FILTERING EXISTING TRADES")
+
+    existingTradesArray.forEach(element => {
+      //console.log("element "+element)
+      if (executions.hasOwnProperty(element)) {
+        console.log(" -> Already imported date " + element)
+        existingImports.push(element)
+      }
+    });
+
+    let tempExecutions = _.omit(executions, existingTradesArray)
+    for (let key in executions) delete executions[key]
+    Object.assign(executions, tempExecutions)
+    //console.log(" -> executions " + JSON.stringify(executions))
+
+    let tempTrades = _.omit(trades, existingTradesArray)
+    for (let key in trades) delete trades[key]
+    Object.assign(trades, tempTrades)
+    console.log('--> Finished filtering')
+    resolve()
+  });
+}
+
 export async function useImportTrades(fileInput, readAs, broker) {
   return new Promise(async (resolve, reject) => {
-    console.info("\nIMPORTING ORDERS FILE")
-
+    console.info("\n✅ IMPORTING ORDERS FILE")
     let files
     const file = document.getElementById('tradesFileInput')
 
@@ -114,7 +168,9 @@ export async function useImportTrades(fileInput, readAs, broker) {
       await createExecutions()
       await getOpenPositionsParse()
       await createTrades()
-
+      await filterExisting()
+      await useCreateBlotter()
+      await useCreatePnL()
     }
 
     // @TODO // TEMPORARY
@@ -127,7 +183,7 @@ export async function useImportTrades(fileInput, readAs, broker) {
 
 async function createTempExecutions() {
   return new Promise(async (resolve, reject) => {
-    console.info('\nCREATING TEMPORARY EXECUTIONS')
+    console.info('\n✅ CREATING TEMPORARY EXECUTIONS')
 
     const keys = Object.keys(TradesData)
     var temp = []
@@ -259,7 +315,7 @@ async function createTempExecutions() {
 
 async function createExecutions() {
   return new Promise(async (resolve, reject) => {
-    console.info('\nCREATING EXECUTIONS')
+    console.info('\n✅ CREATING EXECUTIONS')
 
     var a = _.chain(tempExecutions).orderBy(['execTime'], ['asc']).groupBy('td')
 
@@ -275,7 +331,7 @@ async function createExecutions() {
 
 async function getOpenPositionsParse() {
   return new Promise(async (resolve, reject) => {
-    console.info('\n GETTING OPEN POSITIONS DB')
+    console.info('\n✅  GETTING OPEN POSITIONS DB')
     openPositionsParse.splice(0)
     await $fetch("trades/open", {
       method: "GET",
@@ -296,7 +352,7 @@ async function getOpenPositionsParse() {
 
 async function createTrades() {
   return new Promise(async (resolve, reject) => {
-    console.info('\nCREATING TRADES')
+    console.info('\n✅ CREATING TRADES')
 
     var b = _.chain(tempExecutions).orderBy(['execTime'], ['asc'])
       .groupBy(item => `"${item.symbol}+${item.type}+${item.strategy}+${item.td}"`)
@@ -330,7 +386,7 @@ async function createTrades() {
       let i
       let existingOpenPosition // common name given to existing open position found in Parse or locally
 
-      console.log("\n ------ ITERATING SYMBOL " + key2 + " on " + useChartFormat(tempExecs[0].td) + " ------")
+      console.log("\n  ------ ITERATING SYMBOL " + key2 + " on " + useChartFormat(tempExecs[0].td) + " ------")
       for (let i = 0; i < tempExecs.length; i++) {
         let tempExec = tempExecs[i];
 
@@ -792,9 +848,479 @@ async function createTrades() {
     //console.log(" -> Trades " + JSON.stringify(c))
     for (let key in trades) delete trades[key]
     Object.assign(trades, JSON.parse(JSON.stringify(c)))
-    console.log("Trades C " + JSON.stringify(trades))
+    //console.log("Trades C " + JSON.stringify(trades))
     //console.log('executions ' + JSON.stringify(executions))
     resolve()
 
   })
+}
+
+
+export async function useCreateBlotter(param) {
+  return new Promise(async (resolve, reject) => {
+    console.info('\n✅ CREATING BLOTTER BY SYMBOL');
+
+    let objectZ;
+    if (param) { // Case when creating blotter for FilteredTrades
+      let temp = _.chain(filteredTradesTrades).orderBy(["entryTime"], ["asc"]).groupBy("td")
+      objectZ = JSON.parse(JSON.stringify(temp))
+      //console.log(" temp "+JSON.stringify(temp))
+    } else {
+      objectZ = trades
+      //console.log(" this trades "+JSON.stringify(trades))
+    }
+
+    const keys9 = Object.keys(objectZ);
+    var temp10 = {}
+    for (const key9 of keys9) {
+      //console.log(" Key9 "+key9)
+      temp10[key9] = {}
+      var tempExecs = objectZ[key9]
+      //console.log("tempExecs9 " + JSON.stringify(tempExecs));
+      var z = _
+        .chain(tempExecs)
+        .orderBy(["entryTime"], ["asc"])
+        .groupBy("symbol")
+      let objectY = JSON.parse(JSON.stringify(z))
+      //console.log("objectY "+JSON.stringify(objectY))
+      const keys10 = Object.keys(objectY);
+      for (const key10 of keys10) {
+        //console.log("key 10 " + key10)
+        //console.log("z "+JSON.stringify(z))
+        var tempExecs = objectY[key10]
+        //console.log("tempExecs " + JSON.stringify(tempExecs));
+        temp10[key9][key10] = {};
+
+        /*******************
+         * Info
+         *******************/
+        var sumBuyQuantity = 0
+        var sumSellQuantity = 0
+
+        /*******************
+         * Commissions and fees
+         *******************/
+        var sumCommission = 0
+        var sumSec = 0
+        var sumTaf = 0
+        var sumNscc = 0
+        var sumNasdaq = 0
+        var sumOtherCommission = 0
+        var sumFees = 0
+
+        /*******************
+         * Gross proceeds and P&L
+         *******************/
+        var sumGrossProceeds = 0
+        var sumGrossWins = 0
+        var sumGrossLoss = 0
+        var sumGrossSharePL = 0 //On a trade level, it's Proceeds per share traded. But as we blotter and create global P&L, it is a cumulative number (like proceeds). This way.value we can calculate estimations. If we need and average per share, it's a different calculation
+        var sumGrossSharePLWins = 0
+        var sumGrossSharePLLoss = 0
+        var highGrossSharePLWin = 0
+        var highGrossSharePLLoss = 0
+
+
+        /*******************
+         * Net proceeds and P&L
+         *******************/
+        var sumNetProceeds = 0
+        var sumNetWins = 0
+        var sumNetLoss = 0
+        var sumNetSharePL = 0
+        var sumNetSharePLWins = 0
+        var sumNetSharePLLoss = 0
+        var highNetSharePLWin = 0
+        var highNetSharePLLoss = 0
+
+        /*******************
+         * Counts
+         *******************/
+        var sumExecutions = 0
+        var sumTrades = 0
+        var sumGrossWinsQuantity = 0
+        var sumGrossLossQuantity = 0
+        var sumGrossWinsCount = 0
+        var sumGrossLossCount = 0
+        var sumNetWinsQuantity = 0
+        var sumNetLossQuantity = 0
+        var sumNetWinsCount = 0
+        var sumNetLossCount = 0
+
+
+
+        tempExecs.forEach(element => {
+          sumBuyQuantity += element.buyQuantity
+          sumSellQuantity += element.sellQuantity
+          sumCommission += element.commission
+          sumSec += element.sec
+          sumTaf += element.taf
+          sumNscc += element.nscc
+          sumNasdaq += element.nasdaq
+          sumOtherCommission += element.sec + element.taf + element.nscc + element.nasdaq
+          sumFees += element.commission + element.sec + element.taf + element.nscc + element.nasdaq
+
+          sumGrossProceeds += element.grossProceeds
+          sumGrossWins += element.grossWins
+          sumGrossLoss += element.grossLoss
+          sumGrossSharePL += element.grossSharePL
+          sumGrossSharePLWins += element.grossSharePLWins
+          sumGrossSharePLLoss += element.grossSharePLLoss
+          if (element.grossSharePL >= 0) {
+            if (element.grossSharePL > highGrossSharePLWin) {
+              highGrossSharePLWin = element.grossSharePL
+            }
+          }
+          if (element.grossSharePL < 0) {
+            if (element.grossSharePL < highGrossSharePLLoss) {
+              highGrossSharePLLoss = element.grossSharePL
+            }
+
+          }
+
+          sumNetProceeds += element.netProceeds
+          sumNetWins += element.netWins
+          sumNetLoss += element.netLoss
+          sumNetSharePL += element.netSharePL
+          sumNetSharePLWins += element.netSharePLWins
+          sumNetSharePLLoss += element.netSharePLLoss
+          if (element.netSharePL >= 0) {
+            if (element.netSharePL > highNetSharePLWin) {
+              highNetSharePLWin = element.netSharePL
+            }
+
+          }
+          if (element.netSharePL < 0) {
+            if (element.netSharePL < highNetSharePLLoss) {
+              highNetSharePLLoss = element.netSharePL
+            }
+
+          }
+
+          sumExecutions += element.executionsCount
+          sumGrossWinsQuantity += element.grossWinsQuantity
+          sumGrossLossQuantity += element.grossLossQuantity
+          sumGrossWinsCount += element.grossWinsCount
+
+          sumNetWinsQuantity += element.netWinsQuantity
+          sumNetLossQuantity += element.netLossQuantity
+          sumNetWinsCount += element.netWinsCount
+          sumGrossLossCount += element.grossLossCount
+          sumNetLossCount += element.netLossCount
+          sumTrades += element.tradesCount
+
+        })
+
+        /*******************
+         * Info
+         *******************/
+        temp10[key9][key10].symbol = key10;
+        temp10[key9][key10].type = tempExecs[0].type;
+        temp10[key9][key10].buyQuantity = sumBuyQuantity
+        temp10[key9][key10].sellQuantity = sumSellQuantity
+
+        /*******************
+         * Commissions and fees
+         *******************/
+        temp10[key9][key10].commission = sumCommission;
+        temp10[key9][key10].sec = sumSec
+        temp10[key9][key10].taf = sumTaf
+        temp10[key9][key10].nscc = sumNscc
+        temp10[key9][key10].nasdaq = sumNasdaq
+        temp10[key9][key10].otherCommission = sumOtherCommission;
+        temp10[key9][key10].fees = sumFees;
+
+        /*******************
+         * Gross proceeds and P&L
+         *******************/
+        temp10[key9][key10].grossProceeds = sumGrossProceeds;
+        temp10[key9][key10].grossWins = sumGrossWins;
+        temp10[key9][key10].grossLoss = sumGrossLoss;
+        temp10[key9][key10].grossSharePL = sumGrossSharePL
+        //temp10[key9][key10].grossSharePL = sumGrossProceeds / sumBuyQuantity
+
+        /*sumGrossWinsQuantity == 0 ? temp10[key9][key10].grossSharePLWins = 0 : temp10[key9][key10].grossSharePLWins = sumGrossWins / sumGrossWinsQuantity
+        sumGrossLossQuantity == 0 ? temp10[key9][key10].grossSharePLLoss = 0 : temp10[key9][key10].grossSharePLLoss = sumGrossLoss / sumGrossLossQuantity*/
+        temp10[key9][key10].grossSharePLWins = sumGrossSharePLWins
+        temp10[key9][key10].grossSharePLLoss = sumGrossSharePLLoss
+        temp10[key9][key10].highGrossSharePLWin = highGrossSharePLWin;
+        temp10[key9][key10].highGrossSharePLLoss = highGrossSharePLLoss;
+
+        /*******************
+         * Net proceeds and P&L
+         *******************/
+        temp10[key9][key10].netProceeds = sumNetProceeds;
+        temp10[key9][key10].netWins = sumNetWins;
+        temp10[key9][key10].netLoss = sumNetLoss;
+        temp10[key9][key10].netSharePL = sumNetSharePL
+        //temp10[key9][key10].netSharePL = sumNetProceeds / sumBuyQuantity
+
+        /*sumNetWinsQuantity == 0 ? temp10[key9][key10].netSharePLWins = 0 : temp10[key9][key10].netSharePLWins = sumNetWins / sumNetWinsQuantity
+        sumNetLossQuantity == 0 ? temp10[key9][key10].netSharePLLoss = 0 : temp10[key9][key10].netSharePLLoss = sumNetLoss / sumNetLossQuantity*/
+        temp10[key9][key10].netSharePLWins = sumNetSharePLWins
+        temp10[key9][key10].netSharePLLoss = sumNetSharePLLoss
+        temp10[key9][key10].highNetSharePLWin = highNetSharePLWin;
+        temp10[key9][key10].highNetSharePLLoss = highNetSharePLLoss;
+
+        /*******************
+         * Counts
+         *******************/
+        temp10[key9][key10].executions = sumExecutions;
+        temp10[key9][key10].trades = sumTrades;
+
+        temp10[key9][key10].grossWinsQuantity = sumGrossWinsQuantity;
+        temp10[key9][key10].grossLossQuantity = sumGrossLossQuantity;
+        temp10[key9][key10].grossWinsCount = sumGrossWinsCount;
+        temp10[key9][key10].grossLossCount = sumGrossLossCount;
+
+        temp10[key9][key10].netWinsQuantity = sumNetWinsQuantity;
+        temp10[key9][key10].netLossQuantity = sumNetLossQuantity;
+        temp10[key9][key10].netWinsCount = sumNetWinsCount;
+        temp10[key9][key10].netLossCount = sumNetLossCount;
+
+      }
+
+    }
+    for (let key in blotter) delete blotter[key]
+    Object.assign(blotter, temp10)
+    console.log(" -> BLOTTER " + JSON.stringify(blotter))
+    resolve()
+  })
+}
+
+
+export async function useCreatePnL(param) {
+  return new Promise(async (resolve, reject) => {
+    console.info('\n✅ CREATING P&L');
+
+    let objectQ = blotter
+    const keys7 = Object.keys(objectQ);
+    var temp9 = {}
+    for (const key7 of keys7) {
+      //console.log(" key 7 "+key7)
+      temp9[key7] = {};
+      var tempExecs = objectQ[key7]
+      //console.log("temp p&l " + JSON.stringify(tempExecs));
+      var sumBuyQuantity = 0
+      var sumSellQuantity = 0
+
+      var sumCommission = 0
+      var sumSec = 0
+      var sumTaf = 0
+      var sumNscc = 0
+      var sumNasdaq = 0
+      var sumOtherCommission = 0
+      var sumFees = 0
+
+      var sumGrossProceeds = 0
+      var sumGrossWins = 0
+      var sumGrossLoss = 0
+      var sumGrossSharePL = 0
+      var sumGrossSharePLWins = 0
+      var sumGrossSharePLLoss = 0
+      var highGrossSharePLWin = 0
+      var highGrossSharePLLoss = 0
+
+      var sumNetProceeds = 0
+      var sumNetWins = 0
+      var sumNetLoss = 0
+      var sumNetSharePL = 0
+      var sumNetSharePLWins = 0
+      var sumNetSharePLLoss = 0
+      var highNetSharePLWin = 0
+      var highNetSharePLLoss = 0
+
+      var sumExecutions = 0
+      var sumTrades = 0
+
+      var sumGrossWinsQuantity = 0
+      var sumGrossLossQuantity = 0
+      var sumGrossWinsCount = 0
+      var sumGrossLossCount = 0
+
+      var sumNetWinsQuantity = 0
+      var sumNetLossQuantity = 0
+      var sumNetWinsCount = 0
+      var sumNetLossCount = 0
+
+
+      const keys8 = Object.keys(tempExecs);
+      for (const key8 of keys8) {
+        //console.log("key 8 "+key8)
+        sumBuyQuantity += tempExecs[key8].buyQuantity
+        sumSellQuantity += tempExecs[key8].sellQuantity
+
+        sumCommission += tempExecs[key8].commission
+        sumSec += tempExecs[key8].sec
+        sumTaf += tempExecs[key8].taf
+        sumNscc += tempExecs[key8].nscc
+        sumNasdaq += tempExecs[key8].nasdaq
+        sumOtherCommission += tempExecs[key8].otherCommission
+        sumFees += tempExecs[key8].fees
+
+        sumGrossProceeds += tempExecs[key8].grossProceeds
+        sumGrossWins += tempExecs[key8].grossWins
+        sumGrossLoss += tempExecs[key8].grossLoss
+        sumGrossSharePL += tempExecs[key8].grossSharePL
+        sumGrossSharePLWins += tempExecs[key8].grossSharePLWins
+        sumGrossSharePLLoss += tempExecs[key8].grossSharePLLoss
+        if (tempExecs[key8].highGrossSharePLWin >= highGrossSharePLWin) {
+          highGrossSharePLWin = tempExecs[key8].highGrossSharePLWin
+        }
+        if (tempExecs[key8].highGrossSharePLLoss < highGrossSharePLLoss) {
+          highGrossSharePLLoss = tempExecs[key8].highGrossSharePLLoss
+        }
+
+        sumNetProceeds += tempExecs[key8].netProceeds
+        sumNetWins += tempExecs[key8].netWins
+        sumNetLoss += tempExecs[key8].netLoss
+        sumNetSharePL += tempExecs[key8].netSharePL
+        sumNetSharePLWins += tempExecs[key8].netSharePLWins
+        sumNetSharePLLoss += tempExecs[key8].netSharePLLoss
+        if (tempExecs[key8].highNetSharePLWin >= highNetSharePLWin) {
+          highNetSharePLWin = tempExecs[key8].highNetSharePLWin
+        }
+
+        if (tempExecs[key8].highNetSharePLLoss < highNetSharePLLoss) {
+          highNetSharePLLoss = tempExecs[key8].highNetSharePLLoss
+        }
+
+        sumExecutions += tempExecs[key8].executions
+        sumTrades += tempExecs[key8].trades
+
+        sumGrossWinsQuantity += tempExecs[key8].grossWinsQuantity
+        sumGrossLossQuantity += tempExecs[key8].grossLossQuantity
+        sumGrossWinsCount += tempExecs[key8].grossWinsCount
+        sumGrossLossCount += tempExecs[key8].grossLossCount
+
+        sumNetWinsQuantity += tempExecs[key8].netWinsQuantity
+        sumNetLossQuantity += tempExecs[key8].netLossQuantity
+        sumNetWinsCount += tempExecs[key8].netWinsCount
+        sumNetLossCount += tempExecs[key8].netLossCount
+
+
+      }
+      /*******************
+       * Info
+       *******************/
+      temp9[key7].buyQuantity = sumBuyQuantity;
+      temp9[key7].sellQuantity = sumSellQuantity;
+
+      /*******************
+       * Commissions and fees
+       *******************/
+      temp9[key7].commission = sumCommission;
+      temp9[key7].sec = sumSec
+      temp9[key7].taf = sumTaf
+      temp9[key7].nscc = sumNscc
+      temp9[key7].nasdaq = sumNasdaq
+      temp9[key7].otherCommission = sumOtherCommission;
+      temp9[key7].fees = sumFees;
+
+      /*******************
+       * Gross proceeds and P&L
+       *******************/
+      temp9[key7].grossProceeds = sumGrossProceeds;
+      temp9[key7].grossWins = sumGrossWins;
+      temp9[key7].grossLoss = sumGrossLoss;
+      temp9[key7].grossSharePL = sumGrossSharePL
+      //temp9[key7].grossSharePL = sumGrossProceeds / sumBuyQuantity
+
+      /*sumGrossWinsQuantity == 0 ? temp9[key7].grossSharePLWins = 0 : temp9[key7].grossSharePLWins = sumGrossWins / sumGrossWinsQuantity
+      sumGrossLossQuantity == 0 ? temp9[key7].grossSharePLLoss = 0 : temp9[key7].grossSharePLLoss = sumGrossLoss / sumGrossLossQuantity*/
+      temp9[key7].grossSharePLWins = sumGrossSharePLWins
+      temp9[key7].grossSharePLLoss = sumGrossSharePLLoss
+      temp9[key7].highGrossSharePLWin = highGrossSharePLWin;
+      temp9[key7].highGrossSharePLLoss = highGrossSharePLLoss;
+
+      /*******************
+       * Net proceeds and P&L
+       *******************/
+      temp9[key7].netProceeds = sumNetProceeds;
+      temp9[key7].netWins = sumNetWins;
+      temp9[key7].netLoss = sumNetLoss;
+      temp9[key7].netSharePL = sumNetSharePL
+      //temp9[key7].netSharePL = sumNetProceeds / sumBuyQuantity
+
+      /*sumNetWinsQuantity == 0 ? temp9[key7].netSharePLWins = 0 : temp9[key7].netSharePLWins = sumNetWins / sumNetWinsQuantity
+      sumNetLossQuantity == 0 ? temp9[key7].netSharePLLoss = 0 : temp9[key7].netSharePLLoss = sumNetLoss / sumNetLossQuantity*/
+      temp9[key7].netSharePLWins = sumNetSharePLWins
+      temp9[key7].netSharePLLoss = sumNetSharePLLoss
+      temp9[key7].highNetSharePLWin = highNetSharePLWin;
+      temp9[key7].highNetSharePLLoss = highNetSharePLLoss;
+
+      /*******************
+       * Counts
+       *******************/
+      temp9[key7].executions = sumExecutions
+      temp9[key7].trades = sumTrades
+
+      temp9[key7].grossWinsQuantity = sumGrossWinsQuantity
+      temp9[key7].grossLossQuantity = sumGrossLossQuantity
+      temp9[key7].grossWinsCount = sumGrossWinsCount
+      temp9[key7].grossLossCount = sumGrossLossCount
+
+      temp9[key7].netWinsQuantity = sumNetWinsQuantity
+      temp9[key7].netLossQuantity = sumNetLossQuantity
+      temp9[key7].netWinsCount = sumNetWinsCount
+      temp9[key7].netLossCount = sumNetLossCount
+
+
+    }
+    for (let key in pAndL) delete pAndL[key]
+    Object.assign(pAndL, temp9)
+    console.log(" -> P&L: " + JSON.stringify(pAndL))
+
+
+    //console.log(" -> Created trades table successfully");
+    resolve()
+  })
+}
+
+
+export async function useUploadTrades() {
+  console.info('\n✅ UPLOADING TRADES');
+
+  const uploadToParse = async (param1, param2, param3) => {
+    return new Promise(async (resolve, reject) => {
+      resolve()
+    })
+  }
+
+  const checkTradeAccounts = async () => {
+    return new Promise(async (resolve, reject) => {
+      console.log('--> Checking trade accounts')
+
+      const updateTradeAccounts = async (param) => {
+        await $fetch("/accounts", {
+          method: "POST",
+          body: { account: param },
+          onResponse({ response }) {
+            console.log('--> ' + response._data.message)
+          }
+        })
+      }
+
+
+      // Accounts from DB
+      if (accountsList.length != 0) {
+        console.log('--> ' + accountsList.length + ' Accounts found')
+
+        tradeAccounts.forEach(account => {
+          const check = accountsList.find(x => x == account);
+          if (!check) {
+            console.log('--> Parsing ' + account);
+            updateTradeAccounts(account)
+          }
+        })
+
+      }
+
+      resolve()
+
+    })
+  }
+
+  checkTradeAccounts()
+
 }

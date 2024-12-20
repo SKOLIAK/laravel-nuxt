@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import type { User } from '@/types'
-import { timeZones, traderTimeZone } from '#build/imports'
 
 export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig()
