@@ -68,7 +68,6 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
         :width="300"
         :height="300"
       />
-      {{ traderTimeZone }}
     </UFormGroup>
 
     <UFormGroup label="Name" name="name" required>
@@ -87,7 +86,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
 
 
     <UFormGroup label="Timezone" name="timezone" required>
-      <USelect v-model="traderTimeZone" :options="timeZones" />
+      <USelect v-model="state.timezone" :options="timeZones" />
     </UFormGroup>
 
     <UAlert
