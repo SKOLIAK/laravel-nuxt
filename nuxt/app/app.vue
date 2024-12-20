@@ -1,24 +1,183 @@
-<script lang="ts" setup></script>
+<script setup lang="ts">
+const colorMode = useColorMode()
+
+const color = computed(() => colorMode.value === 'dark' ? '#111827' : 'white')
+
+useHead({
+  meta: [
+    { charset: 'utf-8' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { key: 'theme-color', name: 'theme-color', content: color }
+  ],
+  link: [
+    { rel: 'icon', href: '/favicon.ico' }
+  ],
+  htmlAttrs: {
+    lang: 'en'
+  }
+})
+
+const title = 'Nuxt UI Pro - Dashboard template'
+const description = 'Nuxt UI Pro is a collection of premium Vue components built on top of Nuxt UI to create beautiful & responsive Nuxt applications in minutes.'
+
+useSeoMeta({
+  title,
+  description,
+  ogTitle: title,
+  ogDescription: description,
+  ogImage: 'https://dashboard-template.nuxt.dev/social-card.png',
+  twitterImage: 'https://dashboard-template.nuxt.dev/social-card.png',
+  twitterCard: 'summary_large_image'
+})
+</script>
 
 <template>
-  <AppHeader />
+  <div>
+    <NuxtLoadingIndicator />
 
-  <UContainer as="main" class="flex-grow py-4 sm:py-7 flex flex-col">
-    <NuxtPage />
-  </UContainer>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
 
-  <AppFooter />
+    <UNotifications />
+    <UModals />
 
-  <NuxtLoadingIndicator class="!opacity-100" :throttle="0" />
 
-  <UModals />
 
-  <UNotifications>
-    <template #title="{ title }">
-      <span v-html="title" />
-    </template>
-    <template #description="{ description }">
-      <span v-html="description" />
-    </template>
-  </UNotifications>
+  </div>
 </template>
+
+<style>
+
+:root {
+    --circle-size: 80%;
+    --blending: hard-light;
+  }
+
+  @keyframes moveInCircle {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes moveVertical {
+    0% {
+      transform: translateY(-50%);
+    }
+    50% {
+      transform: translateY(50%);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+
+  @keyframes moveHorizontal {
+    0% {
+      transform: translateX(-50%) translateY(-10%);
+    }
+    50% {
+      transform: translateX(50%) translateY(10%);
+    }
+    100% {
+      transform: translateX(-50%) translateY(-10%);
+    }
+  }
+
+
+  .gradient-bg {
+    z-index: -999999;
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    overflow: hidden;
+    background: linear-gradient(40deg, theme('colors.black'), theme('colors.gray.900'));
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    svg {
+      position: fixed;
+      top:0;
+      left:0;
+      width: 0;
+      height: 0;
+    }
+
+
+    .gradients-container {
+      filter: url(#goo) blur(40px) ;
+      width: 100%;
+      height: 100%;
+    }
+
+    .g1 {
+      position: absolute;
+      background: radial-gradient(circle at center, theme('colors.primary.700/80') 0,theme('colors.primary.700/0') 50%) no-repeat;
+      mix-blend-mode: var(--blending);
+
+      width: var(--circle-size);
+      height: var(--circle-size);
+      top: calc(50% - var(--circle-size) / 2);
+      left: calc(50% - var(--circle-size) / 2);
+
+      transform-origin: center center;
+      animation: moveVertical 30s ease infinite;
+
+      opacity: 1;
+    }
+
+    .g2 {
+      position: absolute;
+      background: radial-gradient(circle at center, theme('colors.primary.600/80') 0, theme('colors.primary.600/0') 50%) no-repeat;
+      mix-blend-mode: var(--blending);
+
+      width: var(--circle-size);
+      height: var(--circle-size);
+      top: calc(50% - var(--circle-size) / 2);
+      left: calc(50% - var(--circle-size) / 2);
+
+      transform-origin: calc(50% - 400px);
+      animation: moveInCircle 20s reverse infinite;
+
+      opacity: 1;
+    }
+
+    .g3 {
+      position: absolute;
+      background: radial-gradient(circle at center, theme('colors.primary.500/80') 0, theme('colors.primary.500/0') 50%) no-repeat;
+      mix-blend-mode: var(--blending);
+
+      width: var(--circle-size);
+      height: var(--circle-size);
+      top: calc(50% - var(--circle-size) / 2 + 200px);
+      left: calc(50% - var(--circle-size) / 2 - 500px);
+
+      transform-origin: calc(50% + 400px);
+      animation: moveInCircle 40s linear infinite;
+
+      opacity: 1;
+    }
+
+    .interactive {
+      position: absolute;
+      background: radial-gradient(circle at center, theme('colors.primary.500/80') 0, theme('colors.primary.500/0') 50%) no-repeat;
+      mix-blend-mode: var(--blending);
+
+      width: 100%;
+      height: 100%;
+      top: -50%;
+      left: -50%;
+
+      opacity: 0.7;
+    }
+  }
+
+</style>

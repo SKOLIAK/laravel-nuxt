@@ -1,14 +1,10 @@
 export default defineAppConfig({
   ui: {
-    primary: 'emerald',
-    strategy: 'override',
-    gray: 'neutral',
-    container: {
-      constrained: 'max-w-7xl w-full'
-    },
-    avatar: {
+    primary: 'sky',
+    gray: 'cool',
+    tooltip: {
       default: {
-        icon: 'i-heroicons-user',
+        openDelay: 500
       }
     }
   }

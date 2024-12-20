@@ -1,38 +1,90 @@
 <script setup lang="ts">
-import { ModalDemo } from '#components'
+import { sub } from 'date-fns'
+import type { Period, Range } from '~/types'
 
-const modal = useModal();
-const router = useRouter();
-const auth = useAuthStore();
+const { isNotificationsSlideoverOpen } = useDashboard()
 
-function openDemoModal() {
-  modal.open(ModalDemo)
-}
+const items = [[{
+  label: 'New mail',
+  icon: 'i-heroicons-paper-airplane',
+  to: '/inbox'
+}, {
+  label: 'New user',
+  icon: 'i-heroicons-user-plus',
+  to: '/users'
+}]]
 
-useSeoMeta({
-  title: 'Home',
-})
+const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
+const period = ref<Period>('daily')
 </script>
 
 <template>
-  <div class="grid grid-cols-12 gap-6">
-    <div class="col-span-12 lg:col-span-3">
-      <UCard>
-        <div class="font-bold text-lg leading-tight tracking-tighter mb-4">Demo</div>
+  <UDashboardPage>
+    <UDashboardPanel grow>
+      <UDashboardNavbar title="Home">
+        <template #right>
+          <UTooltip
+            text="Notifications"
+            :shortcuts="['N']"
+          >
+            <UButton
+              color="gray"
+              variant="ghost"
+              square
+              @click="isNotificationsSlideoverOpen = true"
+            >
+              <UChip
+                color="red"
+                inset
+              >
+                <UIcon
+                  name="i-heroicons-bell"
+                  class="w-5 h-5"
+                />
+              </UChip>
+            </UButton>
+          </UTooltip>
 
-        <div class="flex gap-3">
-          <UButton label="Modal" @click="openDemoModal" color="gray" />
-          <UButton label="404 page" color="gray" @click="router.push('/404')" />
+          <UDropdown :items="items">
+            <UButton
+              icon="i-heroicons-plus"
+              size="md"
+              class="ml-1.5 rounded-full"
+            />
+          </UDropdown>
+        </template>
+      </UDashboardNavbar>
+
+      <UDashboardToolbar>
+        <template #left>
+          <!-- ~/components/home/HomeDateRangePicker.vue -->
+          <HomeDateRangePicker
+            v-model="range"
+            class="-ml-2.5"
+          />
+
+          <!-- ~/components/home/HomePeriodSelect.vue -->
+          <HomePeriodSelect
+            v-model="period"
+            :range="range"
+          />
+        </template>
+      </UDashboardToolbar>
+
+      <UDashboardPanelContent>
+        <!-- ~/components/home/HomeChart.vue -->
+        <HomeChart
+          :period="period"
+          :range="range"
+        />
+
+        <div class="grid lg:grid-cols-2 lg:items-start gap-8 mt-8">
+          <!-- ~/components/home/HomeSales.vue -->
+          <HomeSales />
+          <!-- ~/components/home/HomeCountries.vue -->
+          <HomeCountries />
         </div>
-      </UCard>
-    </div>
-    <div class="col-span-12 lg:col-span-9">
-      <UCard>
-        <div class="font-bold text-lg leading-tight tracking-tighter mb-4">
-          User Object
-        </div>
-        <pre>{{ auth.user }}</pre>
-      </UCard>
-    </div>
-  </div>
+      </UDashboardPanelContent>
+    </UDashboardPanel>
+  </UDashboardPage>
 </template>
