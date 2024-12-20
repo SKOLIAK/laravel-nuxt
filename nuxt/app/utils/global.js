@@ -5,6 +5,7 @@ export const GetSuccessColor = 'teal'
 export const GetInfoIcon = 'octicon:light-bulb-16'
 export const GetInfoColor = 'blue'
 
+import dayjs from "dayjs"
 
 export const timeZones = ref(["America/New_York", "Asia/Shanghai", "Europe/Brussels", "Asia/Tokyo", "Asia/Hong_Kong", "Asia/Kolkata", "Europe/London", "Asia/Riyadh"])
 export const traderTimeZone = ref('')
@@ -23,19 +24,19 @@ export function useDateNumberFormat(param) {
 }
 
 export function useDateCalFormat(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("YYYY-MM-DD")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("YYYY-MM-DD")
 }
 
 export function useDateCalFormatMonth(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("YYYY-MM")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("YYYY-MM")
 }
 
 export function useTimeFormat(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("HH:mm:ss")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("HH:mm:ss")
 }
 
 export function useTimeFormatFromDate(param) {
-  return dayjs(param).tz(timeZoneTrade.value).format("HH:mm:ss")
+  return dayjs(param).tz(traderTimeZone.value).format("HH:mm:ss")
 }
 
 export function useTimeDuration(param) {
@@ -50,35 +51,35 @@ export function useSwingDuration(param) {
 }
 
 export function useHourMinuteFormat(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("HH:mm")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("HH:mm")
 }
 
 export function useDateTimeFormat(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("YYYY-MM-DD HH:mm:ss")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("YYYY-MM-DD HH:mm:ss")
 }
 
 export function useChartFormat(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("l")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("l")
 }
 
 export function useMonthFormat(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("MMMM YYYY")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("MMMM YYYY")
 }
 
 export function useMonthFormatShort(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("MMM YY")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("MMM YY")
 }
 
 export function useCreatedDateFormat(param) {
-  return dayjs.unix(param).tz(timeZoneTrade.value).format("ddd DD MMMM YYYY")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("ddd DD MMMM YYYY")
 }
 
 export function useDatetimeLocalFormat(param) {
-  return dayjs.tz(param * 1000, timeZoneTrade.value).format("YYYY-MM-DDTHH:mm:ss") //here we ne
+  return dayjs.tz(param * 1000, traderTimeZone.value).format("YYYY-MM-DDTHH:mm:ss") //here we ne
 }
 
 export function useStartOfDay(param) {
-  return dayjs(param * 1000).tz(timeZoneTrade.value).startOf("day").unix()
+  return dayjs(param * 1000).tz(traderTimeZone.value).startOf("day").unix()
 }
 
 

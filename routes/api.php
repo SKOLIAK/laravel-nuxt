@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\AccountController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TradeController;
+use App\Http\Controllers\UploadController;
+use App\Http\Controllers\AccountController;
 
 Route::get('/', function () {
     return ['ok' => true, 'message' => 'Welcome to the API'];
@@ -31,5 +32,11 @@ Route::prefix('api/v1')->group(function () {
         Route::middleware(['throttle:uploads'])->group(function () {
             Route::post('upload', [UploadController::class, 'image'])->name('upload.image');
         });
+
+
+        Route::get('trades/open', [TradeController::class, 'getOpen'])->name('trades.getOpen');
+
+
+
     });
 });

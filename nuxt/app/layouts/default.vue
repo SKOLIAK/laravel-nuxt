@@ -23,6 +23,15 @@ const links = [{
     shortcuts: ['G', 'I']
   }
 }, {
+  id: 'trades',
+  label: 'Trades',
+  icon: 'akar-icons:align-bottom',
+  to: '/trades',
+  tooltip: {
+    text: 'Users',
+    shortcuts: ['G', 'U']
+  }
+}, {
   id: 'users',
   label: 'Users',
   icon: 'akar-icons:people-group',

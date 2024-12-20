@@ -1,7 +1,7 @@
 import { useTradovate } from "./brokers";
 import { useChartFormat } from "./global";
-import { trades, executions } from "./trades";
-import dayjs from 'dayjs'
+import { TradesData, trades, executions } from "./trades";
+import dayjs from "dayjs";
 import _ from 'lodash'
 
 let openPosition = false
@@ -119,7 +119,7 @@ export async function useImportTrades(fileInput, readAs, broker) {
 
     // @TODO // TEMPORARY
     create()
-
+    resolve()
 
   })
 }
@@ -556,7 +556,7 @@ async function createTrades() {
           //console.log("openPositionsFile "+JSON.stringify(openPositionsFile))
           openPositionsFile.push(temp7)
 
-          console.warn('Open positions: ' + openPositionsFile.length)
+
         } else if (newTrade == false) { //= concatenating trade
           console.log("  --> Concatenating trade from " + useTimeFormat(tempExec.execTime))
 
@@ -752,6 +752,7 @@ async function createTrades() {
               }
             }
 
+
             //console.log("trde " + JSON.stringify(trde))
 
             //check if other trades open of same id in
@@ -791,7 +792,7 @@ async function createTrades() {
     //console.log(" -> Trades " + JSON.stringify(c))
     for (let key in trades) delete trades[key]
     Object.assign(trades, JSON.parse(JSON.stringify(c)))
-    //console.log("Trades C " + JSON.stringify(trades))
+    console.log("Trades C " + JSON.stringify(trades))
     //console.log('executions ' + JSON.stringify(executions))
     resolve()
 

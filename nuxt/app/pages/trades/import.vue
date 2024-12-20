@@ -1,7 +1,6 @@
 <script setup>
 import { brokers, selectedBroker, tradovateTiers, selectedTradovateTier } from '@/utils/brokers';
-import { futureContractsJson } from '@/utils/contracts';
-import { futuresTradovateFees } from '@/utils/fees';
+import { trades } from '@/utils/trades';
 
 
 
@@ -37,7 +36,6 @@ function handleFileUpload( event ){
 
 </div>
 
-
 <div class="relative overflow-x-auto mt-5 rounded">
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -57,8 +55,7 @@ function handleFileUpload( event ){
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" v-for="data in trades">
-
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" v-for="data in trades['1733720400']">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             <div class="text-xs">{{ data.account }}
                                 <small class="text-blue-500 font-bold text-4xs" v-if="data.strategy == 'long'">
@@ -90,7 +87,7 @@ function handleFileUpload( event ){
                             <small class="text-gray-500 font-medium">-{{ data.commission.toFixed(2) }} {{ data.currency }}</small>
                         </td>
                         <td class="px-4 py-2">
-                            <div class="font-medium p-2 rounded inline text-xs" :class="{'text-gray-200 bg-black/20 ': data.netProceeds.toFixed(2) < 0, 'bg-primary-500 text-white': data.netProceeds.toFixed(2) >= 0}">
+                            <div class="font-medium p-2 rounded inline text-xs" :class="{'text-gray-200 bg-black/20 ': data.netProceeds < 0, 'bg-primary-500 text-white': data.netProceeds >= 0}">
                                 {{ data.netProceeds.toFixed(2) }} {{ data.currency }}
                             </div>
                         </td>
