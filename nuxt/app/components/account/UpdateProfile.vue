@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { timeZones, traderTimeZone } from '@/utils/global';
+import { timeZones, traderTimeZone, useSetTimeZone } from '@/utils/global';
 
 const form = ref();
 const auth = useAuthStore();
@@ -50,7 +50,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
       state.email = auth.user.email;
       state.avatar = auth.user.avatar;
       state.timezone = auth.user.timezone;
-      traderTimeZone.value = auth.user.timezone;
+      useSetTimeZone(auth.user.timezone)
     }
   }
 });
@@ -59,6 +59,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
 
 <template>
   <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
+    {{ traderTimeZone }}
     <UFormGroup label="" name="avatar" class="flex">
       <InputUploadImage
         v-model="state.avatar"

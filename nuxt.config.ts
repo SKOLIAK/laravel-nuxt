@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   telemetry: true,
 
   $development: {
-    ssr: true,
+    ssr: false,
     devtools: {
       enabled: false,
     },
@@ -31,8 +31,8 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Home',
-      titleTemplate: '%s | LaravelNuxt Boilerplate',
+      title: 'Dashboard',
+      titleTemplate: '%s | ' + import.meta.env.APP_NAME,
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },

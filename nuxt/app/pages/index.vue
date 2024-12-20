@@ -2,8 +2,6 @@
 import { sub } from 'date-fns'
 import type { Period, Range } from '~/types'
 
-const { isNotificationsSlideoverOpen } = useDashboard()
-
 const items = [[{
   label: 'New mail',
   icon: 'i-heroicons-paper-airplane',
@@ -21,7 +19,7 @@ const period = ref<Period>('daily')
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar title="Home">
+      <UDashboardNavbar title="Dashboard">
         <template #right>
 
           <UDropdown :items="items">
