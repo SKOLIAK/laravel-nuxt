@@ -184,6 +184,7 @@ class AuthController extends Controller
                 'must_verify_email' => $user->mustVerifyEmail(),
                 'has_password' => (bool) $user->password,
                 'roles' => $user->roles()->select('name')->pluck('name'),
+                'timezone' => $user->timezone,
                 'providers' => $user->userProviders()->select('name')->pluck('name'),
             ],
         ]);
