@@ -6,6 +6,7 @@ definePageMeta({
 
 <template>
   <UDashboardPanelContent class="pb-24">
+
     <UCard :ui="{ body: { base: 'grid grid-cols-12 gap-6 md:gap-8' } }" class="ring-0">
     <div class="col-span-12 lg:col-span-4">
       <div class="text-lg font-semibold mb-2">Profile information</div>
