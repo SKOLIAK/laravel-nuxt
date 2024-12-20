@@ -2,13 +2,16 @@ import type { Avatar } from '#ui/types'
 
 export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 
-export interface User {
-  id: number
-  name: string
-  email: string
-  avatar?: Avatar
-  status: UserStatus
-  location: string
+export type User = {
+  ulid: string;
+  name: string;
+  email: string;
+  avatar: string;
+  must_verify_email: boolean;
+  has_password: boolean;
+  roles: string[];
+  providers: string[];
+  timezone: string;
 }
 
 export interface Mail {
