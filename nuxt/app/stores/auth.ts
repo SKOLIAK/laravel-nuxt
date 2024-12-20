@@ -1,15 +1,5 @@
 import { defineStore } from 'pinia'
-
-export type User = {
-  ulid: string;
-  name: string;
-  email: string;
-  avatar: string;
-  must_verify_email: boolean;
-  has_password: boolean;
-  roles: string[];
-  providers: string[];
-}
+import type { User } from '@/types'
 
 export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig()
