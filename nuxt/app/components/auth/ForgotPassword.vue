@@ -17,7 +17,7 @@ const { refresh: onSubmit, status: forgotStatus } = useFetch<any>("forgot-passwo
       useToast().add({
         title: "Success",
         description: response._data.message,
-        color: "emerald",
+        color: GetSuccessColor,
       });
     }
   }

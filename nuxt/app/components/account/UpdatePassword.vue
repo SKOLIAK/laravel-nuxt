@@ -18,9 +18,9 @@ const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("acco
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
       useToast().add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: GetSuccessIcon,
         title: "The password was successfully updated.",
-        color: "emerald",
+        color: GetSuccessColor,
       });
 
       state.current_password = "";
@@ -38,9 +38,9 @@ const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = us
   onResponse({ response }) {
     if (response._data?.ok) {
       useToast().add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: GetSuccessIcon,
         title: "A link to reset your password has been sent to your email.",
-        color: "emerald",
+        color: GetSuccessColor,
       });
     }
   }

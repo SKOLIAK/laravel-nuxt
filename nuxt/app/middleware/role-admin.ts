@@ -5,9 +5,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (auth.logged && !auth.user.roles.includes('admin')) {
     return nuxtApp.runWithContext(() => {
       useToast().add({
-        icon: "i-heroicons-exclamation-circle-solid",
+        icon: GetErrorIcon,
         title: "Access denied.",
-        color: "red",
+        color: GetErrorColor,
       });
 
       return navigateTo('/')

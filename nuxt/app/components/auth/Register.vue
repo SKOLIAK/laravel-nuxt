@@ -19,14 +19,14 @@ const { refresh: onSubmit, status: registerStatus } = useFetch<any>("register", 
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
       useToast().add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: GetSuccessIcon,
         title: "You have been registered successfully.",
-        color: "emerald",
+        color: GetSuccessColor,
         actions: [
           {
             label: "Log In now",
             to: "/auth/login",
-            color: "emerald",
+            color: GetSuccessColor,
           },
         ],
       });

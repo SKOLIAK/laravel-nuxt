@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   telemetry: true,
 
   $development: {
-    ssr: false,
+    ssr: true,
     devtools: {
       enabled: false,
     },

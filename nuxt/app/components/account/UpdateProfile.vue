@@ -21,9 +21,9 @@ const { refresh: sendEmailVerification, status: resendEmailStatus } = useFetch<a
   onResponse({ response }) {
     if (response._data?.ok) {
       useToast().add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: GetSuccessIcon,
         title: response._data.message,
-        color: "emerald",
+        color: GetSuccessColor,
       });
     }
   }
@@ -39,9 +39,9 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
       form.value.setErrors(response._data?.errors);
     } else if (response._data?.ok) {
       useToast().add({
-        icon: "i-heroicons-check-circle-20-solid",
+        icon: GetSuccessIcon,
         title: "Account details have been successfully updated.",
-        color: "emerald",
+        color: GetSuccessColor,
       });
 
       await auth.fetchUser();

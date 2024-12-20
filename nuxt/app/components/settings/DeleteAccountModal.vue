@@ -12,7 +12,7 @@ function onDelete() {
 
   setTimeout(() => {
     loading.value = false
-    toast.add({ icon: 'i-heroicons-check-circle', title: 'Your account has been deleted', color: 'red' })
+    toast.add({ icon: GetSuccessIcon, title: 'Your account has been deleted', color: 'red' })
     model.value = false
   }, 2000)
 }
@@ -23,7 +23,7 @@ function onDelete() {
     v-model="model"
     title="Delete account"
     description="Are you sure you want to delete your account?"
-    icon="i-heroicons-exclamation-circle"
+    :icon="GetErrorIcon"
     prevent-close
     :close-button="null"
     :ui="{

@@ -47,8 +47,8 @@ async function handleMessage(event: { data: any }): Promise<void> {
     await router.push("/");
   } else if (event.data.message) {
     useToast().add({
-      icon: "i-heroicons-exclamation-circle-solid",
-      color: "red",
+      icon: GetErrorIcon,
+      color: GetErrorColor,
       title: event.data.message,
     });
   }

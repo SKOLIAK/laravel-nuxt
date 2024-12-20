@@ -5,9 +5,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (auth.logged && auth.user.must_verify_email) {
     return nuxtApp.runWithContext(() => {
       useToast().add({
-        icon: "i-heroicons-exclamation-circle-solid",
+        icon: GetErrorIcon,
         title: "Please confirm your email.",
-        color: "red",
+        color: GetErrorColor,
       });
 
       return navigateTo('/account/general')

@@ -23,7 +23,7 @@ const { refresh: onSubmit, status: resetStatus } = useFetch<any>("reset-password
       useToast().add({
         title: "Success",
         description: response._data.message,
-        color: "emerald",
+        color: GetSuccessColor,
       });
 
       if (auth.logged) {

@@ -83,8 +83,8 @@ export default defineNuxtPlugin({
         if (error.name === 'AbortError') return;
 
         useToast().add({
-          icon: 'i-heroicons-exclamation-circle-solid',
-          color: 'red',
+          icon: GetErrorIcon,
+          color: GetErrorColor,
           title: error.message ?? 'Something went wrong',
         })
       },
@@ -99,15 +99,15 @@ export default defineNuxtPlugin({
           if (import.meta.client) {
             useToast().add({
               title: 'Please log in to continue',
-              icon: 'i-heroicons-exclamation-circle-solid',
-              color: 'primary',
+              icon: GetErrorIcon,
+              color: GetInfoColor,
             })
           }
         } else if (response.status !== 422) {
           if (import.meta.client) {
             useToast().add({
-              icon: 'i-heroicons-exclamation-circle-solid',
-              color: 'red',
+              icon: GetErrorIcon,
+              color: GetErrorColor,
               title: response._data?.message ?? response.statusText ?? 'Something went wrong',
             })
           }

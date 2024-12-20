@@ -23,8 +23,8 @@ const onSelect = async (e: any) => {
   if (file.size > props.maxSize * 1024 * 1024) {
     return useToast().add({
       title: "File is too large.",
-      color: "red",
-      icon: "i-heroicons-exclamation-circle-solid",
+      color: GetErrorColor,
+      icon: GetErrorIcon,
     });
   }
 
@@ -45,8 +45,8 @@ const onSelect = async (e: any) => {
     onResponse({ response }) {
       if (response.status !== 200) {
         useToast().add({
-          icon: 'i-heroicons-exclamation-circle-solid',
-          color: 'red',
+          icon: GetErrorIcon,
+          color: GetErrorColor,
           title: response._data?.message ?? response.statusText ?? 'Something went wrong',
         });
       } else if (response._data?.ok) {
