@@ -4,18 +4,18 @@ const appConfig = useAppConfig()
 const { isHelpSlideoverOpen } = useDashboard()
 
 const links = [{
-  id: 'home',
-  label: 'Home',
-  icon: 'i-heroicons-home',
+  id: 'dashboard',
+  label: 'Dashboard',
+  icon: 'akar-icons:augmented-reality',
   to: '/',
   tooltip: {
-    text: 'Home',
-    shortcuts: ['G', 'H']
+    text: 'Dashboard',
+    shortcuts: ['Shift', 'D']
   }
 }, {
   id: 'inbox',
   label: 'Inbox',
-  icon: 'i-heroicons-inbox',
+  icon: 'akar-icons:inbox',
   to: '/inbox',
   badge: '4',
   tooltip: {
@@ -25,7 +25,7 @@ const links = [{
 }, {
   id: 'users',
   label: 'Users',
-  icon: 'i-heroicons-user-group',
+  icon: 'akar-icons:people-group',
   to: '/users',
   tooltip: {
     text: 'Users',
@@ -35,7 +35,7 @@ const links = [{
   id: 'settings',
   label: 'Settings',
   to: '/settings',
-  icon: 'i-heroicons-cog-8-tooth',
+  icon: 'akar-icons:gear',
   children: [{
     label: 'General',
     to: '/settings',
@@ -63,17 +63,6 @@ const groups = [{
   key: 'links',
   label: 'Go to',
   commands: links.map(link => ({ ...link, shortcuts: link.tooltip?.shortcuts }))
-}, {
-  key: 'code',
-  label: 'Code',
-  commands: [{
-    id: 'source',
-    label: 'View page source',
-    icon: 'i-simple-icons-github',
-    click: () => {
-      window.open(`https://github.com/nuxt-ui-pro/dashboard/blob/main/pages${route.path === '/' ? '/index' : route.path}.vue`, '_blank')
-    }
-  }]
 }]
 
 const defaultColors = ref(['green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet'].map(color => ({ label: color, chip: color, click: () => appConfig.ui.primary = color })))
