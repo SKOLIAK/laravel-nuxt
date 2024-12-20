@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { User } from '@/types'
+import { timeZones, traderTimeZone } from '#build/imports'
 
 export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig()
@@ -21,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
       if (response.status === 200) {
         token.value = ''
         user.value = <User>{}
-
+        traderTimeZone.value = timeZones[0]
         nuxtApp.runWithContext(() => {
           return navigateTo('/');
         })
@@ -34,6 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
     onResponse({ response }) {
       if (response.status === 200) {
         user.value = response._data.user
+        traderTimeZone.value = user.value.timezone
       }
     }
   })
