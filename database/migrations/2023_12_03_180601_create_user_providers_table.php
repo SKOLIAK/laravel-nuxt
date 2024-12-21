@@ -13,9 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_providers', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('provider_id', 255);
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignUuid('user_id')->constrained();
             $table->string('name', 50);
             $table->timestamps();
         });

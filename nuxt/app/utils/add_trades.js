@@ -29,7 +29,7 @@ export async function useGetExistingTradesArray() {
           if (response._data.ok) {
             existingTradesArray.push(response._data.data)
             gotExistingTradesArray.value = true
-            console.log(" -> Finished (" + response._data.data.length + ")")
+            console.log(" -> Finished getting existing filter trades (" + response._data.data.length + ")")
           }
           resolve()
         }
@@ -1278,49 +1278,113 @@ export async function useCreatePnL(param) {
 }
 
 
-export async function useUploadTrades() {
+export async function useUploadTrades(param99, param0) {
   console.info('\n✅ UPLOADING TRADES');
 
-  const uploadToParse = async (param1, param2, param3) => {
+  const uploadToParse = async (dateIdentifier, parseType, isOpenPositions) => {
     return new Promise(async (resolve, reject) => {
-      resolve()
+      console.log(" -> Parse param1 is " + dateIdentifier)
+      console.log(" -> Parse param2 is " + parseType)
+      console.log(" -> Parse param3 is " + isOpenPositions)
+
+      if (parseType == "trades") {
+        //await parseExecutions(executions[dateIdentifier])
+        await parseTrades(trades[dateIdentifier])
+        //await parseBlotter(blotter[dateIdentifier])
+        //await parsePAndL(pAndL[dateIdentifier])
+      }
     })
   }
 
-  const checkTradeAccounts = async () => {
+  const parseTrades = async (param) => {
     return new Promise(async (resolve, reject) => {
-      console.log('--> Checking trade accounts')
-
-      const updateTradeAccounts = async (param) => {
-        await $fetch("/accounts", {
+      try {
+        await $fetch("trades", {
           method: "POST",
-          body: { account: param },
+          body: { data: param },
           onResponse({ response }) {
-            console.log('--> ' + response._data.message)
+            console.log(response._data)
           }
         })
-      }
-
-
-      // Accounts from DB
-      if (accountsList.length != 0) {
-        console.log('--> ' + accountsList.length + ' Accounts found')
-
-        tradeAccounts.forEach(account => {
-          const check = accountsList.find(x => x == account);
-          if (!check) {
-            console.log('--> Parsing ' + account);
-            updateTradeAccounts(account)
-          }
+        resolve()
+      } catch (error) {
+        useToast().add({
+          icon: GetErrorIcon,
+          title: 'Something went wrong',
+          color: GetErrorColor,
         })
-
+        reject()
       }
-
-      resolve()
 
     })
   }
 
-  checkTradeAccounts()
+  const parseExecutions = async (param) => {
+    return new Promise(async (resolve, reject) => {
+      console.log('Parse executions \n' + JSON.stringify(param))
+      resolve()
+    })
+  }
+
+  const parseBlotter = async (param) => {
+    return new Promise(async (resolve, reject) => {
+      console.log('Parse blotter \n' + JSON.stringify(param))
+      resolve()
+    })
+  }
+
+  const parsePAndL = async (param) => {
+    return new Promise(async (resolve, reject) => {
+      console.log('Parse P&L \n' + JSON.stringify(param))
+      resolve()
+    })
+  }
+
+  const uploadFunction = async (param) => {
+    console.log(" -> Upload function for " + param)
+    return new Promise(async (resolve, reject) => {
+      let keys
+      let i = 0
+      let numberOfDates = 0
+
+      if (param == "trades") {
+        keys = Object.keys(executions)
+        numberOfDates = Object.keys(executions).length
+      }
+
+      console.log("num of dates " + numberOfDates)
+      for (const key of keys) {
+        console.log(" key " + key)
+        console.log(" trades " + JSON.stringify(trades[key]))
+        let checkIfOpenPositions = trades[key].findIndex(x => {
+          console.warn(JSON.stringify(x))
+          x.openPosition == true
+        })
+        console.log(" checkIfOpenPositions " + checkIfOpenPositions)
+
+        checkIfOpenPositions != -1 ? checkIfOpenPositions = true : checkIfOpenPositions = false
+        const promise = await uploadToParse(key, param, checkIfOpenPositions)
+        console.log("promise " + JSON.stringify(promise))
+        if (promise == "resolve") resolve()
+      }
+    })
+  }
+
+
+  if (Object.keys(executions).length > 0) await uploadFunction("trades")
+  if (Object.keys(executions).length > 0 && mfePrices.length > 0) await useUpdateMfePrices(param99, param0)
+  if (openPositionsParse.length > 0) {
+    await loopOpenPositionsParse()
+  }
+  if (param99 == "api") {
+    for (let key in executions) delete executions[key]
+    for (let key in executions) delete executions[key]
+    for (let key in trades) delete trades[key]
+    for (let key in blotter) delete blotter[key]
+    for (let key in pAndL) delete pAndL[key]
+
+  }
+
+
 
 }

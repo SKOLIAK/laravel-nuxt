@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Accounts;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,19 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Trade extends Model
 {
     use HasUuids;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'symbol',
-        'type',
-        'entry_price',
-        'exit_price',
-        'entry_time',
-        'exit_time'
-    ];
+
+
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -32,6 +23,11 @@ class Trade extends Model
     protected $hidden = [
         'id'
     ];
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Accounts::class);
+    }
 
     public function user(): BelongsTo
     {

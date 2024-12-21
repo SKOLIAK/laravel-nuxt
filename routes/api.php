@@ -39,6 +39,7 @@ Route::prefix('api/v1')->group(function () {
         Route::post('accounts', [AccountsController::class, 'add'])->name('accounts.add');
 
         Route::get('trades', [TradeController::class, 'index'])->name('trades.get');
+        Route::post('trades', [TradeController::class, 'add'])->name('trades.add');
         Route::get('trades/open', [TradeController::class, 'getOpen'])->name('trades.getOpen');
 
 

@@ -42,8 +42,6 @@ class AuthController extends Controller
         $user->ulid = Str::ulid()->toBase32();
         $user->save();
 
-        $user->assignRole('user');
-
         event(new Registered($user));
 
         return response()->json([
@@ -102,8 +100,6 @@ class AuthController extends Controller
             $user->password = null;
             $user->email_verified_at = now();
             $user->save();
-
-            $user->assignRole('user');
 
             $user->userProviders()->create([
                 'provider_id' => $oAuthUser->id,
@@ -184,7 +180,6 @@ class AuthController extends Controller
                 ...$user->toArray(),
                 'must_verify_email' => $user->mustVerifyEmail(),
                 'has_password' => (bool) $user->password,
-                'roles' => $user->roles()->select('name')->pluck('name'),
                 'timezone' => $user->timezone,
                 'providers' => $user->userProviders()->select('name')->pluck('name'),
                 'accounts' => $user->accounts->all()

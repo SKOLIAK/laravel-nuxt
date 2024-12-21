@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Accounts;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -30,9 +31,9 @@ return new class extends Migration
             $table->string('buyQuantity');
             $table->string('sellQuantity');
 
-            $table->string('stategy');
+            $table->string('strategy');
 
-            $table->date('entryTime');
+            $table->string('entryTime');
             $table->string('exitTime')->default(0);
             $table->string('entryPrice');
             $table->string('exitPrice')->nullable(true);
@@ -63,33 +64,33 @@ return new class extends Migration
             /*******************
              * Net proceeds and P&L
             *******************/
-            $table->string('netEntryProceedsOpen');
-            $table->string('netEntryProceeds');
-            $table->string('netExitProceedsOpen');
-            $table->string('netExitProceeds');
-            $table->string('netProceedsOpen');
-            $table->string('netProceeds');
-            $table->string('netWins');
-            $table->string('netLoss');
-            $table->string('netSharePL');
-            $table->string('netSharePLWins');
-            $table->string('netSharePLLoss');
-            $table->string('netStatus');
+            $table->string('netEntryProceedsOpen')->default(0);
+            $table->string('netEntryProceeds')->default(0);
+            $table->string('netExitProceedsOpen')->default(0);
+            $table->string('netExitProceeds')->default(0);
+            $table->string('netProceedsOpen')->default(0);
+            $table->string('netProceeds')->default(0);
+            $table->string('netWins')->default(0);
+            $table->string('netLoss')->default(0);
+            $table->string('netSharePL')->default(0);
+            $table->string('netSharePLWins')->default(0);
+            $table->string('netSharePLLoss')->default(0);
+            $table->string('netStatus')->default(0);
 
 
             /*******************
             * Counts
             *******************/
-            $table->string('executionsCount');
-            $table->string('tradesCount');
-            $table->string('grossWinsQuantity');
-            $table->string('grossLossQuantity');
-            $table->string('grossWinsCount');
-            $table->string('grossLossCount');
-            $table->string('netWinsQuantity');
-            $table->string('netLossQuantity');
-            $table->string('netWinsCount');
-
+            $table->string('executionsCount')->default(0);
+            $table->string('tradesCount')->default(0);
+            $table->string('grossWinsQuantity')->default(0);
+            $table->string('grossLossQuantity')->default(0);
+            $table->string('grossWinsCount')->default(0);
+            $table->string('grossLossCount')->default(0);
+            $table->string('netWinsQuantity')->default(0);
+            $table->string('netLossQuantity')->default(0);
+            $table->string('netWinsCount')->default(0);
+            $table->string('netLossCount')->default(0);
 
 
 
@@ -102,7 +103,8 @@ return new class extends Migration
 
 
 
-            $table->foreignId('user_id')->constrained();
+            $table->foreignUuid('accounts_id')->constrained();
+            $table->foreignUuid('user_id')->constrained();
             $table->timestamps();
         });
     }
