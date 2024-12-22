@@ -47,5 +47,5 @@ Route::prefix('api/v1')->group(function () {
     Route::get('users', function() {
         return User::all();
     });
-
+    Route::get('trades', [TradeController::class, 'index'])->name('trades.get');
 });

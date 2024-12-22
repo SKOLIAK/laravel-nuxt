@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { eachDayOfInterval } from 'date-fns'
 import type { Period, Range } from '~/types'
-
-const model = defineModel({
-  type: String as PropType<Period>,
-  required: true
-})
+import { dateRangeModel } from '@/utils/dateRange'
 
 const props = defineProps({
   range: {
@@ -38,22 +34,24 @@ const periods = computed<Period[]>(() => {
 
 // Ensure the model value is always a valid period
 watch(periods, () => {
-  if (!periods.value.includes(model.value)) {
-    model.value = periods.value[0]
+  if (!periods.value.includes(dateRangeModel.value)) {
+    dateRangeModel.value = periods.value[0]
   }
 })
+
+
 </script>
 
 <template>
   <USelectMenu
     v-slot="{ open }"
-    v-model="model"
+    v-model="dateRangeModel"
     :options="periods"
     :ui-menu="{ width: 'w-32', option: { base: 'capitalize' } }"
     :popper="{ placement: 'bottom-start' }"
   >
     <UButton
-      :label="model"
+      :label="dateRangeModel"
       color="gray"
       variant="ghost"
       class="capitalize"

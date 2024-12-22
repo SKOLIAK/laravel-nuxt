@@ -1,12 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ['@nuxt/ui-pro'],
-  modules: [
-    '@nuxt/ui'
-  ],
+  modules: ['@nuxt/ui', '@nuxt/fonts', '@nuxt/image'],
 
   compatibilityDate: '2024-07-03',
   rootDir: 'nuxt/',
+
 
   future: {
     compatibilityVersion: 4,

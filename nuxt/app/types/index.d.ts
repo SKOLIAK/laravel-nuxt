@@ -18,6 +18,7 @@ export type User = {
   roles: string[];
   providers: string[];
   timezone: string;
+  unixes: string[];
 }
 
 export interface Mail {
@@ -45,6 +46,8 @@ export interface Notification {
 }
 
 export type Period = 'daily' | 'weekly' | 'monthly'
+
+export type ProceedsType = 'net' | 'gross'
 
 export interface Range {
   start: Date

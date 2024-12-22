@@ -15,10 +15,14 @@ return new class extends Migration
     {
         Schema::create('trades', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
-
             $table->string('identifier');
-            $table->string('account');
+
+
+            $table->foreignUuid('date_unix_id')->constrained();
+            $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('accounts_id')->constrained();
+
+
             $table->string('broker');
             $table->string('td');
             $table->string('currency');
@@ -26,7 +30,6 @@ return new class extends Migration
             $table->string('side');
             $table->string('symbolOriginal');
             $table->string('symbol');
-
 
             $table->string('buyQuantity');
             $table->string('sellQuantity');
@@ -92,19 +95,13 @@ return new class extends Migration
             $table->string('netWinsCount')->default(0);
             $table->string('netLossCount')->default(0);
 
-
-
             /*******************
             * Other
             *******************/
             $table->string('note');
             $table->string('executions');
-            $table->boolean('openPosition')->default(true);
+            $table->boolean('openPosition')->default(false);
 
-
-
-            $table->foreignUuid('accounts_id')->constrained();
-            $table->foreignUuid('user_id')->constrained();
             $table->timestamps();
         });
     }

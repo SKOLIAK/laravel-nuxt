@@ -1,6 +1,7 @@
 import { useTradovate } from "./brokers";
 import { useChartFormat } from "./global";
-import { existingImports, pAndL, blotter, TradesData, trades, executions, filteredTradesTrades } from "./trades";
+import { existingImports, pAndL, blotter, TradesData, executions, trades } from "./trades";
+import { filteredTradesTrades } from "./global";
 import { accountsList } from './accounts'
 import dayjs from "dayjs";
 import _ from 'lodash'
@@ -12,11 +13,11 @@ let tradeAccounts = []
 let tradedStartDate = null
 let tradedEndDate = null
 
-
 let openPositionsFile = []
 let openPositionsParse = []
-
 let currentTradeId
+
+export const tradeBags = ref([])
 
 export async function useGetExistingTradesArray() {
   console.info('\n✅ GETTING EXISTING TRADES FOR FILTER');
@@ -40,7 +41,7 @@ export async function useGetExistingTradesArray() {
         title: "Error retrieving existing trades",
         color: GetErrorColor,
       })
-      reject()
+      reject(error.message)
     }
 
   })
@@ -51,28 +52,28 @@ async function filterExisting() {
   return new Promise(async (resolve, reject) => {
     console.info("\n✅ FILTERING EXISTING TRADES")
 
-    existingTradesArray.forEach(element => {
-      //console.log("element "+element)
-      if (executions.hasOwnProperty(element)) {
-        console.log(" -> Already imported date " + element)
-        existingImports.push(element)
-      }
-    });
+    // existingTradesArray.forEach(element => {
+    //   //console.log("element "+element)
+    //   if (executions.hasOwnProperty(element)) {
+    //     console.log(" -> Already imported date " + element)
+    //     existingImports.push(element)
+    //   }
+    // });
 
-    let tempExecutions = _.omit(executions, existingTradesArray)
-    for (let key in executions) delete executions[key]
-    Object.assign(executions, tempExecutions)
-    //console.log(" -> executions " + JSON.stringify(executions))
+    // let tempExecutions = _.omit(executions, existingTradesArray)
+    // for (let key in executions) delete executions[key]
+    // Object.assign(executions, tempExecutions)
+    // //console.log(" -> executions " + JSON.stringify(executions))
 
-    let tempTrades = _.omit(trades, existingTradesArray)
-    for (let key in trades) delete trades[key]
-    Object.assign(trades, tempTrades)
-    console.log('--> Finished filtering')
+    // let tempTrades = _.omit(trades, existingTradesArray)
+    // for (let key in trades) delete trades[key]
+    // Object.assign(trades, tempTrades)
+    // console.log('--> Finished filtering')
     resolve()
   });
 }
 
-export async function useImportTrades(fileInput, readAs, broker) {
+export async function useImportTrades(fileInput, readAs, broker, param0) {
   return new Promise(async (resolve, reject) => {
     console.info("\n✅ IMPORTING ORDERS FILE")
     let files
@@ -166,7 +167,7 @@ export async function useImportTrades(fileInput, readAs, broker) {
       })
 
       await createExecutions()
-      await getOpenPositionsParse()
+      await getPositionBagsParse()
       await createTrades()
       await filterExisting()
       await useCreateBlotter()
@@ -302,7 +303,7 @@ async function createTempExecutions() {
 
       } catch (error) {
         console.log("  --> ERROR " + error)
-        reject(error)
+        reject(error.message)
       }
     }
     console.log(" -> Created temp executions");
@@ -328,21 +329,25 @@ async function createExecutions() {
   })
 }
 
-
-async function getOpenPositionsParse() {
+/**
+ * Gets all date unixes for trades, blotter, pnl to identify
+ */
+export async function getPositionBagsParse() {
   return new Promise(async (resolve, reject) => {
-    console.info('\n✅  GETTING OPEN POSITIONS DB')
+    console.info('\n✅ GETTING DB POSITION BAGS')
+    tradeBags.value.splice(0)
     openPositionsParse.splice(0)
-    await $fetch("trades/open", {
+    await $fetch("/user", {
       method: "GET",
       onResponse({ response }) {
-        if (response._data.length) {
-          console.info('--> Retrieved ' + response._data.length + ' positions')
-          openPositionsParse.push(response._data[0])
-        } else {
-          console.info('--> No open trades found in db')
+        if (response._data.ok) {
+          for (let index = 0; index < response._data.user.unixes.length; index++) {
+            const e = response._data.user.unixes[index];
+            tradeBags.value.push(e.date_unix)
+            openPositionsParse.push(e.date_unix)
+          }
+          console.log('--> Retrieved ' + tradeBags.length + ' bags')
         }
-
       }
     })
     resolve()
@@ -390,10 +395,13 @@ async function createTrades() {
       for (let i = 0; i < tempExecs.length; i++) {
         let tempExec = tempExecs[i];
 
+
+        // @todo WILL KEEP ADDING
         /** Checking existing open position amongst open positions stored IN PARSE / DATABASE */
         const existingOpenPositionParseIndex = openPositionsParse.findIndex(x => x.symbol == tempExec.symbol && x.type == tempExec.type && x.strategy == tempExec.strategy)
         /** Checking existing open position amongst open positions stored LOCALLT */
         const existingOpenPositionFileIndex = openPositionsFile.findIndex(x => x.symbol == tempExec.symbol && x.type == tempExec.type && x.strategy == tempExec.strategy)
+        // end todo
 
         // Checking existing open positions array when importing file
         if (newTrade) {
@@ -1083,7 +1091,7 @@ export async function useCreateBlotter(param) {
     }
     for (let key in blotter) delete blotter[key]
     Object.assign(blotter, temp10)
-    console.log(" -> BLOTTER " + JSON.stringify(blotter))
+    //console.log(" -> BLOTTER " + JSON.stringify(blotter))
     resolve()
   })
 }
@@ -1269,7 +1277,7 @@ export async function useCreatePnL(param) {
     }
     for (let key in pAndL) delete pAndL[key]
     Object.assign(pAndL, temp9)
-    console.log(" -> P&L: " + JSON.stringify(pAndL))
+    //console.log(" -> P&L: " + JSON.stringify(pAndL))
 
 
     //console.log(" -> Created trades table successfully");
@@ -1289,19 +1297,19 @@ export async function useUploadTrades(param99, param0) {
 
       if (parseType == "trades") {
         //await parseExecutions(executions[dateIdentifier])
-        await parseTrades(trades[dateIdentifier])
-        //await parseBlotter(blotter[dateIdentifier])
+        await parseTrades(trades[dateIdentifier], dateIdentifier)
         //await parsePAndL(pAndL[dateIdentifier])
       }
     })
   }
 
-  const parseTrades = async (param) => {
+
+  const parseTrades = async (trades_data, date_unix) => {
     return new Promise(async (resolve, reject) => {
       try {
         await $fetch("trades", {
           method: "POST",
-          body: { data: param },
+          body: { trades: trades_data, date_unix: date_unix },
           onResponse({ response }) {
             console.log(response._data)
           }
@@ -1313,7 +1321,7 @@ export async function useUploadTrades(param99, param0) {
           title: 'Something went wrong',
           color: GetErrorColor,
         })
-        reject()
+        reject(error.message)
       }
 
     })
@@ -1322,13 +1330,6 @@ export async function useUploadTrades(param99, param0) {
   const parseExecutions = async (param) => {
     return new Promise(async (resolve, reject) => {
       console.log('Parse executions \n' + JSON.stringify(param))
-      resolve()
-    })
-  }
-
-  const parseBlotter = async (param) => {
-    return new Promise(async (resolve, reject) => {
-      console.log('Parse blotter \n' + JSON.stringify(param))
       resolve()
     })
   }

@@ -4,7 +4,6 @@ export const GetSuccessIcon = 'octicon:check'
 export const GetSuccessColor = 'teal'
 export const GetInfoIcon = 'octicon:light-bulb-16'
 export const GetInfoColor = 'blue'
-
 import dayjs from "dayjs"
 
 export const timeZones = ref(["America/New_York", "Asia/Shanghai", "Europe/Brussels", "Asia/Tokyo", "Asia/Hong_Kong", "Asia/Kolkata", "Europe/London", "Asia/Riyadh"])
@@ -14,6 +13,33 @@ export function useSetTimeZone(timezone) {
   traderTimeZone.value = timezone && timeZones.value.includes(timezone) ? timezone.trim() : timeZones.value[0]
   console.log(" -> TimeZone for Trades: " + traderTimeZone.value)
 }
+
+export const spinnerLoadingPage = ref(false)
+export const spinnerLoadingPageText = ref('Loading ...')
+
+
+
+/** GENERAL */
+export const hasData = ref(false)
+
+/** TRADES */
+export const selectedRange = ref()
+export const filteredTrades = reactive([])
+export const filteredTradesDaily = reactive([])
+export const filteredTradesTrades = reactive([])
+export const totals = reactive({})
+export const totalsByDate = reactive({})
+export const groups = reactive({})
+export const profitAnalysis = reactive({})
+export const timeFrame = ref(15)
+export const imports = ref([])
+
+export const TradeUnixes = ref([])
+
+/** DASHBOARD */
+export const dashboardChartsMounted = ref()
+export const dashboardIdMounted = ref(false)
+export const barChartNegativeTagGroups = ref([])
 
 
 /**************************************
@@ -54,12 +80,14 @@ export function useHourMinuteFormat(param) {
   return dayjs.unix(param).tz(traderTimeZone.value).format("HH:mm")
 }
 
-export function useDateTimeFormat(param) {
-  return dayjs.unix(param).tz(traderTimeZone.value).format("YYYY-MM-DD HH:mm:ss")
+export function useDateTimeFormat(param, unix = true) {
+  return unix ?
+    dayjs.unix(param).tz(traderTimeZone.value).format("YYYY-MM-DD HH:mm:ss") :
+    dayjs(param).tz(traderTimeZone.value).format("YYYY-MM-DD HH:mm:ss")
 }
 
 export function useChartFormat(param) {
-  return dayjs.unix(param).tz(traderTimeZone.value).format("l")
+  return dayjs.unix(param).tz(traderTimeZone.value).format("DD.MM.YYYY")
 }
 
 export function useMonthFormat(param) {
@@ -135,3 +163,19 @@ export function useDecimalsArithmetic(param1, param2) {
   //https://flaviocopes.com/javascript-decimal-arithmetics/
   return ((param1.toFixed(6) * 100) + (param2.toFixed(6) * 100)) / 100
 }
+
+
+export const amountCaseTypes = ref(['net', 'gross'])
+export const amountCase = typeof localStorage !== 'undefined' ? ref(localStorage.getItem('selectedGrossNet')) : ""
+
+if (!amountCase.value) {
+  amountCase.value = amountCaseTypes.value[0]
+}
+
+watch(amountCase, function (a, b) {
+  console.info('--> New filtering to ' + a)
+  localStorage.setItem('selectedGrossNet', a)
+})
+
+console.warn(amountCase.value)
+

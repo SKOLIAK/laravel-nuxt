@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('temporary_uploads', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->string('path', 255)->unique();
+        Schema::create('date_unixes', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->bigInteger('date_unix');
+            $table->foreignUuid('user_id')->constrained()->cascade();
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('temporary_uploads');
+        Schema::dropIfExists('date_unixes');
     }
 };

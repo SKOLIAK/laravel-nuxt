@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { sub } from 'date-fns'
 import type { Period, Range } from '~/types'
+import VChart from 'vue-echarts';
 
 const items = [[{
   label: 'New mail',
@@ -14,6 +15,14 @@ const items = [[{
 
 const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
 const period = ref<Period>('daily')
+
+onBeforeMount(async () => {
+    await useMountDashboard()
+
+})
+
+
+
 </script>
 
 <template>
@@ -45,15 +54,27 @@ const period = ref<Period>('daily')
             v-model="period"
             :range="range"
           />
+
+          <HomeProceedsSelect />
+
         </template>
+
+
       </UDashboardToolbar>
 
       <UDashboardPanelContent>
         <!-- ~/components/home/HomeChart.vue -->
-        <HomeChart
+        <!-- <HomeChart
           :period="period"
           :range="range"
-        />
+        /> -->
+
+        <div class="chart-card">
+          <!-- <ChartCumulativePnl /> -->
+           <v-chart id="cumulatedPnl" class="h-full w-full" autoresize />
+        </div>
+
+
 
       </UDashboardPanelContent>
     </UDashboardPanel>

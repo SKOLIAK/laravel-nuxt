@@ -182,7 +182,8 @@ class AuthController extends Controller
                 'has_password' => (bool) $user->password,
                 'timezone' => $user->timezone,
                 'providers' => $user->userProviders()->select('name')->pluck('name'),
-                'accounts' => $user->accounts->all()
+                'accounts' => $user->accounts->all(),
+                'unixes' => $user->dateUnix()->select(['date_unix'])->get()->toArray()
             ],
         ]);
     }

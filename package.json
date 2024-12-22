@@ -31,10 +31,9 @@
         "@unovis/vue": "^1.5.0",
         "@vueuse/nuxt": "^12.0.0",
         "chokidar": "^3.6.0",
-        "date-fns": "^4.1.0",
-        "date-fns-tz": "^3.2.0",
         "dayjs": "^1.11.13",
         "dayjs-nuxt": "^2.1.9",
+        "echarts": "^5.5.1",
         "i": "^0.3.7",
         "lodash": "^4.17.21",
         "npm": "^11.0.0",
@@ -43,10 +42,13 @@
         "nuxt-tiptap-editor": "2.1.4",
         "papaparse": "^5.4.1",
         "vue": "^3.4.38",
+        "vue-echarts": "^7.0.3",
         "vue-router": "^4.4.3"
     },
     "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
     "dependencies": {
+        "date-fns": "^4.1.0",
+        "date-fns-tz": "^3.2.0",
         "v-calendar": "^2.4.2"
     }
 }

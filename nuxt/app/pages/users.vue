@@ -3,7 +3,7 @@ import type { User } from '~/types'
 const { $storage } = useNuxtApp();
 
 definePageMeta({
-  middleware: ['role-admin'],
+  middleware: ['auth'],
 });
 
 

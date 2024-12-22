@@ -44,9 +44,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('uploads', static function (Request $request) {
-            return $request->user()?->hasRole('admin')
-                ? Limit::none()
-                : Limit::perMinute(10)->by($request->ip());
+            return Limit::perMinute(10)->by($request->ip());
         });
 
         RateLimiter::for('login', static function (Request $request) {

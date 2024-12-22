@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Trade;
+use App\Models\DateUnix;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -13,36 +14,52 @@ class TradeController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-
+        $user = User::first();
         abort_if(!$user, 403);
+
+        $trades = [];
+        $unixes = $user->dateUnix()->get();
+
+        foreach ($unixes as $key => $value) {
+            $trades[$value->date_unix] = [
+                'trades' => $user->trades()->where(['date_unix_id' => $value['id']])->get()->toArray()
+            ];
+        }
 
         return response()->json([
             'ok' => true,
-            'data' => [
-                ...$user->trades()->get()
-            ],
+            'data' => $trades,
         ]);
     }
 
     public function add(Request $request) {
 
         $request->validate([
-            'data' => ['required']
+            'date_unix' => ['required', 'numeric'],
+            'trades' => ['required']
         ]);
         $user = $request->user();
         abort_if(!$user, 403);
-        $data = $request['data'];
+        $data = $request['trades'];
 
-        for ($i=0; $i < sizeof($data)-1; $i++) {
+
+
+        $dateUnix = $user->dateUnix()->firstOrCreate(['date_unix' => $request['date_unix']]);
+        $x = 0;
+
+
+        for ($i=0; $i < sizeof($data); $i++) {
 
 
             $account = $user->accounts()->firstOrCreate(['name' => $data[$i]['account']]);
 
-
-
             $user->trades()->create([
                 'identifier'        => $data[$i]['id'],
-                'account'           => '---nullified---', // @todo
+
+                // ASSOCIATIONS
+                'date_unix_id'      => $dateUnix->id,
+                'accounts_id'       => $account->id,
+
                 'broker'            => $data[$i]['broker'],
                 'td'                => $data[$i]['td'],
                 'currency'          => $data[$i]['currency'],
@@ -92,14 +109,15 @@ class TradeController extends Controller
                 'netWinsCount'        => $data[$i]['netWinsCount'],
                 'netLossCount'        => $data[$i]['netLossCount'],
                 'note'              => 'Note...',
-                'executions'        => json_encode($data[$i]['executions']),
-                'accounts_id' => $account->id
+                'executions'        => json_encode($data[$i]['executions'])
             ]);
+
+            $x++;
         }
 
-
         return response()->json([
-            'ok' => true
+            'ok' => true,
+            'data' => $x . " Trades has been added",
         ]);
     }
 
