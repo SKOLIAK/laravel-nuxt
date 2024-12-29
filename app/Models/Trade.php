@@ -25,6 +25,50 @@ class Trade extends Model
         'id'
     ];
 
+    protected $casts = [
+        'td' => 'integer',
+        'buyQuantity' => 'integer',
+        'sellQuantity' => 'integer',
+        'entryTime' => 'integer',
+        'exitTime' => 'integer',
+        'entryPrice' => 'float',
+        'exitPrice' => 'float',
+        'commissionOpen' => 'float',
+        'grossEntryProceedsOpen' => 'float',
+        'grossEntryProceeds' => 'float',
+        'grossExitProceedsOpen' => 'float',
+        'grossExitProceeds' => 'float',
+        'grossProceedsOpen' => 'float',
+        'grossProceeds' => 'float',
+        'grossWins' => 'int',
+        'grossLoss' => 'float',
+        'grossSharePL' => 'float',
+        'grossSharePLWins' => 'int',
+        'grossSharePLLoss' => 'float',
+        'netEntryProceedsOpen' => 'float',
+        'netEntryProceeds' => 'float',
+        'netExitProceedsOpen' => 'float',
+        'netExitProceeds' => 'float',
+        'netProceedsOpen' => 'float',
+        'netProceeds' => 'float',
+        'netWins' => 'float',
+        'netLoss' => 'float',
+        'netSharePL' => 'float',
+        'netSharePLWins' => 'float',
+        'netSharePLLoss' => 'float',
+        'executionsCount' => 'int',
+        'tradesCount' => 'int',
+        'grossWinsQuantity' => 'int',
+        'grossLossQuantity' => 'int',
+        'grossWinsCount' => 'int',
+        'grossLossCount' => 'int',
+        'netWinsQuantity' => 'int',
+        'netLossQuantity' => 'int',
+        'netWinsCount' => 'int',
+        'netLossCount' => 'int'
+
+    ];
+
     public function dateUnix(): BelongsTo
     {
         return $this->belongsTo(DateUnix::class);
