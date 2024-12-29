@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek.js'
 dayjs.extend(isoWeek)
 import { format } from 'date-fns';
-import { totalsByDate, useChartFormat, amountCase } from './global';
+import { totalsByDate, useChartFormat, amountCase, totals, selectedRange } from './global';
 import { dateRangeModel } from './dateRange';
 
 import resolveConfig from 'tailwindcss/resolveConfig';
@@ -31,6 +31,20 @@ export async function useCharts(param) {
     if (param == 'clear') {
       echarts.init(document.getElementById(chartId)).clear()
     }
+
+    if (param == "init") {
+      let green
+      let red
+      if (index == 1) {
+        //green = probWins
+        //red = probLoss
+        green = (totals[amountCase.value + 'WinsCount'] / totals.trades)
+        red = (totals[amountCase.value + 'LossCount'] / totals.trades)
+        await usePieChart(chartId, green, red)
+
+      }
+    }
+
   }
 
 
@@ -55,7 +69,7 @@ export async function useCharts(param) {
 export function useBacktestChart(param) {
   return new Promise((resolve, reject) => {
     var chartDom = document.getElementById(param);
-    console.warn(chartDom)
+
     backtestChart.value = echarts.init(chartDom);
     var option;
 
@@ -91,24 +105,19 @@ export function useBacktestChart(param) {
 
 
 export function useCumulatedPnlChart(param) {
-  //console.log('Cumulated Pnl Chart param --> ' + param)
+  //console.log("  --> " + param)
   return new Promise((resolve, reject) => {
-    var myChart
-    var instance = echarts.getInstanceByDom(document.getElementById(param))
-    myChart = !instance ? echarts.init(document.getElementById(param)) : instance
-
+    var myChart = echarts.init(document.getElementById(param));
     var chartData = []
     var chartBarData = []
     var chartXAxis = []
     var sumProceeds = 0
     var weekOfYear = null
     var monthOfYear = null
-    var i = 0 // 0 - cumul / 1 - regular
+    var i = 1
 
     let objectY = JSON.parse(JSON.stringify(totalsByDate))
     const keys = Object.keys(objectY);
-
-
 
     for (const key of keys) {
       var element = objectY[key]
@@ -119,7 +128,7 @@ export function useCumulatedPnlChart(param) {
           var temp = {}
           temp.value = proceeds
           temp.label = {}
-          temp.label.show = false
+          temp.label.show = true
           if (proceeds >= 0) {
             temp.label.position = 'top'
           } else {
@@ -128,7 +137,6 @@ export function useCumulatedPnlChart(param) {
           temp.label.formatter = (params) => {
             return useThousandCurrencyFormat(params.value)
           }
-
           chartBarData.push(temp)
         } else {
           chartBarData.push(proceeds)
@@ -151,16 +159,24 @@ export function useCumulatedPnlChart(param) {
       }
 
       if (dateRangeModel.value == "weekly") {
-
+        //First value
         if (weekOfYear == null) {
           weekOfYear = dayjs.unix(key).isoWeek()
           sumProceeds += element[amountCase.value + 'Proceeds']
+          //console.log("First run. Week of year: "+weekOfYear+" and month of year "+ dayjs.unix(key).month()+" and start of week "+dayjs.unix(key).startOf('isoWeek')+" and month of start of week "+dayjs.unix(dayjs.unix(key).startOf('isoWeek')/1000).month())
+          //If start of week is another month
+          /*if (dayjs.unix(key).month() != dayjs.unix(dayjs.unix(key).startOf('isoWeek') / 1000).month()) {
+              chartXAxis.push(useChartFormat(key))
+          } else {
+              chartXAxis.push(useChartFormat(dayjs.unix(key).startOf('isoWeek') / 1000))
+          }*/
+          //First I did the logic above. But I realized that it makes difficult to compare. Expl: 1 month you will have from 1/09, then 06/09. But then, last two weeks, the 06/09 value will not be the same, because two weeks back is actually starting at 07/09.So, for the first, we always push the key
           chartXAxis.push(useChartFormat(key))
+
         } else if (weekOfYear == dayjs.unix(key).isoWeek()) { //Must be "else if" or else calculates twice : once when null and then this time.value
           //console.log("Same week. Week of year: " + weekOfYear)
           sumProceeds += element[amountCase.value + 'Proceeds']
         }
-
         if (dayjs.unix(key).isoWeek() != weekOfYear) {
           //When week changes, we create values proceeds and push both chart datas
           proceeds = sumProceeds
@@ -174,7 +190,6 @@ export function useCumulatedPnlChart(param) {
           sumProceeds += element[amountCase.value + 'Proceeds']
           chartXAxis.push(useChartFormat(dayjs.unix(key).startOf('isoWeek') / 1000))
         }
-
         if (i == keys.length) {
           //Last key. We wrap up.
           proceeds = sumProceeds
@@ -184,47 +199,52 @@ export function useCumulatedPnlChart(param) {
         }
       }
 
+      if (dateRangeModel.value == "monthly") {
+        //First value
+        if (monthOfYear == null) {
+          monthOfYear = dayjs.unix(key).month()
+          sumProceeds += element[amountCase.value + 'Proceeds']
+          chartXAxis.push(useChartFormat(key))
 
-      // @todo Add monthly??
+        }
+        //Same month. Let's continue adding proceeds
+        else if (monthOfYear == dayjs.unix(key).month()) {
+          //console.log("Same week. Week of year: " + monthOfYear)
+          sumProceeds += element[amountCase.value + 'Proceeds']
+        }
+        if (dayjs.unix(key).month() != monthOfYear) {
+          //When week changes, we create values proceeds and push both chart datas
+          proceeds = sumProceeds
+          pushingChartBarData()
+          pushingChartData()
+
+          //New month, new proceeds
+          sumProceeds = 0
+          monthOfYear = dayjs.unix(key).month()
+          //console.log("New week. Week of year: " + monthOfYear + " and start of week " + dayjs.unix(key).startOf('month'))
+          sumProceeds += element[amountCase.value + 'Proceeds']
+          chartXAxis.push(useChartFormat(dayjs.unix(key).startOf('month') / 1000))
+        }
+        if (i == keys.length) {
+          //Last key. We wrap up.
+          proceeds = sumProceeds
+          pushingChartBarData()
+          pushingChartData()
+          sumProceeds = 0
+          //console.log("Last element")
+        }
+      }
       i++
+
+      //console.log("element "+JSON.stringify(element))
     }
-
-    let _base = +new Date(2024, 1, 1);
-    let _oneDay = 24 * 3600 * 1000;
-    let _date = [];
-    let _data = [Math.random() * 300];
-    let _previous = 0
-    for (let i = 1; i < 100; i++) {
-      var now = new Date((_base += _oneDay));
-      _date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-      _data.push(_previous = Math.round((Math.random() - 0.5) * 20 + _data[i - 1]));
-    }
-
-
-
     const option = {
-      title: {
-        left: 'left',
-        text: 'Cumulative PnL',
-        textStyle: {
-          color: theme.colors.gray[700]
-        }
-      },
-      toolbox: {
-        feature: {
-          dataZoom: {
-            yAxisIndex: 'none'
-          },
-          restore: {},
-          saveAsImage: {}
-        }
-      },
       tooltip: {
         trigger: 'axis',
         backgroundColor: theme.colors.white,
-        borderColor: getTailwindHex('gray', 100),
+        borderColor: theme.colors.gray[200],
         textStyle: {
-          color: theme.colors.gray[700]
+          color: theme.colors.gray[900]
         },
         formatter: (params) => {
           var proceeds
@@ -232,100 +252,125 @@ export function useCumulatedPnlChart(param) {
           var date
           params.forEach((element, index) => {
             if (index == 0) {
-              cumulProceeds = useTwoDecCurrencyFormat(element.value)
+              cumulProceeds = useThousandCurrencyFormat(element.value)
               date = element.name
             }
             if (index == 1) {
-              proceeds = useTwoDecCurrencyFormat(element.value)
+              proceeds = useThousandCurrencyFormat(element.value)
             }
           });
           //console.log("params "+JSON.stringify(params[0][0]))
-          return '<span class="font-medium text-xs"><div class="text-gray-700 font-bold">' + date + "</div><div>Proceeds: " + proceeds + "</div>Cumulated: " + cumulProceeds + '</span>'
+          return date + "<br>Proceeds: " + proceeds + "<br>Cumulated: " + cumulProceeds
 
         }
       },
+      axisLabel: {
+        interval: 1000,
+      },
       xAxis: {
         type: 'category',
-        boundaryGap: true,
         data: chartXAxis,
-        axisLine: {
-          lineStyle: {
-            color: theme.colors.gray[500]
-          }
-        },
       },
       yAxis: {
         type: 'value',
-        axisPointer: {
-          snap: true
-        },
-        axisLine: {
-          lineStyle: {
-            color: theme.colors.gray[400]
-          }
-        },
         splitLine: {
           lineStyle: {
             type: 'solid',
             color: theme.colors.gray[100]
-          },
-          axisLabel: {
-            formatter: (params) => {
-              return useThousandCurrencyFormat(params)
-            }
-          },
+          }
+        },
+        axisLabel: {
+          formatter: (params) => {
+            return useThousandCurrencyFormat(params)
+          }
         },
       },
-      dataZoom: [
-        {
-          type: 'inside',
-          show: false,
-          start: 0,
-          end: 100
-        },
-        {
-          start: 0,
-          end: 100,
-          show: false
-        }
-      ],
       series: [{
-        name: 'Proceeds',
-        stack: 'proceeds',
-        data: chartBarData,
+        data: chartData,
         type: 'line',
         smooth: true,
-        symbol: 'none',
+        symbol: false,
         itemStyle: {
-          color: getTailwindHex(appConfig.ui.primary, 600),
+          color: theme.colors.emerald[500],
         },
-        areaStyle: {
-          opacity: 0.2,
-        }
+        emphasis: {
+          itemStyle: {
+            color: theme.colors.emerald[600]
+          }
+        },
       },
       {
-        name: 'Proceeds',
-        stack: 'proceeds',
-        data: _data, // @todo chartData,
-        type: 'line',
-        smooth: true,
-        itemStyle: {
-          color: theme.colors.gray[600],
+        data: chartBarData,
+        type: 'bar',
+        label: {
+          color: theme.colors.gray[900]
         },
-        areaStyle: {
-          opacity: 0.2,
-        }
+        itemStyle: {
+          color: theme.colors.emerald[500],
+        },
+        emphasis: {
+          itemStyle: {
+            color: theme.colors.emerald[600]
+          }
+        },
       }
       ]
     }
-
     myChart.setOption(option);
     resolve()
-
-
   })
+}
 
 
+export function usePieChart(param1, param2, param3) { //chart ID, green, red, page
+  return new Promise((resolve, reject) => {
+    console.log("  --> " + param1)
+    console.log("para 2 " + param2 + " and 3 " + param3)
+    let myChart = echarts.init(document.getElementById(param1));
+    let green = param2 ? param2 : 0
+    let red = param3 ? param3 : 1
+    const option = {
+      series: [{
+        type: 'pie',
+        radius: ['70%', '100%'],
+        avoidLabelOverlap: false,
+        data: [
+          { value: green },
+          { value: red },
+        ],
+        itemStyle: {
+          color: (params) => {
+            if (params.dataIndex == 0) {
+              return theme.colors.emerald[600]
+            }
+            if (params.dataIndex == 1) {
+              return theme.colors.gray[100]
+            }
+          }
+        },
+        label: {
+          show: true,
+          position: 'center',
+          color: theme.colors.gray[900],
+          formatter: (params) => {
+            let rate
+            if (param1 == "pieChart1") {
+              rate = "\nWin rate"
+            }
+            if (param1 == "pieChart2") {
+              rate = "\nSatisfaction"
+            }
+            return useOneDecPercentFormat(green) + rate
+          }
+        },
+        emphasis: {
+          disabled: true
+        },
+      },
 
-
+      ]
+    };
+    myChart.setOption(option);
+    resolve()
+  })
 }

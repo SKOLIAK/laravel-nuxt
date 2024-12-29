@@ -21,6 +21,7 @@ export const backtestChartData = reactive([])
 
 
 /** GENERAL */
+export const renderData = ref(0) //this is for updating DOM
 export const hasData = ref(false)
 
 /** TRADES */

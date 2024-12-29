@@ -1,7 +1,8 @@
 import { dateRangeUnix } from "./dateRange"
 import { hasData, filteredTrades, filteredTradesDaily, filteredTradesTrades } from "./global"
 import { useCreateBlotter, useCreatePnL } from "./add_trades"
-import { spinnerLoadingPageText, traderTimeZone, totals, totalsByDate } from './global'
+import { useDateTimeFormat, spinnerLoadingPageText, traderTimeZone, totals, totalsByDate } from './global'
+
 import _ from "lodash"
 import dayjs from 'dayjs'
 
@@ -647,60 +648,60 @@ export async function useTotalTrades() {
 
 
       tempTrades.forEach(element => {
-        sumBuyQuantity += element.buyQuantity
-        sumSellQuantity += element.sellQuantity
-        sumCommission += element.commission
-        sumFees += element.commission
+        sumBuyQuantity += Number(element.buyQuantity)
+        sumSellQuantity += Number(element.sellQuantity)
+        sumCommission += Number(element.commission)
+        sumFees += Number(element.commission)
 
-        sumGrossProceeds += element.grossProceeds
-        sumGrossWins += element.grossWins
-        sumGrossLoss += element.grossLoss
-        sumGrossSharePL += element.grossSharePL
-        sumGrossSharePLWins += element.grossSharePLWins
-        sumGrossSharePLLoss += element.grossSharePLLoss
+        sumGrossProceeds += Number(element.grossProceeds)
+        sumGrossWins += Number(element.grossWins)
+        sumGrossLoss += Number(element.grossLoss)
+        sumGrossSharePL += Number(element.grossSharePL)
+        sumGrossSharePLWins += Number(element.grossSharePLWins)
+        sumGrossSharePLLoss += Number(element.grossSharePLLoss)
         if (element.grossSharePL >= 0) {
           if (element.grossSharePL > highGrossSharePLWin) {
-            highGrossSharePLWin = element.grossSharePL
+            highGrossSharePLWin = Number(element.grossSharePL)
           }
         }
         if (element.grossSharePL < 0) {
           if (element.grossSharePL < highGrossSharePLLoss) {
-            highGrossSharePLLoss = element.grossSharePL
+            highGrossSharePLLoss = Number(element.grossSharePL)
           }
 
         }
 
-        sumNetProceeds += element.netProceeds
-        sumNetWins += element.netWins
-        sumNetLoss += element.netLoss
-        sumNetSharePL += element.netSharePL
-        sumNetSharePLWins += element.netSharePLWins
-        sumNetSharePLLoss += element.netSharePLLoss
+        sumNetProceeds += Number(element.netProceeds)
+        sumNetWins += Number(element.netWins)
+        sumNetLoss += Number(element.netLoss)
+        sumNetSharePL += Number(element.netSharePL)
+        sumNetSharePLWins += Number(element.netSharePLWins)
+        sumNetSharePLLoss += Number(element.netSharePLLoss)
         if (element.netSharePL >= 0) {
           if (element.netSharePL > highNetSharePLWin) {
-            highNetSharePLWin = element.netSharePL
+            highNetSharePLWin = Number(element.netSharePL)
           }
 
         }
         if (element.netSharePL < 0) {
           if (element.netSharePL < highNetSharePLLoss) {
-            highNetSharePLLoss = element.netSharePL
+            highNetSharePLLoss = Number(element.netSharePL)
           }
 
         }
 
 
-        sumExecutions += element.executionsCount
-        sumGrossWinsQuantity += element.grossWinsQuantity
-        sumGrossLossQuantity += element.grossLossQuantity
-        sumGrossWinsCount += element.grossWinsCount
+        sumExecutions += Number(element.executionsCount)
+        sumGrossWinsQuantity += Number(element.grossWinsQuantity)
+        sumGrossLossQuantity += Number(element.grossLossQuantity)
+        sumGrossWinsCount += Number(element.grossWinsCount)
 
-        sumNetWinsQuantity += element.netWinsQuantity
-        sumNetLossQuantity += element.netLossQuantity
-        sumNetWinsCount += element.netWinsCount
-        sumGrossLossCount += element.grossLossCount
-        sumNetLossCount += element.netLossCount
-        sumTrades += element.tradesCount
+        sumNetWinsQuantity += Number(element.netWinsQuantity)
+        sumNetLossQuantity += Number(element.netLossQuantity)
+        sumNetWinsCount += Number(element.netWinsCount)
+        sumGrossLossCount += Number(element.grossLossCount)
+        sumNetLossCount += Number(element.netLossCount)
+        sumTrades += Number(element.tradesCount)
 
       })
 
@@ -834,12 +835,19 @@ export async function useCalculateProfitAnalysis(param) {
       let netWin = totals.probNetWins
       console.log("  --> Gross win " + grossWin + " and net win " + netWin)
 
+      profitAnalysis.grossWin = grossWin
+      profitAnalysis.netWin = netWin
+
+
       console.log(" -> Calculating gross and net current expected return")
       let grossCurrExpectReturn = profitAnalysis.grossR * grossWin
       let netCurrExpectReturn = profitAnalysis.netR * netWin
       console.log("  --> Gross current expected return " + grossCurrExpectReturn + " and net " + netCurrExpectReturn)
 
       console.log("  --> Profit analysis " + JSON.stringify(profitAnalysis))
+
+      profitAnalysis.netCurrExpectReturn = netCurrExpectReturn
+      profitAnalysis.grossCurrExpectReturn = grossCurrExpectReturn
 
 
     }
