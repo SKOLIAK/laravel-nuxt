@@ -950,64 +950,64 @@ export async function useCreateBlotter(param) {
 
 
         tempExecs.forEach(element => {
-          sumBuyQuantity += element.buyQuantity
-          sumSellQuantity += element.sellQuantity
-          sumCommission += element.commission
-          sumSec += element.sec
-          sumTaf += element.taf
-          sumNscc += element.nscc
-          sumNasdaq += element.nasdaq
+          sumBuyQuantity += Number(element.buyQuantity)
+          sumSellQuantity += Number(element.sellQuantity)
+          sumCommission += Number(element.commission)
+          sumSec += Number(element.sec)
+          sumTaf += Number(element.taf)
+          sumNscc += Number(element.nscc)
+          sumNasdaq += Number(element.nasdaq)
           sumOtherCommission += Number(element.sec + element.taf + element.nscc + element.nasdaq)
           sumFees += Number(element.commission + element.sec + element.taf + element.nscc + element.nasdaq)
 
-          sumGrossProceeds += element.grossProceeds
-          sumGrossWins += element.grossWins
-          sumGrossLoss += element.grossLoss
-          sumGrossSharePL += element.grossSharePL
-          sumGrossSharePLWins += element.grossSharePLWins
-          sumGrossSharePLLoss += element.grossSharePLLoss
+          sumGrossProceeds += Number(element.grossProceeds)
+          sumGrossWins += Number(element.grossWins)
+          sumGrossLoss += Number(element.grossLoss)
+          sumGrossSharePL += Number(element.grossSharePL)
+          sumGrossSharePLWins += Number(element.grossSharePLWins)
+          sumGrossSharePLLoss += Number(element.grossSharePLLoss)
           if (element.grossSharePL >= 0) {
             if (element.grossSharePL > highGrossSharePLWin) {
-              highGrossSharePLWin = element.grossSharePL
+              highGrossSharePLWin = Number(element.grossSharePL)
             }
           }
           if (element.grossSharePL < 0) {
             if (element.grossSharePL < highGrossSharePLLoss) {
-              highGrossSharePLLoss = element.grossSharePL
+              highGrossSharePLLoss = Number(element.grossSharePL)
             }
 
           }
 
-          sumNetProceeds += element.netProceeds
-          sumNetWins += element.netWins
-          sumNetLoss += element.netLoss
-          sumNetSharePL += element.netSharePL
-          sumNetSharePLWins += element.netSharePLWins
-          sumNetSharePLLoss += element.netSharePLLoss
+          sumNetProceeds += Number(element.netProceeds)
+          sumNetWins += Number(element.netWins)
+          sumNetLoss += Number(element.netLoss)
+          sumNetSharePL += Number(element.netSharePL)
+          sumNetSharePLWins += Number(element.netSharePLWins)
+          sumNetSharePLLoss += Number(element.netSharePLLoss)
           if (element.netSharePL >= 0) {
             if (element.netSharePL > highNetSharePLWin) {
-              highNetSharePLWin = element.netSharePL
+              highNetSharePLWin = Number(element.netSharePL)
             }
 
           }
           if (element.netSharePL < 0) {
             if (element.netSharePL < highNetSharePLLoss) {
-              highNetSharePLLoss = element.netSharePL
+              highNetSharePLLoss = Number(element.netSharePL)
             }
 
           }
 
-          sumExecutions += element.executionsCount
-          sumGrossWinsQuantity += element.grossWinsQuantity
-          sumGrossLossQuantity += element.grossLossQuantity
-          sumGrossWinsCount += element.grossWinsCount
+          sumExecutions += Number(element.executionsCount)
+          sumGrossWinsQuantity += Number(element.grossWinsQuantity)
+          sumGrossLossQuantity += Number(element.grossLossQuantity)
+          sumGrossWinsCount += Number(element.grossWinsCount)
 
-          sumNetWinsQuantity += element.netWinsQuantity
-          sumNetLossQuantity += element.netLossQuantity
-          sumNetWinsCount += element.netWinsCount
-          sumGrossLossCount += element.grossLossCount
-          sumNetLossCount += element.netLossCount
-          sumTrades += element.tradesCount
+          sumNetWinsQuantity += Number(element.netWinsQuantity)
+          sumNetLossQuantity += Number(element.netLossQuantity)
+          sumNetWinsCount += Number(element.netWinsCount)
+          sumGrossLossCount += Number(element.grossLossCount)
+          sumNetLossCount += Number(element.netLossCount)
+          sumTrades += Number(element.tradesCount)
 
         })
 
@@ -1147,56 +1147,56 @@ export async function useCreatePnL(param) {
       const keys8 = Object.keys(tempExecs);
       for (const key8 of keys8) {
         //console.log("key 8 "+key8)
-        sumBuyQuantity += tempExecs[key8].buyQuantity
-        sumSellQuantity += tempExecs[key8].sellQuantity
+        sumBuyQuantity += Number(tempExecs[key8].buyQuantity)
+        sumSellQuantity += Number(tempExecs[key8].sellQuantity)
 
-        sumCommission += tempExecs[key8].commission
-        sumSec += tempExecs[key8].sec
-        sumTaf += tempExecs[key8].taf
-        sumNscc += tempExecs[key8].nscc
-        sumNasdaq += tempExecs[key8].nasdaq
-        sumOtherCommission += tempExecs[key8].otherCommission
-        sumFees += tempExecs[key8].fees
+        sumCommission += Number(tempExecs[key8].commission)
+        sumSec += Number(tempExecs[key8].sec)
+        sumTaf += Number(tempExecs[key8].taf)
+        sumNscc += Number(tempExecs[key8].nscc)
+        sumNasdaq += Number(tempExecs[key8].nasdaq)
+        sumOtherCommission += Number(tempExecs[key8].otherCommission)
+        sumFees += Number(tempExecs[key8].fees)
 
-        sumGrossProceeds += tempExecs[key8].grossProceeds
-        sumGrossWins += tempExecs[key8].grossWins
-        sumGrossLoss += tempExecs[key8].grossLoss
-        sumGrossSharePL += tempExecs[key8].grossSharePL
-        sumGrossSharePLWins += tempExecs[key8].grossSharePLWins
-        sumGrossSharePLLoss += tempExecs[key8].grossSharePLLoss
+        sumGrossProceeds += Number(tempExecs[key8].grossProceeds)
+        sumGrossWins += Number(tempExecs[key8].grossWins)
+        sumGrossLoss += Number(tempExecs[key8].grossLoss)
+        sumGrossSharePL += Number(tempExecs[key8].grossSharePL)
+        sumGrossSharePLWins += Number(tempExecs[key8].grossSharePLWins)
+        sumGrossSharePLLoss += Number(tempExecs[key8].grossSharePLLoss)
         if (tempExecs[key8].highGrossSharePLWin >= highGrossSharePLWin) {
-          highGrossSharePLWin = tempExecs[key8].highGrossSharePLWin
+          highGrossSharePLWin = Number(tempExecs[key8].highGrossSharePLWin)
         }
         if (tempExecs[key8].highGrossSharePLLoss < highGrossSharePLLoss) {
-          highGrossSharePLLoss = tempExecs[key8].highGrossSharePLLoss
+          highGrossSharePLLoss = Number(tempExecs[key8].highGrossSharePLLoss)
         }
 
-        sumNetProceeds += tempExecs[key8].netProceeds
-        sumNetWins += tempExecs[key8].netWins
-        sumNetLoss += tempExecs[key8].netLoss
-        sumNetSharePL += tempExecs[key8].netSharePL
-        sumNetSharePLWins += tempExecs[key8].netSharePLWins
-        sumNetSharePLLoss += tempExecs[key8].netSharePLLoss
+        sumNetProceeds += Number(tempExecs[key8].netProceeds)
+        sumNetWins += Number(tempExecs[key8].netWins)
+        sumNetLoss += Number(tempExecs[key8].netLoss)
+        sumNetSharePL += Number(tempExecs[key8].netSharePL)
+        sumNetSharePLWins += Number(tempExecs[key8].netSharePLWins)
+        sumNetSharePLLoss += Number(tempExecs[key8].netSharePLLoss)
         if (tempExecs[key8].highNetSharePLWin >= highNetSharePLWin) {
-          highNetSharePLWin = tempExecs[key8].highNetSharePLWin
+          highNetSharePLWin = Number(tempExecs[key8].highNetSharePLWin)
         }
 
         if (tempExecs[key8].highNetSharePLLoss < highNetSharePLLoss) {
-          highNetSharePLLoss = tempExecs[key8].highNetSharePLLoss
+          highNetSharePLLoss = Number(tempExecs[key8].highNetSharePLLoss)
         }
 
-        sumExecutions += tempExecs[key8].executions
-        sumTrades += tempExecs[key8].trades
+        sumExecutions += Number(tempExecs[key8].executions)
+        sumTrades += Number(tempExecs[key8].trades)
 
-        sumGrossWinsQuantity += tempExecs[key8].grossWinsQuantity
-        sumGrossLossQuantity += tempExecs[key8].grossLossQuantity
-        sumGrossWinsCount += tempExecs[key8].grossWinsCount
-        sumGrossLossCount += tempExecs[key8].grossLossCount
+        sumGrossWinsQuantity += Number(tempExecs[key8].grossWinsQuantity)
+        sumGrossLossQuantity += Number(tempExecs[key8].grossLossQuantity)
+        sumGrossWinsCount += Number(tempExecs[key8].grossWinsCount)
+        sumGrossLossCount += Number(tempExecs[key8].grossLossCount)
 
-        sumNetWinsQuantity += tempExecs[key8].netWinsQuantity
-        sumNetLossQuantity += tempExecs[key8].netLossQuantity
-        sumNetWinsCount += tempExecs[key8].netWinsCount
-        sumNetLossCount += tempExecs[key8].netLossCount
+        sumNetWinsQuantity += Number(tempExecs[key8].netWinsQuantity)
+        sumNetLossQuantity += Number(tempExecs[key8].netLossQuantity)
+        sumNetWinsCount += Number(tempExecs[key8].netWinsCount)
+        sumNetLossCount += Number(tempExecs[key8].netLossCount)
 
 
       }
