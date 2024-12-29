@@ -48,71 +48,44 @@ class TradeController extends Controller
         $x = 0;
 
 
-        for ($i=0; $i < sizeof($data); $i++) {
 
 
-            $account = $user->accounts()->firstOrCreate(['name' => $data[$i]['account']]);
 
-            $user->trades()->create([
-                'identifier'        => $data[$i]['id'],
-
-                // ASSOCIATIONS
-                'date_unix_id'      => $dateUnix->id,
-                'accounts_id'       => $account->id,
-
-                'broker'            => $data[$i]['broker'],
-                'td'                => $data[$i]['td'],
-                'currency'          => $data[$i]['currency'],
-                'type'              => $data[$i]['type'],
-                'side'              => $data[$i]['side'],
-                'strategy'          => $data[$i]['strategy'],
-                'buyQuantity'       => $data[$i]['buyQuantity'],
-                'sellQuantity'      => $data[$i]['sellQuantity'],
-                'symbol'            => $data[$i]['symbol'],
-                'symbolOriginal'    => $data[$i]['symbolOriginal'],
-                'entryTime'         => $data[$i]['entryTime'],
-                'exitTime'          => $data[$i]['exitTime'],
-                'entryPrice'        => $data[$i]['entryPrice'],
-                'exitPrice'         => $data[$i]['exitPrice'],
-                'commissionOpen'    => $data[$i]['commissionOpen'],
-                'commission'        => $data[$i]['commission'],
-                'grossEntryProceedsOpen'        => $data[$i]['grossEntryProceedsOpen'],
-                'grossEntryProceeds'        => $data[$i]['grossEntryProceeds'],
-                'grossExitProceedsOpen'        => $data[$i]['grossExitProceedsOpen'],
-                'grossExitProceeds'        => $data[$i]['grossExitProceeds'],
-                'grossProceedsOpen'        => $data[$i]['grossProceedsOpen'],
-                'grossProceeds'        => $data[$i]['grossProceeds'],
-                'grossWins'        => $data[$i]['grossWins'],
-                'grossLoss'        => $data[$i]['grossLoss'],
-                'grossSharePL'        => $data[$i]['grossSharePL'],
-                'grossSharePLWins'        => $data[$i]['grossSharePLWins'],
-                'grossSharePLLoss'        => $data[$i]['grossSharePLLoss'],
-                'grossStatus'        => $data[$i]['grossStatus'],
-                'netEntryProceedsOpen'        => $data[$i]['netEntryProceedsOpen'],
-                'netEntryProceeds'        => $data[$i]['netEntryProceeds'],
-                'netExitProceedsOpen'        => $data[$i]['netExitProceedsOpen'],
-                'netExitProceeds'        => $data[$i]['netExitProceeds'],
-                'netProceedsOpen'        => $data[$i]['netProceedsOpen'],
-                'netProceeds'        => $data[$i]['netProceeds'],
-                'netWins'        => $data[$i]['netWins'],
-                'netLoss'        => $data[$i]['netLoss'],
-                'netSharePL'        => $data[$i]['netSharePL'],
-                'netSharePLWins'        => $data[$i]['netSharePLWins'],
-                'netSharePLLoss'        => $data[$i]['netSharePLLoss'],
-                'netStatus'        => $data[$i]['netStatus'],
-                'executionsCount'        => $data[$i]['executionsCount'],
-                'tradesCount'        => $data[$i]['tradesCount'],
-                'grossWinsQuantity'        => $data[$i]['grossWinsQuantity'],
-                'grossWinsCount'        => $data[$i]['grossWinsCount'],
-                'netWinsQuantity'        => $data[$i]['netWinsQuantity'],
-                'netLossQuantity'        => $data[$i]['netLossQuantity'],
-                'netWinsCount'        => $data[$i]['netWinsCount'],
-                'netLossCount'        => $data[$i]['netLossCount'],
-                'note'              => 'Note...',
-                'executions'        => json_encode($data[$i]['executions'])
-            ]);
-
+        foreach ($data as $key => $value) {
+            $createArray = [];
+            foreach ($value as $k => $d) {
+                if ($k == 'id') {
+                    $createArray['identifier'] = $d;
+                } else if ($k == 'account') {
+                    $createArray['accounts_id'] = $user->accounts()->firstOrCreate(['name' => $d])->id;
+                } else if ($k == 'executions') {
+                    $createArray[$k] = json_encode($d);
+                } else if (
+                    $k == 'symbolDescription' ||
+                    $k == 'secOpen' ||
+                    $k == 'sec' ||
+                    $k == 'tafOpen' ||
+                    $k == 'taf' ||
+                    $k == 'nsccOpen' ||
+                    $k == 'nscc' ||
+                    $k == 'nasdaqOpen' ||
+                    $k == 'nasdaq' ||
+                    $k == 'ecnRemoveOpen' ||
+                    $k == 'ecnRemove' ||
+                    $k == 'ecnAddOpen' ||
+                    $k == 'ecnAdd' ||
+                    $k == 'clrBroker'
+                ) {
+                    // ...
+                } else if ($k == 'liq') {
+                    $createArray['date_unix_id'] = $dateUnix->id;
+                    $createArray['note'] = '';
+                } else {
+                    $createArray[$k] = $d;
+                }
+            }
             $x++;
+            $user->trades()->create($createArray);
         }
 
         return response()->json([
