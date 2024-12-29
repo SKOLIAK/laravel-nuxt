@@ -57,25 +57,24 @@ html, body {
 }
 
 .green-trade {
-    @apply font-medium text-blue-400/80 dark:text-blue-200;
+    @apply font-medium !text-emerald-500;
 }
 
 .bg-green-trade {
-    @apply bg-blue-500/50;
-    &.green-trade {
-        @apply text-white/90;
-    }
+    @apply !bg-emerald-50 hover:!bg-emerald-100;
 }
 
 .red-trade {
-    @apply font-medium text-pink-400/80 dark:text-pink-200;
+    @apply font-medium !text-indigo-400;
 }
 
 .bg-red-trade {
-    @apply bg-pink-500/50;
-    &.red-trade {
-        @apply text-white/90;
-    }
+    @apply !bg-indigo-50 hover:!bg-indigo-100;
+}
+
+.text-2xs {
+    @apply text-xs;
+    font-size: 0.65rem !important;
 }
 
 x-vue-echarts {
