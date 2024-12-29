@@ -7,26 +7,31 @@ import { useCharts } from '../utils/charts';
 const links = [{
   id: 'dashboard',
   label: 'Dashboard',
-  icon: 'akar-icons:augmented-reality',
+  icon: 'akar-icons:telescope',
   to: '/',
   tooltip: {
-    text: 'Dashboard',
-    shortcuts: ['Shift', 'D']
+    shortcuts: ['⌘','D']
   }
 }, {
   id: 'daily',
   label: 'Daily',
-  icon: 'akar-icons:sun',
+  icon: 'akar-icons:calendar',
   to: '/daily'
 }, {
   id: 'trades',
   label: 'Trades',
-  icon: 'akar-icons:align-bottom',
-  to: '/trades',
-  tooltip: {
-    text: 'Users',
-    shortcuts: ['G', 'U']
-  }
+  icon: 'akar-icons:data',
+  to: '/trades'
+}, {
+  id: 'playbooks',
+  label: 'Playbooks',
+  icon: 'akar-icons:language',
+  to: '/playbook/add' //@todo
+}, {
+  id: 'backtesting',
+  label: 'Backtesting',
+  icon: 'akar-icons:stack-overflow-fill',
+  to: '/backtesting'
 }]
 
 const footerLinks = [{
@@ -45,14 +50,14 @@ const groups = [{
 </script>
 
 <template>
-  <UDashboardLayout>
+  <UDashboardLayout class="green-background">
     <UDashboardPanel
-      :width="250"
-      :resizable="{ min: 200, max: 300 }"
+      class="sidebarpanel green-gradient"
+      :width="288"
       collapsible
     >
       <UDashboardNavbar
-        class="!border-transparent"
+        class="!border-transparent p-6 pr-3 pb-4 !justify-between"
         :ui="{ left: 'flex-1' }"
       >
         <template #left>
@@ -64,19 +69,26 @@ const groups = [{
         </template>
       </UDashboardNavbar>
 
+      <!-- ~/components/app/sidebarlinks.vue -->
+      <AppSidebarLinks :links="links"/>
+
+      <div class="mx-4">
+        <UDivider class="divider" />
+      </div>
+
       <UDashboardSidebar>
         <template #header>
-          <UDashboardSearchButton />
+          <NavigationSearch />
         </template>
 
-        <UDashboardSidebarLinks :links="links" />
 
-        <UDivider />
+
+
+
 
         <div class="flex-1" />
-
-        <UDivider class="sticky bottom-0" />
-        <UDashboardSidebarLinks :links="footerLinks" />
+        <UDivider class="divider sticky bottom-0" />
+        <UDashboardSidebarLinks :links="footerLinks"/>
 
 
         <template #footer>
@@ -85,7 +97,9 @@ const groups = [{
       </UDashboardSidebar>
     </UDashboardPanel>
 
-    <slot />
+    <div class="main-layout w-full m-4 ml-0 rounded-xl overflow-y-auto no-scrollbar relative bg-main">
+      <slot />
+    </div>
 
     <!-- ~/components/HelpSlideover.vue -->
     <HelpSlideover />
@@ -97,3 +111,10 @@ const groups = [{
 
   <PageLoader />
 </template>
+
+
+<!-- <style scoped>
+.border-gradient {
+  border-image-source: linear-gradient(to right, theme('colors.white/10'), theme('colors.white/0'));
+}
+</style> -->

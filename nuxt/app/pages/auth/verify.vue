@@ -22,9 +22,7 @@ useSeoMeta({
 <template>
   <UCard class="w-full max-w-md mx-auto my-20">
     <div class="space-y-4">
-      <h1
-        class="text-3xl font-black leading-tight tracking-tight flex items-center gap-2"
-      >
+      <h1 class="text-3xl font-medium mb-6">
         Email Verification
         <UIcon v-if="pending" name="i-heroicons-arrow-path-solid" class="animate-spin" />
         <span v-else-if="error" class="text-red-500">Error</span>

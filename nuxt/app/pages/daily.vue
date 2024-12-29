@@ -3,6 +3,6 @@
 
 <template>
   <UDashboardPage>
-    <h2>Daily Page</h2>
+    <NavigationLink />
   </UDashboardPage>
 </template>

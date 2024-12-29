@@ -8,6 +8,13 @@ export default defineNuxtPlugin({
   async setup(nuxtApp) {
     const config = useRuntimeConfig()
     const auth = useAuthStore()
+    const route = useRoute()
+
+    const authRoutes = ['auth-reset-token', 'auth-forgot', 'auth-login', 'auth-register', 'auth-verify']
+
+    if (!auth.logged && !authRoutes.includes(route.name)) {
+      window.location.href = '/auth/login'
+    }
 
     nuxtApp.provide('storage', (path: string): string => {
       if (!path) return ''
@@ -76,7 +83,6 @@ export default defineNuxtPlugin({
 
         buildSecureMethod(options);
       },
-
       onRequestError({ error }) {
         if (import.meta.server) return;
 
@@ -96,13 +102,6 @@ export default defineNuxtPlugin({
             auth.user = <User>{}
           }
 
-          if (import.meta.client) {
-            useToast().add({
-              title: 'Please log in to continue',
-              icon: GetErrorIcon,
-              color: GetInfoColor,
-            })
-          }
         } else if (response.status !== 422) {
           if (import.meta.client) {
             useToast().add({

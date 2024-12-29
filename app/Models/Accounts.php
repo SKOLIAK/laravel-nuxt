@@ -17,7 +17,7 @@ class Accounts extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name'
+        'name', 'nickname', 'color'
     ];
 
     public function user(): BelongsTo

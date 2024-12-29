@@ -79,7 +79,7 @@ const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = us
       </UFormGroup>
 
       <div class="pt-2">
-        <UButton type="submit" label="Save" :loading="accountPasswordStatus === 'pending'" />
+        <UButton type="submit" class="btn" label="Save" :loading="accountPasswordStatus === 'pending'" />
       </div>
     </UForm>
 

@@ -86,7 +86,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
 
 
     <UFormGroup label="Timezone" name="timezone" required>
-      <USelect v-model="state.timezone" :options="timeZones" />
+      <USelectMenu v-model="state.timezone" :options="timeZones" />
     </UFormGroup>
 
     <UAlert
@@ -106,7 +106,7 @@ const { refresh: onSubmit, status: accountUpdateStatus } = useFetch<any>("accoun
     />
 
     <div class="pt-2">
-      <UButton type="submit" label="Save" :loading="accountUpdateStatus === 'pending'" />
+      <UButton type="submit" class="btn" label="Save" :loading="accountUpdateStatus === 'pending'" />
     </div>
   </UForm>
 </template>

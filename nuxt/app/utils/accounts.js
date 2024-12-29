@@ -1,11 +1,9 @@
-export const accountsList = reactive([])
+export const accountsList = ref([])
 
 export async function useGetExistingAccounts() {
   console.info('\n✅ GETTING EXISTING ACCOUNTS');
-
-  accountsList.slice(0)
+  accountsList.value = []
   let tempAccList = []
-
   return new Promise(async (resolve, reject) => {
     try {
       await $fetch("/accounts", {
@@ -24,10 +22,10 @@ export async function useGetExistingAccounts() {
     }
 
     for (let i = 0; i < tempAccList[0].length; i++) {
-      accountsList.push(tempAccList[0][i].name)
+      accountsList.value.push(tempAccList[0][i])
     }
 
-    console.log(" -> Finished (" + accountsList.length + ")")
+    console.log(" -> Finished (" + accountsList.value.length + ")")
 
     resolve()
   })

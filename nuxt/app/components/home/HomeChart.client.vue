@@ -24,22 +24,65 @@ type DataRecord = {
 
 const { width } = useElementSize(cardRef)
 
+const objArray = ref([])
+
+function Prob(){
+    var rnd = Math.random(),
+        rnd2 = Math.random();
+    if(rnd<0.4) return (1 + Math.floor(1000 * rnd2)/100);
+    else if(rnd<0.6) return (11 + Math.floor(1000 * rnd2)/100);
+    else if(rnd<0.9) return (21 + Math.floor(1000 * rnd2)/100);
+    else return (31 + Math.floor(500 * rnd2)/100);
+}
+
 // We use `useAsyncData` here to have same random data on the client and server
 const { data } = await useAsyncData<DataRecord[]>(async () => {
   const dates = ({
     daily: eachDayOfInterval,
     weekly: eachWeekOfInterval,
     monthly: eachMonthOfInterval
-  })[props.period](props.range)
+  })[dateRangeModel.value](dateRange.value)
 
-  const min = 1000
-  const max = 10000
+  const min = -500
+  const max = 500
+  let last = 0
 
-  return dates.map(date => ({ date, amount: Math.floor(Math.random() * (max - min + 1)) + min }))
+  //return dates.map(date => ({ date, amount: last += last = Prob() }))
+  dates.forEach((e,k) => {
+    let checkDate = format(e, 'dd.MM.yyyy')
+    let tmp = []
+
+
+    pnlChartData.value.forEach(b => {
+      if (b.date == checkDate) {
+        tmp[k]['date'] = new Date(b.date)
+        tmp[k]['amount'] = b.amount
+      } else {
+        tmp[k]['date'] = e
+        tmp[k]['amount'] = 0
+      }
+
+      objArray.push(tmp[k])
+
+    });
+
+
+  });
+
+  let le = dates.map((date, x) => ({ date, amount: isLoaded && pnlChartData.value.findIndex(x => x.date == format(date, 'dd.MM.yyyy')) ? pnlChartData.value[pnlChartData.value.findIndex(x => x.date == format(date, 'dd.MM.yyyy'))].amount : 0 }))
+
+  console.warn(le)
+
+
+  return le
 }, {
-  watch: [() => props.period, () => props.range],
+  watch: [() => dateRangeModel.value, () => dateRange.value],
   default: () => []
 })
+
+
+console.warn(isLoaded && pnlChartData.value.findIndex(x => x.date == '05.12.2024') ? pnlChartData.value[pnlChartData.value.findIndex(x => x.date == '05.12.2024')].amount : 0)
+
 
 const x = (_: DataRecord, i: number) => i
 const y = (d: DataRecord) => d.amount
@@ -75,7 +118,7 @@ const template = (d: DataRecord) => `${formatDate(d.date)}: ${formatNumber(d.amo
     <template #header>
       <div>
         <p class="text-sm text-gray-500 dark:text-gray-400 font-medium mb-1">
-          Revenue
+          Cumulated Pnl
         </p>
         <p class="text-3xl text-gray-900 dark:text-white font-semibold">
           {{ formatNumber(total) }}

@@ -7,6 +7,7 @@ use App\Http\Controllers\TradeController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\BacktestingGroupController;
 
 Route::get('/', function () {
     return ['ok' => true, 'message' => 'Welcome to the API'];
@@ -43,9 +44,11 @@ Route::prefix('api/v1')->group(function () {
         Route::get('trades/open', [TradeController::class, 'getOpen'])->name('trades.getOpen');
 
 
+
+
+        Route::delete('backtesting/groups', [BacktestingGroupController::class, 'delete'])->name('backtesting.groups.delete');
+        Route::get('backtesting/groups', [BacktestingGroupController::class, 'index'])->name('backtesting.groups.get');
+        Route::post('backtesting/groups', [BacktestingGroupController::class, 'add'])->name('backtesting.groups.add');
+
     });
-    Route::get('users', function() {
-        return User::all();
-    });
-    Route::get('trades', [TradeController::class, 'index'])->name('trades.get');
 });

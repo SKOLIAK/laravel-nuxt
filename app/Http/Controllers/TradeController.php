@@ -121,11 +121,9 @@ class TradeController extends Controller
         ]);
     }
 
-    public function getOpen(Request $request) : Array
+    public function getOpen(Request $request)
     {
-        $user = User::first();
-       // $user = $request->user();
-        $trades = $user->trades()->where('exitTime', 0)->get()->toArray();
-        return $trades;
+        $user = $request->user();
+        return $user->trades()->where('openPosition', '1')->get();
     }
 }

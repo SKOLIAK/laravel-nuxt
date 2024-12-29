@@ -51,7 +51,7 @@ useSeoMeta({
 
 <template>
 
-<UCard :ui="{ body: { padding: 'p-0' } }" class="rounded-none">
+<UCard :ui="{ body: { padding: 'p-0' } }" class="rounded mt-2 mx-2 pt-0">
     <UTable :rows="data?.devices" :columns="columns" size="lg" :loading="loading">
       <template #name-data="{ row }">
         <div class="font-semibold">

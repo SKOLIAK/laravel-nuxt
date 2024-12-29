@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Trade;
 use App\Models\Accounts;
 use App\Models\DateUnix;
+use App\Models\BacktestingGroup;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -95,5 +96,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function accounts(): HasMany
     {
         return $this->hasMany(Accounts::class);
+    }
+
+    public function backtestingGroups(): HasMany
+    {
+        return $this->hasMany(BacktestingGroup::class);
     }
 }

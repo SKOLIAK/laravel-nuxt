@@ -50,15 +50,16 @@ const getGreeting = () => {
       <UButton
         color="gray"
         variant="ghost"
-        class="w-full"
+        class="!min-w-1"
         :class="[open && 'bg-gray-50 dark:bg-gray-800']"
       >
         <template #leading>
           <UAvatar
-            size="sm"
+            size="xs"
             :src="$storage(auth.user.avatar)"
             :alt="auth.user.name"
-            :ui="{ rounded: 'rounded-md' }"
+            class="ring-1 ring-white"
+            :ui="{ rounded: 'rounded-full' }"
           />
         </template>
 
@@ -84,8 +85,8 @@ const getGreeting = () => {
   </UDropdown>
   <UButton
     v-else
-    color="gray"
-    variant="ghost"
+    color="white"
+    size="xs"
     class="w-full"
     label="Sign In"
     to="/auth/login"

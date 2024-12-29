@@ -24,8 +24,13 @@ useHead({
   <div>
     <UMain>
       <UContainer>
-        <UPage>
-          <UPageError :error="error" />
+        <UPage class="text-center mt-40">
+
+          <div class="text-4xl font-medium">
+            <span class="text-red-300">Error </span>
+            <span class="text-white">{{ error.statusCode }}</span>
+          </div>
+          <div class="mt-4 text-white font-normal text-sm">{{ error.message }}</div>
         </UPage>
       </UContainer>
     </UMain>

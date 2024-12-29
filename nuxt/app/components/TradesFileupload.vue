@@ -5,8 +5,8 @@ import { brokers, selectedBroker, tradovateTiers, selectedTradovateTier } from '
       <div class="max-w-sm mb-5 flex items-center mx-auto">
       <label for="file-input" class="sr-only">Choose file</label>
 
-          <USelect v-model="selectedBroker" :options="brokers" class="mr-1" />
-          <USelect v-model="selectedTradovateTier" :options="tradovateTiers"/>
+          <USelectMenu v-model="selectedBroker" :options="brokers" class="mr-1" />
+          <USelectMenu v-model="selectedTradovateTier" class="min-w-24" :options="tradovateTiers"/>
 
           <label
             for="tradesFileInput"

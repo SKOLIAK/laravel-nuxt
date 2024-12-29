@@ -17,8 +17,6 @@ let openPositionsFile = []
 let openPositionsParse = []
 let currentTradeId
 
-export const tradeBags = ref([])
-
 export async function useGetExistingTradesArray() {
   console.info('\n✅ GETTING EXISTING TRADES FOR FILTER');
   existingTradesArray.splice(0)
@@ -167,7 +165,7 @@ export async function useImportTrades(fileInput, readAs, broker, param0) {
       })
 
       await createExecutions()
-      await getPositionBagsParse()
+      await getOpenPositionsParse()
       await createTrades()
       await filterExisting()
       await useCreateBlotter()
@@ -255,18 +253,17 @@ async function createTempExecutions() {
           temp2.id = tempId + "_" + x
         }
 
-        temp2.commission = parseFloat(TradesData[key].Comm);
-        temp2.sec = parseFloat(TradesData[key].SEC);
-        temp2.taf = parseFloat(TradesData[key].TAF);
-        temp2.nscc = parseFloat(TradesData[key].NSCC);
-        temp2.nasdaq = parseFloat(TradesData[key].Nasdaq);
-        temp2.ecnRemove = parseFloat(TradesData[key]['ECN Remove']);
-        temp2.ecnAdd = parseFloat(TradesData[key]['ECN Add']);
-        temp2.grossProceeds = parseFloat(TradesData[key]['Gross Proceeds']);
-        temp2.netProceeds = parseFloat(TradesData[key]['Net Proceeds']);
+        temp2.commission = TradesData[key].Comm;
+        temp2.sec = TradesData[key].SEC;
+        temp2.taf = TradesData[key].TAF;
+        temp2.nscc = TradesData[key].NSCC;
+        temp2.nasdaq = TradesData[key].Nasdaq;
+        temp2.ecnRemove = TradesData[key]['ECN Remove'];
+        temp2.ecnAdd = TradesData[key]['ECN Add'];
+        temp2.grossProceeds = TradesData[key]['Gross Proceeds'];
+        temp2.netProceeds = TradesData[key]['Net Proceeds'];
         temp2.clrBroker = TradesData[key]['Clr Broker'];
         temp2.liq = TradesData[key].Liq;
-        temp2.note = TradesData[key].Note;
         temp2.trade = null;
 
         tempExecutions.push(temp2);
@@ -329,30 +326,25 @@ async function createExecutions() {
   })
 }
 
-/**
- * Gets all date unixes for trades, blotter, pnl to identify
- */
-export async function getPositionBagsParse() {
+
+export async function getOpenPositionsParse() {
   return new Promise(async (resolve, reject) => {
-    console.info('\n✅ GETTING DB POSITION BAGS')
-    tradeBags.value.splice(0)
-    openPositionsParse.splice(0)
-    await $fetch("/user", {
+    console.info('\n✅ GETTING OPEN POSITIONS DB')
+
+    openPositionsParse = []
+    await $fetch("/trades/open", {
       method: "GET",
       onResponse({ response }) {
-        if (response._data.ok) {
-          for (let index = 0; index < response._data.user.unixes.length; index++) {
-            const e = response._data.user.unixes[index];
-            tradeBags.value.push(e.date_unix)
-            openPositionsParse.push(e.date_unix)
-          }
-          console.log('--> Retrieved ' + tradeBags.length + ' bags')
+        for (let index = 0; index < response._data.length; index++) {
+          openPositionsParse.push(response._data[index])
         }
+        console.log('--> Retrieved ' + openPositionsParse.length + ' positions')
       }
     })
     resolve()
   })
 }
+
 
 
 async function createTrades() {
@@ -536,21 +528,21 @@ async function createTrades() {
            *******************/
           temp7.commissionOpen = tempExec.commission;
           temp7.commission = 0
-          // temp7.secOpen = tempExec.sec;
-          // temp7.sec = 0
-          // temp7.tafOpen = tempExec.taf;
-          // temp7.taf = 0
-          // temp7.nsccOpen = tempExec.nscc;
-          // temp7.nscc = 0
-          // temp7.nasdaqOpen = tempExec.nasdaq;
-          // temp7.nasdaq = 0
-          // temp7.ecnRemoveOpen = tempExec.ecnRemove;
-          // temp7.ecnRemove = 0
-          // temp7.ecnAddOpen = tempExec.ecnAdd;
-          // temp7.ecnAdd = 0
+          temp7.secOpen = tempExec.sec;
+          temp7.sec = 0
+          temp7.tafOpen = tempExec.taf;
+          temp7.taf = 0
+          temp7.nsccOpen = tempExec.nscc;
+          temp7.nscc = 0
+          temp7.nasdaqOpen = tempExec.nasdaq;
+          temp7.nasdaq = 0
+          temp7.ecnRemoveOpen = tempExec.ecnRemove;
+          temp7.ecnRemove = 0
+          temp7.ecnAddOpen = tempExec.ecnAdd;
+          temp7.ecnAdd = 0
 
-          // temp7.clrBroker = tempExec.clrBroker;
-          // temp7.liq = tempExec.liq;
+          temp7.clrBroker = tempExec.clrBroker;
+          temp7.liq = tempExec.liq;
 
           /*******************
            * Gross proceeds and P&L
@@ -965,8 +957,8 @@ export async function useCreateBlotter(param) {
           sumTaf += element.taf
           sumNscc += element.nscc
           sumNasdaq += element.nasdaq
-          sumOtherCommission += element.sec + element.taf + element.nscc + element.nasdaq
-          sumFees += element.commission + element.sec + element.taf + element.nscc + element.nasdaq
+          sumOtherCommission += Number(element.sec + element.taf + element.nscc + element.nasdaq)
+          sumFees += Number(element.commission + element.sec + element.taf + element.nscc + element.nasdaq)
 
           sumGrossProceeds += element.grossProceeds
           sumGrossWins += element.grossWins
@@ -1091,7 +1083,7 @@ export async function useCreateBlotter(param) {
     }
     for (let key in blotter) delete blotter[key]
     Object.assign(blotter, temp10)
-    //console.log(" -> BLOTTER " + JSON.stringify(blotter))
+    console.log(" -> BLOTTER " + JSON.stringify(blotter))
     resolve()
   })
 }

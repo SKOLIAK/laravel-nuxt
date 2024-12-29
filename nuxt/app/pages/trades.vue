@@ -40,9 +40,30 @@ async function removeTrades() {
     <UDashboardPanel grow>
       <UDashboardNavbar
         title="Trades"
+        class="bg-white"
       >
         <template #right>
+            <div class="mr-auto p-6 flex items-center" v-if="Object.keys(blotter).length > 0 && Object.keys(pAndL).length > 0">
+
+              <UButton
+              label="Add Trades"
+              icon="i-heroicons-arrow-up-on-square-stack"
+              color="primary"
+              class="mr-1"
+              @click="useUploadTrades"
+            />
+            <UTooltip text="Cancel">
+              <UButton
+                icon="i-heroicons-x-mark"
+                color="gray"
+                @click="removeTrades"
+              />
+            </UTooltip>
+
+          </div>
+
           <UButton
+            v-else
             label="Import Trades"
             trailing-icon="i-heroicons-plus"
             color="gray"
@@ -57,8 +78,9 @@ async function removeTrades() {
         description="Select your orders .csv file"
         :ui="{ width: 'sm:max-w-md' }"
       >
+
         <!-- ./components/Trades/FileUpload.vue -->
-        <TradesFileupload />
+        <TradesFileupload/>
       </UDashboardModal>
 
       <UDashboardToolbar class="bg-orange-500/50" v-if="existingImports.length != 0">
@@ -70,19 +92,15 @@ async function removeTrades() {
         </template>
       </UDashboardToolbar>
 
-      <UDashboardToolbar class="bg-primary-500/25 dark:bg-primary-500/10" v-if="Object.keys(blotter).length > 0 && Object.keys(pAndL).length > 0">
-        <template #left>
-          <div class="font-medium text-xs text-primary-900/90 dark:text-white dark:text-shadow" v-for="(execution, index) in executions">
-            {{ index }}
-            {{ useCreatedDateFormat(index) }}
-          </div>
-        </template>
-      </UDashboardToolbar>
       <div
         v-if="Object.keys(blotter).length > 0 && Object.keys(pAndL).length > 0"
         v-for="(execution, index) in executions"
       >
       <div v-if="blotter[index]">
+
+      <div class="bg-primary-500/25 dark:bg-primary-500/10 font-medium text-xs text-primary-900/90 dark:text-white dark:text-shadow p-4">
+        {{ useCreatedDateFormat(index) }}
+      </div>
 
       <div class="h-max w-full overflow-x-auto">
         <table class="w-full text-sm text-left text-gray-600 dark:text-gray-400 overflow-auto">
@@ -125,11 +143,11 @@ async function removeTrades() {
                             <td class="px-6 py-4">{{ blot.symbol }}</td>
                             <td class="px-6 py-4">{{ useDecimalsArithmetic(blot.buyQuantity, blot.sellQuantity) }}</td>
                             <td v-bind:class="[blot.grossProceeds > 0 ? 'green-trade' : 'red-trade']">
-                                {{ (blot.grossProceeds).toFixed(2) }}</td>
-                            <td class="px-6 py-4">{{ (blot.commission).toFixed(2) }}</td>
-                            <td class="px-6 py-4">{{ (blot.fees).toFixed(2) }}</td>
+                                {{ blot.grossProceeds }}</td>
+                            <td class="px-6 py-4">{{ blot.commission }}</td>
+                            <td class="px-6 py-4">{{ blot.fees }}</td>
                             <td class="px-6 py-4" v-bind:class="[blot.netProceeds > 0 ? 'green-trade' : 'red-trade']">
-                                {{ (blot.netProceeds).toFixed(2) }}</td>
+                                {{ blot.netProceeds }}</td>
                             <td class="px-6 py-4">{{ blot.grossWinsCount }}</td>
                             <td class="px-6 py-4">{{ blot.grossLossCount }}</td>
                             <td class="px-6 py-4">{{ blot.trades }}</td>
@@ -139,11 +157,11 @@ async function removeTrades() {
                             <td class="px-6 py-4">Total</td>
                             <td class="px-6 py-4">{{ useDecimalsArithmetic(pAndL[index].buyQuantity, pAndL[index].sellQuantity) }}</td>
                             <td class="px-6 py-4" v-bind:class="[pAndL[index].grossProceeds > 0 ? 'green-trade' : 'red-trade']">
-                                {{ (pAndL[index].grossProceeds).toFixed(2) }}</td>
-                            <td class="px-6 py-4">{{ (pAndL[index].commission).toFixed(2) }}</td>
-                            <td class="px-6 py-4">{{ (pAndL[index].fees).toFixed(2) }}</td>
+                                {{ pAndL[index].grossProceeds }}</td>
+                            <td class="px-6 py-4">{{ pAndL[index].commission }}</td>
+                            <td class="px-6 py-4">{{ pAndL[index].fees }}</td>
                             <td class="px-6 py-4" v-bind:class="[pAndL[index].netProceeds > 0 ? 'green-trade' : 'red-trade']">
-                                {{ (pAndL[index].netProceeds).toFixed(2) }}</td>
+                                {{ pAndL[index].netProceeds }}</td>
                             <td class="px-6 py-4">{{ pAndL[index].grossWinsCount }}</td>
                             <td class="px-6 py-4">{{ pAndL[index].grossLossCount }}</td>
                             <td class="px-6 py-4">{{ pAndL[index].trades }}</td>
@@ -151,24 +169,6 @@ async function removeTrades() {
                         </tr>
                     </tbody>
             </table>
-            </div>
-          </div>
-
-          <div class="flex items-center">
-            <div class="mr-auto p-6">
-              <UButton
-              label="Submit"
-              color="primary"
-              size="md"
-              class="mr-2"
-              @click="useUploadTrades"
-            />
-              <UButton
-              label="Cancel"
-              color="gray"
-              size="md"
-              @click="removeTrades"
-            />
             </div>
           </div>
       </div>

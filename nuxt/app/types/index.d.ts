@@ -19,6 +19,7 @@ export type User = {
   providers: string[];
   timezone: string;
   unixes: string[];
+  accounts: Account[];
 }
 
 export interface Mail {
@@ -30,11 +31,11 @@ export interface Mail {
   date: string
 }
 
-export interface Member {
+export interface Account {
   name: string
-  username: string
-  role: 'member' | 'owner'
-  avatar: Avatar
+  nickname: string,
+  color: string,
+  id: string
 }
 
 export interface Notification {

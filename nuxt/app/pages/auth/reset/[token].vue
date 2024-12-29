@@ -4,6 +4,11 @@ const route = useRoute();
 const auth = useAuthStore();
 const form = ref();
 
+definePageMeta({
+  middleware: ['guest'],
+  layout: 'auth'
+});
+
 const state = reactive({
   email: route.query.email as string,
   token: route.params.token,

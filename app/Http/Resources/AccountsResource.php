@@ -15,8 +15,12 @@ class AccountsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
-            'nickname' => $this->nickname
+            'nickname' => $this->nickname,
+            'color' => $this->color,
+            'size' => $this->size,
+            'one_r' => $this->one_r
         ];
     }
 }

@@ -1,8 +1,8 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const auth = useAuthStore()
+</script>
 <template>
-  <NuxtLink to="/" class="font-medium text-lg flex items-center text-black dark:text-white leading-tight tracking-tight">
-    <img src="@/assets/images/logo-dark.svg" class="mr-1 dark:hidden"/>
-    <img src="@/assets/images/logo.svg" class="mr-1 hidden dark:block"/>
-    tradenote
+  <NuxtLink :to="auth.logged ? '/' : ''">
+    <img src="@/assets/images/logo.svg" class="logo mr-1 h-8"/>
   </NuxtLink>
 </template>

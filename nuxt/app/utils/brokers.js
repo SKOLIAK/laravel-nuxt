@@ -91,7 +91,7 @@ export async function useTradovate(param) {
           temp.Type = "future"
 
           let qtyNumber = Number(data["Filled Qty"])
-          temp.Qty = qtyNumber.toString()
+          temp.Qty = parseFloat(qtyNumber)
 
           if (newTrade == true && data["B/S"] == "Buy") { //= new trade
             newTrade = false
@@ -121,7 +121,7 @@ export async function useTradovate(param) {
           temp.SymbolDescription = data['Product Description']
 
           let priceNumber = Number(data["Avg Fill Price"])
-          temp.Price = priceNumber.toString()
+          temp.Price = parseFloat(priceNumber)
 
           //console.log(" Exec Time "+dayjs(data["Fill Time"], "HH:mm:ss").unix())
           temp["Exec Time"] = dayjs(data["Fill Time"]).format("HH:mm:ss")
@@ -145,28 +145,27 @@ export async function useTradovate(param) {
           let proceedsNumber = (qtyNumberSide * priceNumber) / tick * value // contract value (https://www.degiro.co.uk/knowledge/investing-in-futures/index-futures)
           //console.log(" Symobole "+temp.Symbol+" on "+temp["T/D"]+" has gross proceed of " + proceedsNumber)
 
-          temp["Gross Proceeds"] = proceedsNumber.toString()
+          temp["Gross Proceeds"] = parseFloat(proceedsNumber)
 
           let echangeFees = futuresTradovateFees.value.filter(item => item.symbol == temp.Symbol)
           let commNumber = 0
           if (echangeFees) {
             //console.log(" -> exchange fee "+JSON.stringify(echangeFees[0].fee))
             //console.log(" -> fee "+echangeFees[0].fee[selectedTradovateTier.value])
-            commNumber = echangeFees[0].fee[selectedTradovateTier.value] * qtyNumber
+            commNumber = echangeFees[0].fee[selectedTradovateTier.value.value] * qtyNumber
           } else {
             reject("No Fees found")
           }
-          temp.Comm = commNumber.toString()
-          temp.SEC = "0"
-          temp.TAF = "0"
-          temp.NSCC = "0"
-          temp.Nasdaq = "0"
-          temp["ECN Remove"] = "0"
-          temp["ECN Add"] = "0"
-          temp["Net Proceeds"] = (proceedsNumber - commNumber).toString()
+          temp.Comm = parseFloat(commNumber)
+          temp.SEC = 0
+          temp.TAF = 0
+          temp.NSCC = 0
+          temp.Nasdaq = 0
+          temp["ECN Remove"] = 0
+          temp["ECN Add"] = 0
+          temp["Net Proceeds"] = parseFloat(proceedsNumber - commNumber)
           temp["Clr Broker"] = ""
           temp.Liq = ""
-          temp.Note = ""
           //console.log("temp "+JSON.stringify(temp))
           TradesData.push(temp)
         }

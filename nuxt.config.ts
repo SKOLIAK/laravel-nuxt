@@ -1,7 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ['@nuxt/ui-pro'],
-  modules: ['@nuxt/ui', '@nuxt/fonts', '@nuxt/image'],
+
+  modules: ['@nuxt/ui', '@nuxt/fonts', '@nuxt/image', '@pinia/nuxt', 'nuxt-security', '@nuxtjs/tailwindcss', 'dayjs-nuxt'],
 
   compatibilityDate: '2024-07-03',
   rootDir: 'nuxt/',
@@ -10,7 +11,17 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
-
+  fonts: {
+    provider: 'google',
+    families: [
+      {
+        name: 'Nunito',
+        provider: 'local',
+        src: '~/public/nunito.woff2',
+        weight: ['400', '500', '600', '700'],
+      }
+    ]
+  },
   /**
    * Manually disable nuxt telemetry.
    * @see [Nuxt Telemetry](https://github.com/nuxt/telemetry) for more information.
@@ -20,7 +31,7 @@ export default defineNuxtConfig({
   $development: {
     ssr: false,
     devtools: {
-      enabled: false,
+      enabled: true,
     },
   },
 
@@ -38,6 +49,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'script', href: 'https://code.jquery.com/jquery-latest.min.js' },
       ],
     },
   },
@@ -46,20 +58,7 @@ export default defineNuxtConfig({
     'auth/verify': { ssr: false }
   },
 
-  tailwindcss: {
-    cssPath: '@/assets/css/main.css',
-  },
-
-  /**
-   * @see https://v3.nuxtjs.org/api/configuration/nuxt.config#modules
-   */
-  modules: [
-    '@nuxt/ui',
-    '@nuxt/image',
-    '@pinia/nuxt',
-    'dayjs-nuxt',
-    'nuxt-security',
-  ],
+  css: ['~/assets/css/main.css'],
 
   image: {
     domains: [
@@ -85,6 +84,10 @@ export default defineNuxtConfig({
     plugins: ['relativeTime', 'utc', 'timezone'],
     defaultLocale: 'en',
     defaultTimezone: import.meta.env.APP_TIMEZONE,
+  },
+
+  ui: {
+    global: true
   },
 
   typescript: {

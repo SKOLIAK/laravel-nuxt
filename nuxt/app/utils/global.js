@@ -1,9 +1,9 @@
 export const GetErrorIcon = 'octicon:x'
 export const GetErrorColor = 'orange'
 export const GetSuccessIcon = 'octicon:check'
-export const GetSuccessColor = 'teal'
+export const GetSuccessColor = 'primary'
 export const GetInfoIcon = 'octicon:light-bulb-16'
-export const GetInfoColor = 'blue'
+export const GetInfoColor = 'gray'
 import dayjs from "dayjs"
 
 export const timeZones = ref(["America/New_York", "Asia/Shanghai", "Europe/Brussels", "Asia/Tokyo", "Asia/Hong_Kong", "Asia/Kolkata", "Europe/London", "Asia/Riyadh"])
@@ -17,6 +17,7 @@ export function useSetTimeZone(timezone) {
 export const spinnerLoadingPage = ref(false)
 export const spinnerLoadingPageText = ref('Loading ...')
 
+export const backtestChartData = reactive([])
 
 
 /** GENERAL */
@@ -78,6 +79,16 @@ export function useSwingDuration(param) {
 
 export function useHourMinuteFormat(param) {
   return dayjs.unix(param).tz(traderTimeZone.value).format("HH:mm")
+}
+
+export function formatDateCorrectly(date) {
+  let a = date.split('/')
+  return a[2] + '-' + a[0] + '-' + a[1]
+}
+
+
+export function dateToTzUnix(date) {
+  return dayjs.tz(date, traderTimeZone.value).unix()
 }
 
 export function useDateTimeFormat(param, unix = true) {
@@ -177,5 +188,17 @@ watch(amountCase, function (a, b) {
   localStorage.setItem('selectedGrossNet', a)
 })
 
-console.warn(amountCase.value)
 
+
+
+export const selectedRatioTypes = ref(['appt', 'apps', 'profitFactor'])
+export const selectedRatio = typeof localStorage !== 'undefined' ? ref(localStorage.getItem('selectedRatio')) : ref("")
+
+if (!selectedRatio.value) {
+  selectedRatio.value = selectedRatioTypes.value[0]
+}
+
+watch(selectedRatio, function (a, b) {
+  console.info('--> New filtering to ' + a)
+  localStorage.setItem('selectedRatio', a)
+})

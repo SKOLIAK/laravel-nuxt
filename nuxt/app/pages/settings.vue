@@ -8,15 +8,19 @@ const links = [[{
   label: 'Devices',
   icon: 'akar-icons:mobile-device',
   to: '/settings/devices'
+}, {
+  label: 'Accounts',
+  icon: 'akar-icons:people-multiple',
+  to: '/settings/accounts'
 }]]
 </script>
 
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar title="Settings" />
+      <UDashboardNavbar title="Settings" class="bg-white" />
 
-      <UDashboardToolbar class="py-0 px-1.5 overflow-x-auto">
+      <UDashboardToolbar class="py-0 px-1.5 overflow-x-auto bg-white">
         <UHorizontalNavigation :links="links" />
       </UDashboardToolbar>
 

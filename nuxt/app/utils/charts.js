@@ -2,19 +2,24 @@ import * as echarts from 'echarts';
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek.js'
 dayjs.extend(isoWeek)
+import { format } from 'date-fns';
 import { totalsByDate, useChartFormat, amountCase } from './global';
 import { dateRangeModel } from './dateRange';
 
-import resolveConfig from 'tailwindcss/resolveConfig'
+import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from '@/tailwind.config'
 const appConfig = useAppConfig()
 const { theme } = resolveConfig(tailwindConfig)
-import { newShade } from './utils';
 
 const maxChartValues = 20
 
-function getTailwindHex(variable) {
-  return theme.colors[variable][500]
+
+export const backtestDataX = ref([])
+export const backtestDataY = ref([])
+export const backtestChart = ref(null)
+
+function getTailwindHex(variable, index = 500) {
+  return index == 0 ? theme.colors[variable] : theme.colors[variable][index]
 }
 
 
@@ -43,6 +48,45 @@ export async function useCharts(param) {
 
 
   handleCharts('cumulatedPnl', useCumulatedPnlChart)
+  handleCharts('backtestChartElement', useBacktestChart)
+}
+
+
+export function useBacktestChart(param) {
+  return new Promise((resolve, reject) => {
+    var chartDom = document.getElementById(param);
+    console.warn(chartDom)
+    backtestChart.value = echarts.init(chartDom);
+    var option;
+
+    option = {
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: backtestDataX.value
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: backtestDataY.value,
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          itemStyle: {
+            color: '#059669',
+          },
+          areaStyle: {
+            opacity: 0.2,
+          }
+        }
+      ]
+    };
+
+    option && backtestChart.value.setOption(option);
+
+  })
 }
 
 
@@ -59,7 +103,7 @@ export function useCumulatedPnlChart(param) {
     var sumProceeds = 0
     var weekOfYear = null
     var monthOfYear = null
-    var i = 1
+    var i = 0 // 0 - cumul / 1 - regular
 
     let objectY = JSON.parse(JSON.stringify(totalsByDate))
     const keys = Object.keys(objectY);
@@ -145,13 +189,25 @@ export function useCumulatedPnlChart(param) {
       i++
     }
 
+    let _base = +new Date(2024, 1, 1);
+    let _oneDay = 24 * 3600 * 1000;
+    let _date = [];
+    let _data = [Math.random() * 300];
+    let _previous = 0
+    for (let i = 1; i < 100; i++) {
+      var now = new Date((_base += _oneDay));
+      _date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+      _data.push(_previous = Math.round((Math.random() - 0.5) * 20 + _data[i - 1]));
+    }
+
+
 
     const option = {
       title: {
         left: 'left',
-        text: 'Cummulated PnL',
+        text: 'Cumulative PnL',
         textStyle: {
-          color: theme.colors.white
+          color: theme.colors.gray[700]
         }
       },
       toolbox: {
@@ -165,10 +221,10 @@ export function useCumulatedPnlChart(param) {
       },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: theme.colors.gray[900],
-        borderColor: theme.colors.gray[900],
+        backgroundColor: theme.colors.white,
+        borderColor: getTailwindHex('gray', 100),
         textStyle: {
-          color: theme.colors.white
+          color: theme.colors.gray[700]
         },
         formatter: (params) => {
           var proceeds
@@ -176,15 +232,15 @@ export function useCumulatedPnlChart(param) {
           var date
           params.forEach((element, index) => {
             if (index == 0) {
-              cumulProceeds = useThousandCurrencyFormat(element.value)
+              cumulProceeds = useTwoDecCurrencyFormat(element.value)
               date = element.name
             }
             if (index == 1) {
-              proceeds = useThousandCurrencyFormat(element.value)
+              proceeds = useTwoDecCurrencyFormat(element.value)
             }
           });
           //console.log("params "+JSON.stringify(params[0][0]))
-          return '<span class="font-medium text-xs"><div class="text-white/50">' + date + "</div><div>Proceeds: " + proceeds + "</div>Cumulated: " + cumulProceeds + '</span>'
+          return '<span class="font-medium text-xs"><div class="text-gray-700 font-bold">' + date + "</div><div>Proceeds: " + proceeds + "</div>Cumulated: " + cumulProceeds + '</span>'
 
         }
       },
@@ -196,7 +252,7 @@ export function useCumulatedPnlChart(param) {
           lineStyle: {
             color: theme.colors.gray[500]
           }
-        }
+        },
       },
       yAxis: {
         type: 'value',
@@ -205,13 +261,13 @@ export function useCumulatedPnlChart(param) {
         },
         axisLine: {
           lineStyle: {
-            color: theme.colors.gray[500]
+            color: theme.colors.gray[400]
           }
         },
         splitLine: {
           lineStyle: {
             type: 'solid',
-            color: theme.colors.gray[800]
+            color: theme.colors.gray[100]
           },
           axisLabel: {
             formatter: (params) => {
@@ -234,33 +290,35 @@ export function useCumulatedPnlChart(param) {
         }
       ],
       series: [{
+        name: 'Proceeds',
+        stack: 'proceeds',
         data: chartBarData,
-        type: 'bar',
+        type: 'line',
+        smooth: true,
+        symbol: 'none',
         itemStyle: {
-          color: newShade(getTailwindHex(appConfig.ui.primary), -20),
+          color: getTailwindHex(appConfig.ui.primary, 600),
         },
-        emphasis: {
-          itemStyle: {
-            color: newShade(getTailwindHex(appConfig.ui.primary), 30)
-          }
-        },
+        areaStyle: {
+          opacity: 0.2,
+        }
       },
       {
-        data: chartData,
+        name: 'Proceeds',
+        stack: 'proceeds',
+        data: _data, // @todo chartData,
         type: 'line',
         smooth: true,
         itemStyle: {
-          color: theme.colors.gray[700],
+          color: theme.colors.gray[600],
         },
-        emphasis: {
-          itemStyle: {
-            color: newShade(getTailwindHex(appConfig.ui.primary), 30)
-          }
-        },
+        areaStyle: {
+          opacity: 0.2,
+        }
       }
       ]
     }
-    console.log(newShade(getTailwindHex(appConfig.ui.primary), 30))
+
     myChart.setOption(option);
     resolve()
 

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { sub, format, isSameDay, type Duration } from 'date-fns'
-import type { Range } from '~/types'
 
 
 import { ranges, dateRange } from '@/utils/dateRange'
@@ -43,7 +42,7 @@ const rules = ref({
             :label="range.label"
             color="gray"
             variant="ghost"
-            class="rounded-none px-6"
+            class="rounded-none px-6 text-sm"
             :class="[isRangeSelected(range.duration) ? 'bg-gray-100 dark:bg-primary-800' : 'hover:bg-gray-50 dark:hover:bg-primary-800/50']"
             truncate
             @click="selectRange(range.duration)"
@@ -55,6 +54,7 @@ const rules = ref({
           @close="close"
           :rules="rules"
           :timezone="timezone"
+          class="text-xs"
         />
       </div>
     </template>
