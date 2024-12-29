@@ -1278,7 +1278,7 @@ export async function useCreatePnL(param) {
 }
 
 
-export async function useUploadTrades(param99, param0) {
+export async function useUploadTrades(param0) {
   console.info('\n✅ UPLOADING TRADES');
 
   const uploadToParse = async (dateIdentifier, parseType, isOpenPositions) => {
@@ -1303,7 +1303,17 @@ export async function useUploadTrades(param99, param0) {
           method: "POST",
           body: { trades: trades_data, date_unix: date_unix },
           onResponse({ response }) {
-            console.log(response._data)
+            useToast().add({
+              icon: GetSuccessIcon,
+              title: response._data.data,
+              color: GetSuccessColor,
+            })
+
+            for (let key in executions) delete executions[key]
+            for (let key in executions) delete executions[key]
+            for (let key in trades) delete trades[key]
+            for (let key in blotter) delete blotter[key]
+            for (let key in pAndL) delete pAndL[key]
           }
         })
         resolve()
@@ -1315,7 +1325,6 @@ export async function useUploadTrades(param99, param0) {
         })
         reject(error.message)
       }
-
     })
   }
 
@@ -1365,19 +1374,8 @@ export async function useUploadTrades(param99, param0) {
 
 
   if (Object.keys(executions).length > 0) await uploadFunction("trades")
-  if (Object.keys(executions).length > 0 && mfePrices.length > 0) await useUpdateMfePrices(param99, param0)
   if (openPositionsParse.length > 0) {
     await loopOpenPositionsParse()
   }
-  if (param99 == "api") {
-    for (let key in executions) delete executions[key]
-    for (let key in executions) delete executions[key]
-    for (let key in trades) delete trades[key]
-    for (let key in blotter) delete blotter[key]
-    for (let key in pAndL) delete pAndL[key]
-
-  }
-
-
 
 }
