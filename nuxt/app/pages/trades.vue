@@ -143,11 +143,11 @@ async function removeTrades() {
                             <td class="px-6 py-4">{{ blot.symbol }}</td>
                             <td class="px-6 py-4">{{ useDecimalsArithmetic(blot.buyQuantity, blot.sellQuantity) }}</td>
                             <td v-bind:class="[blot.grossProceeds > 0 ? 'green-trade' : 'red-trade']">
-                                {{ blot.grossProceeds }}</td>
-                            <td class="px-6 py-4">{{ blot.commission }}</td>
-                            <td class="px-6 py-4">{{ blot.fees }}</td>
+                                {{ (blot.grossProceeds).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ (blot.commission).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ (blot.fees).toFixed(2) }}</td>
                             <td class="px-6 py-4" v-bind:class="[blot.netProceeds > 0 ? 'green-trade' : 'red-trade']">
-                                {{ blot.netProceeds }}</td>
+                                {{ (blot.netProceeds).toFixed(2) }}</td>
                             <td class="px-6 py-4">{{ blot.grossWinsCount }}</td>
                             <td class="px-6 py-4">{{ blot.grossLossCount }}</td>
                             <td class="px-6 py-4">{{ blot.trades }}</td>
@@ -157,11 +157,11 @@ async function removeTrades() {
                             <td class="px-6 py-4">Total</td>
                             <td class="px-6 py-4">{{ useDecimalsArithmetic(pAndL[index].buyQuantity, pAndL[index].sellQuantity) }}</td>
                             <td class="px-6 py-4" v-bind:class="[pAndL[index].grossProceeds > 0 ? 'green-trade' : 'red-trade']">
-                                {{ pAndL[index].grossProceeds }}</td>
-                            <td class="px-6 py-4">{{ pAndL[index].commission }}</td>
-                            <td class="px-6 py-4">{{ pAndL[index].fees }}</td>
+                                {{ (pAndL[index].grossProceeds).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ (pAndL[index].commission).toFixed(2) }}</td>
+                            <td class="px-6 py-4">{{ (pAndL[index].fees).toFixed(2) }}</td>
                             <td class="px-6 py-4" v-bind:class="[pAndL[index].netProceeds > 0 ? 'green-trade' : 'red-trade']">
-                                {{ pAndL[index].netProceeds }}</td>
+                                {{ (pAndL[index].netProceeds).toFixed(2) }}</td>
                             <td class="px-6 py-4">{{ pAndL[index].grossWinsCount }}</td>
                             <td class="px-6 py-4">{{ pAndL[index].grossLossCount }}</td>
                             <td class="px-6 py-4">{{ pAndL[index].trades }}</td>
