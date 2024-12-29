@@ -133,7 +133,7 @@ var debug = false
 
             <div class="row-span-2 col-start-1 row-start-2">
               <div class="base-card h-full p-8 flex items-center justify-center relative">
-                <UIcon name="svg-spinners:eclipse" class="absolute animate-pulse" size="2em" v-if="!dashboardIdMounted"/>
+                <UIcon name="svg-spinners:eclipse" class="absolute animate-pulse top-2 left-2" size="1em" v-if="!dashboardIdMounted"/>
                 <div class="w-40 h-40">
                   <div id="pieChart1" class="w-full h-full" />
                 </div>
