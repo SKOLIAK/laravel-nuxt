@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { sub } from 'date-fns'
-import type { Period, Range } from '~/types'
 import VChart from 'vue-echarts';
 
 import { totals, dashboardIdMounted, profitAnalysis, selectedRatio, totalsByDate } from '@/utils/global'
@@ -16,8 +14,7 @@ const items = [[{
   to: '/users'
 }]]
 
-const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
-const period = ref<Period>('daily')
+
 
 onBeforeMount(async () => {
     await useMountDashboard()
@@ -84,21 +81,7 @@ var debug = false
 
       <UDashboardToolbar class="bg-white">
         <template #left>
-          <!-- ~/components/home/HomeDateRangePicker.vue -->
-          <HomeDateRangePicker
-            v-model="range"
-            class="-ml-2.5"
-          />
-
-          <!-- ~/components/home/HomePeriodSelect.vue -->
-          <HomePeriodSelect
-            v-model="period"
-            :range="range"
-          />
-
-          <HomeProceedsSelect />
-
-          <HomeSelectedRatio />
+          <Filters />
         </template>
 
 
@@ -149,13 +132,9 @@ var debug = false
             </div>
 
             <div class="row-span-2 col-start-1 row-start-2">
-              <div class="base-card overflow-hidden h-full p-8 flex items-center justify-center">
+              <div class="base-card h-full p-8 flex items-center justify-center relative">
+                <UIcon name="svg-spinners:eclipse" class="absolute animate-pulse" size="2em" v-if="!dashboardIdMounted"/>
                 <div class="w-40 h-40">
-                  <div class="relative w-full h-full content-center" v-if="!dashboardIdMounted">
-                    <USkeleton class="h-full w-full rounded-full"/>
-                    <div class="bg-white rounded-full w-24 h-24 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
-                  </div>
-
                   <div id="pieChart1" class="w-full h-full" />
                 </div>
               </div>
