@@ -1083,7 +1083,7 @@ export async function useCreateBlotter(param) {
     }
     for (let key in blotter) delete blotter[key]
     Object.assign(blotter, temp10)
-    console.log(" -> BLOTTER " + JSON.stringify(blotter))
+    //console.log(" -> BLOTTER " + JSON.stringify(blotter))
     resolve()
   })
 }

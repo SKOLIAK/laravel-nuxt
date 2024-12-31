@@ -6,7 +6,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['DM Sans', ...defaultTheme.fontFamily.sans],
-        nunito: ['Nunito']
+        nunito: ['Nunito', ...defaultTheme.fontFamily.sans],
+        kalam: ['Kalam', ...defaultTheme.fontFamily.sans]
       },
       colors: {
         green: {

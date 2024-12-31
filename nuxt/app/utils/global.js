@@ -4,7 +4,21 @@ export const GetSuccessIcon = 'octicon:check'
 export const GetSuccessColor = 'primary'
 export const GetInfoIcon = 'octicon:light-bulb-16'
 export const GetInfoColor = 'gray'
-import dayjs from "dayjs"
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc.js'
+dayjs.extend(utc)
+import isoWeek from 'dayjs/plugin/isoWeek.js'
+dayjs.extend(isoWeek)
+import timezone from 'dayjs/plugin/timezone.js'
+dayjs.extend(timezone)
+import duration from 'dayjs/plugin/duration.js'
+dayjs.extend(duration)
+import updateLocale from 'dayjs/plugin/updateLocale.js'
+dayjs.extend(updateLocale)
+import localizedFormat from 'dayjs/plugin/localizedFormat.js'
+dayjs.extend(localizedFormat)
+import customParseFormat from 'dayjs/plugin/customParseFormat.js'
+dayjs.extend(customParseFormat)
 
 export const timeZones = ref(["America/New_York", "Asia/Shanghai", "Europe/Brussels", "Asia/Tokyo", "Asia/Hong_Kong", "Asia/Kolkata", "Europe/London", "Asia/Riyadh"])
 export const traderTimeZone = ref('')
@@ -121,7 +135,6 @@ export function useDatetimeLocalFormat(param) {
 export function useStartOfDay(param) {
   return dayjs(param * 1000).tz(traderTimeZone.value).startOf("day").unix()
 }
-
 
 /**************************************
 * NUMBER FORMATS

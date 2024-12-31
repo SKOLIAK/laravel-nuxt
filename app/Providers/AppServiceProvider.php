@@ -3,18 +3,19 @@
 namespace App\Providers;
 
 use App\Helpers\Image;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Laravel\Sanctum\Sanctum;
+use Illuminate\Http\UploadedFile;
 use App\Models\PersonalAccessToken;
 use Illuminate\Auth\Events\Lockout;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Validation\ValidationException;
-use Laravel\Sanctum\Sanctum;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        JsonResource::withoutWrapping();
+
         RateLimiter::for('api', static function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });

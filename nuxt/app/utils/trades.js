@@ -43,6 +43,7 @@ export async function useGetFilteredTrades(param) {
 
       //console.log("param1 " + JSON.stringify(param1))
       let looped = []
+
       param1.forEach((value, key) => {
         for (let k in value) {
           let data = value[k]
@@ -312,7 +313,7 @@ export async function useGetFilteredTrades(param) {
 
 
 
-    loopTrades(trades)
+    loopTrades(trades[0])
 
     console.log(" dateRange.value.start " + dateRange.value.start)
     //console.log(" -> Filtered trades of trades " + JSON.stringify(filteredTradesTrades))
@@ -792,9 +793,11 @@ export async function useGetTrades() {
       await $fetch("/trades", {
         method: "GET",
         onResponse({ response }) {
-          if (response._data.ok) {
-            trades.push(response._data.data)
+          if (response.ok) {
+            trades.push(response._data)
             console.log(" -> Finished getting existing trades (" + trades.length + ")")
+          } else {
+            console.log(" -> Getting existing trades error")
           }
           resolve()
         }

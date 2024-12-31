@@ -7,29 +7,50 @@ use App\Models\Trade;
 use App\Models\DateUnix;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\TradeResource;
+use App\Http\Resources\DateUnix\DateUnixTradesResource;
 
 
 class TradeController extends Controller
 {
-    public function index(Request $request): JsonResponse
-    {
+
+    public function update(Request $request) {
+
         $user = $request->user();
         $user = User::first();
-        abort_if(!$user, 403);
+        abort_if(!$user, 400);
 
-        $trades = [];
-        $unixes = $user->dateUnix()->get();
 
-        foreach ($unixes as $key => $value) {
-            $trades[$value->date_unix] = [
-                'trades' => $user->trades()->where(['date_unix_id' => $value['id']])->get()->toArray()
-            ];
+        $trade = $user->trades->where('identifier', $request['data']['id'])->first();
+
+        if ($trade && $request['data']['ratings']) {
+
+            $trade->rating()->update($request['data']['ratings']);
+            $trade->update([
+                'note' => $request['data']['note'] != null ? $request['data']['note'] : $trade->note
+            ]);
         }
 
-        return response()->json([
-            'ok' => true,
-            'data' => $trades,
-        ]);
+        return new TradeResource($trade);
+    }
+
+    public function show(Request $request) {
+        $user = $request->user();
+        $user = User::first();
+        abort_if(!$user, 400);
+
+        return new TradeResource($user->trades()->where('identifier', $request['id'])->first());
+    }
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        abort_if(!$user, 400);
+        return DateUnixTradesResource::collection(
+            $user->dateUnix()->whereHas('trades', function($q) {
+                $q->whereHas('rating');
+            })->get()
+        );
     }
 
     public function add(Request $request) {
@@ -46,8 +67,6 @@ class TradeController extends Controller
 
         $dateUnix = $user->dateUnix()->firstOrCreate(['date_unix' => $request['date_unix']]);
         $x = 0;
-
-
 
 
 
@@ -85,7 +104,10 @@ class TradeController extends Controller
                 }
             }
             $x++;
-            $user->trades()->create($createArray);
+            $trade = $user->trades()->create($createArray);
+            $trade->rating()->create([
+                'user_id' => $user->id
+            ]);
         }
 
         return response()->json([

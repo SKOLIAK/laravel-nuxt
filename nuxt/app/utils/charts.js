@@ -321,6 +321,21 @@ export function useCumulatedPnlChart(param) {
   })
 }
 
+export function useRenderPieChart() {
+  return new Promise(async (resolve, reject) => {
+    await useGetFilteredTrades()
+    await filteredTrades.forEach(el => {
+      var chartId = "pieChart" + el.dateUnix
+      var probWins = (el.pAndL[amountCase.value + 'WinsCount'] / el.pAndL.trades)
+      var probLoss = (el.pAndL[amountCase.value + 'LossCount'] / el.pAndL.trades)
+      //var probNetWins = (el.pAndL.netWinsCount / el.pAndL.trades)
+      //var probNetLoss = (el.pAndL.netLossCount / el.pAndL.trades)
+      //console.log("prob net win " + probNetWins + " and loss " + probNetLoss)
+      usePieChart(chartId, probWins, probLoss, 'daily')
+    })
+    resolve()
+  })
+}
 
 export function usePieChart(param1, param2, param3) { //chart ID, green, red, page
   return new Promise((resolve, reject) => {
@@ -353,7 +368,7 @@ export function usePieChart(param1, param2, param3) { //chart ID, green, red, pa
           position: 'center',
           color: theme.colors.gray[900],
           formatter: (params) => {
-            let rate
+            let rate = ''
             if (param1 == "pieChart1") {
               rate = "\nWin rate"
             }
@@ -371,6 +386,137 @@ export function usePieChart(param1, param2, param3) { //chart ID, green, red, pa
       ]
     };
     myChart.setOption(option);
+    resolve()
+  })
+}
+
+
+export function useDoubleLineChart(param1, param2, param3, param4) { //chartID, chartDataGross, chartDataNet, chartCategories
+  //console.log("param1 "+param1+", param2 "+param2+", param3 "+param3+", param4 "+param4)
+  return new Promise((resolve, reject) => {
+    //console.log("param1 "+param1)
+    var myChart = echarts.init(document.getElementById(param1));
+    const option = {
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: theme.colors.white,
+        borderColor: theme.colors.white,
+        textStyle: {
+          color: theme.colors.black
+        },
+        formatter: (params) => {
+          var gross
+          var net
+          var time
+          params.forEach((element, index) => {
+            //console.log('element ' + JSON.stringify(element))
+            if (index == 0) {
+              gross = element.value.toFixed(0) + "$"
+              time = element.name
+            }
+            if (index == 1) {
+              net = element.value.toFixed(0) + "$"
+            }
+          });
+          //console.log("params "+JSON.stringify(params[0][0]))
+          //console.log('time format ' + typeof time + "time " + time)
+          return "<div class='text-sm text-gray-900'>" + time + "<br>Gross: " + gross + "<br>Net: " + net + "</div >"
+
+        }
+      },
+      axisLabel: {
+
+      },
+      xAxis: {
+        data: param4,
+        name: '0',
+        nameLocation: 'start',
+      },
+      yAxis: {
+        type: 'value',
+        /*scale: true,
+        max: function(value) {
+            return value.max;
+        },
+        min: function(value) {
+            return value.min;
+        },*/
+        axisLabel: {
+          show: false,
+          formatter: (params) => {
+            return params.toFixed(0) + "$"
+          }
+        },
+        splitLine: {
+          show: false
+        },
+      },
+
+      series: [{
+        data: param2,
+        showSymbol: false, //removes dot on line
+        type: 'line',
+        smooth: true,
+        itemStyle: {
+          color: theme.colors.emerald[700],
+        },
+        emphasis: {
+          itemStyle: {
+            color: theme.colors.emerald[700]
+          }
+        },
+      },
+      {
+        data: param3,
+        showSymbol: false, //removes dot on line
+        type: 'line',
+        smooth: true,
+        itemStyle: {
+          color: theme.colors.emerald[600],
+        },
+        emphasis: {
+          itemStyle: {
+            color: theme.colors.emerald[600]
+          }
+        },
+      }
+      ],
+    }
+    myChart.setOption(option);
+    resolve()
+  })
+}
+
+
+
+export function useRenderDoubleLineChart() {
+  return new Promise(async (resolve, reject) => {
+    await filteredTrades.forEach(el => {
+      //console.log(" date "+el.dateUnix)
+      var chartId = 'doubleLineChart' + el.dateUnix
+      var chartDataGross = []
+      var chartDataNet = []
+      var chartCategories = []
+      el.trades.forEach(element => {
+        var proceeds = element.grossProceeds
+        //console.log("proceeds "+proceeds)
+        var proceedsNet = element['netProceeds']
+        if (chartDataGross.length == 0) {
+          chartDataGross.push(proceeds)
+        } else {
+          chartDataGross.push(chartDataGross.slice(-1).pop() + proceeds)
+        }
+
+        if (chartDataNet.length == 0) {
+          chartDataNet.push(proceedsNet)
+        } else {
+          chartDataNet.push(chartDataNet.slice(-1).pop() + proceedsNet)
+        }
+        chartCategories.push(useHourMinuteFormat(element.exitTime))
+        //console.log("chartId "+chartId+", chartDataGross "+chartDataGross+", chartDataNet "+chartDataNet+", chartCategories "+chartCategories)
+      });
+      useDoubleLineChart(chartId, chartDataGross, chartDataNet, chartCategories)
+    })
     resolve()
   })
 }

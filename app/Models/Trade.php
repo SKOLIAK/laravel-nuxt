@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Rating;
 use App\Models\Accounts;
 use App\Models\DateUnix;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -56,6 +58,7 @@ class Trade extends Model
         'netSharePL' => 'float',
         'netSharePLWins' => 'float',
         'netSharePLLoss' => 'float',
+        'commission' => 'float',
         'executionsCount' => 'int',
         'tradesCount' => 'int',
         'grossWinsQuantity' => 'int',
@@ -74,14 +77,18 @@ class Trade extends Model
         return $this->belongsTo(DateUnix::class);
     }
 
-
     public function account(): BelongsTo
     {
-        return $this->belongsTo(Accounts::class);
+        return $this->belongsTo(Accounts::class, 'accounts_id', 'id');
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function rating(): HasOne
+    {
+        return $this->hasOne(Rating::class);
     }
 }

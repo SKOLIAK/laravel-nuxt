@@ -4,6 +4,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TradeController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountsController;
@@ -51,4 +52,9 @@ Route::prefix('api/v1')->group(function () {
         Route::post('backtesting/groups', [BacktestingGroupController::class, 'add'])->name('backtesting.groups.add');
 
     });
+
+    Route::get('trades', [TradeController::class, 'index'])->name('trades.get');
+    Route::put('trades', [TradeController::class, 'update'])->name('trades.update');
+    Route::get('trades/{id}', [TradeController::class, 'show'])->name('trades.show');
+    Route::get('dev', [RatingController::class, 'index'])->name('rating');
 });

@@ -20,3 +20,12 @@ export async function useMountDashboard() {
   await (dashboardIdMounted.value = true)
   spinnerLoadingPage.value = false
 }
+
+
+export async function useMountDaily() {
+  console.log('\n✅ MOUNTING DAILY')
+
+  await useGetFilteredTrades()
+
+  // <!-- ... -->
+}
