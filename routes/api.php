@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TagsController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UploadController;
@@ -56,5 +57,7 @@ Route::prefix('api/v1')->group(function () {
     Route::get('trades', [TradeController::class, 'index'])->name('trades.get');
     Route::put('trades', [TradeController::class, 'update'])->name('trades.update');
     Route::get('trades/{id}', [TradeController::class, 'show'])->name('trades.show');
-    Route::get('dev', [RatingController::class, 'index'])->name('rating');
+    Route::get('ratings', [RatingController::class, 'index'])->name('rating');
+
+    Route::get('dev', [TagsController::class, 'index'])->name('tags');
 });

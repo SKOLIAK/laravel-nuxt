@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Tag;
 use App\Models\Trade;
 use App\Models\Accounts;
 use App\Models\DateUnix;
@@ -101,5 +102,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function backtestingGroups(): HasMany
     {
         return $this->hasMany(BacktestingGroup::class);
+    }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
     }
 }

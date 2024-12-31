@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\TagResource;
+use App\Http\Resources\ScreenshotResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TradeResource extends JsonResource
@@ -69,6 +71,8 @@ class TradeResource extends JsonResource
             'currency' => $this->currency,
             'note' => $this->note,
             'account' => new TradeAccountResource($this->account),
+            'tags' => TagResource::collection($this->tags),
+            'screenshots' => ScreenshotResource::collection($this->screenshots),
             'ratings' => [
                 'preparation' => $this->rating->preparation ?? 0,
                 'entry' => $this->rating->entry ?? 0,

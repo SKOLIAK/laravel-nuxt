@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Spatie\Tags\Tag;
 use App\Models\Trade;
 use App\Models\DateUnix;
 use Illuminate\Http\Request;
@@ -20,14 +21,20 @@ class TradeController extends Controller
         $user = User::first();
         abort_if(!$user, 400);
 
-
         $trade = $user->trades->where('identifier', $request['data']['id'])->first();
 
         if ($trade && $request['data']['ratings']) {
-
             $trade->rating()->update($request['data']['ratings']);
-            $trade->update([
-                'note' => $request['data']['note'] != null ? $request['data']['note'] : $trade->note
+        }
+
+        $trade->update([
+            'note' => $request['data']['note'] != null ? $request['data']['note'] : $trade->note
+        ]);
+
+        if($request['data']['screenshot'] != '') {
+            $trade->screenshots()->create([
+                'file' => $request['data']['screenshot'],
+                'user_id' => $user->id
             ]);
         }
 

@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Trade;
 use App\Models\Rating;
 use App\Models\Accounts;
 use App\Models\DateUnix;
+use App\Models\Screenshot;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Trade extends Model
 {
@@ -90,5 +94,15 @@ class Trade extends Model
     public function rating(): HasOne
     {
         return $this->hasOne(Rating::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'trade_tag');
+    }
+
+    public function screenshots(): HasMany
+    {
+        return $this->hasMany(Screenshot::class);
     }
 }
