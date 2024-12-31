@@ -33,12 +33,27 @@ export const spinnerLoadingPageText = ref('Loading ...')
 
 export const backtestChartData = reactive([])
 
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * CHARTS
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~ */
+export const renderingCharts = ref(false)
 
-/** GENERAL */
+
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * CALENDAR
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~ */
+export const calendarData = reactive({})
+export const miniCalendarsData = reactive([])
+
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * GENERAL
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~ */
 export const renderData = ref(0) //this is for updating DOM
 export const hasData = ref(false)
 
-/** TRADES */
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * TRADES
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~ */
 export const selectedRange = ref()
 export const filteredTrades = reactive([])
 export const filteredTradesDaily = reactive([])
@@ -52,15 +67,17 @@ export const imports = ref([])
 
 export const TradeUnixes = ref([])
 
-/** DASHBOARD */
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * DASHBOARD
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~ */
 export const dashboardChartsMounted = ref()
 export const dashboardIdMounted = ref(false)
 export const barChartNegativeTagGroups = ref([])
 
 
-/**************************************
-* DATE FORMATS
-**************************************/
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * DATE FORMATS
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~ */
 export function useDateNumberFormat(param) {
   return Number(Math.trunc(param)) //we have to use /1000 and not unix because or else does not take into account tz
 }
@@ -136,9 +153,9 @@ export function useStartOfDay(param) {
   return dayjs(param * 1000).tz(traderTimeZone.value).startOf("day").unix()
 }
 
-/**************************************
-* NUMBER FORMATS
-**************************************/
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * NUMBER FORMATS
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~ */
 export function useThousandCurrencyFormat(param) {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0, style: 'currency', currency: 'USD' }).format(param)
 }

@@ -13,13 +13,19 @@ const { $storage } = useNuxtApp();
 
 onBeforeMount(async () => {
   try {
-    await useGetFilteredTrades()
-    useRenderPieChart()
-    useRenderDoubleLineChart()
+    await useMountDaily()
   } catch(e) {
     console.warn(e)
   }
 })
+
+
+const uploadingScreenshot = ref(false)
+
+function uploadScreenshot(e) {
+
+}
+
 
 const dailyTabs = [
 {
@@ -70,6 +76,8 @@ const tradeViewData = reactive({
     "management": 0,
     "rules": 0
   },
+  tags: [],
+  screenshot: '',
   note: ''
 })
 
@@ -107,6 +115,16 @@ async function viewTrade(identifier) {
     tradeViewData.ratings.management = viewTradeObj.ratings.management
     tradeViewData.ratings.rules = viewTradeObj.ratings.rules
 
+
+    if(viewTradeObj.tags.length != 0) {
+      viewTradeObj.tags.forEach((element, x) => {
+        let temp = {}
+        temp.id = x
+        temp.name = element.name
+        temp.colors = [element.color,element.text_color]
+        tradeViewData.tags[x] = temp
+      });
+    }
 
     contractSpecs = futureContractsJson.value.filter(x => x.symbol == viewTradeObj.symbol)
     lastIdentifier = identifier
@@ -150,7 +168,7 @@ async function viewTrade(identifier) {
       -->
 
       <div class="flex gap-x-4 relative" v-if="hasData">
-        <div class="grow">
+        <div class="grow w-full">
           <div v-for="(itemTrade, index) in filteredTrades">
             <div class="base-card !p-0 mb-4">
               <div class="p-3">
@@ -179,12 +197,7 @@ async function viewTrade(identifier) {
                   </div>
 
                   <div class="flex text-2xs gap-x-1">
-                    <div class="inline font-bold py-0.5 px-2 rounded text-white/80" style="background: #d99a07">
-                      <span class="drop-shadow">ADR</span>
-                    </div>
-                    <div class="inline font-bold py-0.5 px-2 rounded text-white/80" style="background: #5289ab">
-                        <span class="drop-shadow">ODR</span>
-                    </div>
+                    ...
                   </div>
             </div>
             <UDivider />
@@ -229,9 +242,9 @@ async function viewTrade(identifier) {
             </div>
             <!-- Tabs -->
 
-            <UTabs :items="dailyTabs" variant="pill" size="lg" class="mt-4 gap-4 w-full" :ui="{ trigger: 'flex-1' }" :default-index="0">
+            <UTabs :items="dailyTabs" variant="pill" size="lg" class="mt-4 gap-4" :ui="{ trigger: 'flex-1' }" :default-index="0">
                 <template #trades="{ item }">
-                  <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+                  <table class="divide-y divide-gray-200 dark:divide-neutral-700 w-full">
                     <thead>
                         <tr>
                             <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Symbol</th>
@@ -328,12 +341,15 @@ async function viewTrade(identifier) {
 
                             <!--TAGS -->
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
-                              <p class="text-xs font-semibold inline-flex items-center py-0.5 px-1.5 rounded text-white/90 mr-1" style="background: #d99a07">
-                                <span class="drop-shadow">ODR</span>
-                              </p>
-                              <p class="text-xs font-semibold inline-flex items-center py-0.5 px-1.5 rounded text-white/90 mr-1" style="background: #5289ab">
-                                <span class="drop-shadow">RDR</span>
-                              </p>
+                              <div
+                                  v-for="tag in trade.tags"
+                                  class="text-xs inline font-bold py-0.5 px-2 rounded text-white/80"
+                                  :style="{'background': tag.color, 'color': tag.text_color}"
+                                >
+                                <span class="drop-shadow">
+                                  {{ tag.name }}
+                                </span>
+                              </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
                                     <span v-if="trade.note.length > 12">{{
@@ -346,8 +362,9 @@ async function viewTrade(identifier) {
                             </td>
 
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
-                              <UIcon name="tabler:photo" size="1.2em" />
-                              <UIcon name="tabler:photo-x" class="text-gray-400" size="1.2em"/>
+
+                              <UIcon name="tabler:photo" size="1.2em" v-if="trade.screenshots.length != 0" />
+                              <UIcon name="tabler:photo-x" class="text-gray-400" size="1.2em" v-else/>
                             </td>
 
                         </tr>
@@ -359,7 +376,7 @@ async function viewTrade(identifier) {
             </div>
           </div>
         </div>
-        <div class="ml-auto">
+        <div class="ml-auto w-full">
           <Calendar />
         </div>
       </div>
@@ -389,26 +406,36 @@ async function viewTrade(identifier) {
                 {{ contractSpecs[0].name }}
               </div>
               <div class="flex text-2xs gap-x-1 mt-2">
-                  <div class="inline font-bold py-0.5 px-2 rounded text-white/80" style="background: #d99a07">
-                    <span class="drop-shadow">ADR</span>
+                  <div class="inline font-bold py-0.5 px-2 rounded text-white/80" :style="{'background': tag.color, 'color': tag.text_color}" v-for="tag in viewTradeObj.tags">
+                    <span class="drop-shadow">
+                      {{ tag.name }}
+                    </span>
                   </div>
-                  <div class="inline font-bold py-0.5 px-2 rounded text-white/80" style="background: #5289ab">
-                    <span class="drop-shadow">ODR</span>
-                  </div>
+                  <button
+                    class="inline font-bold py-0.5 px-2 rounded text-white/80"
+                    @click="alert('Modal to add tags')"
+                  >
+                    <span class="drop-shadow">
+                      <UIcon name="tabler:circle-plus" size="1.5em"/>
+                    </span>
+                  </button>
               </div>
             </div>
 
             <UButton color="white" variant="soft" icon="i-heroicons-x-mark-20-solid" class="ml-auto -my-1" @click="viewTradeOpen = false" />
           </div>
         </template>
-      <div class="bg-white p-6 h-full w-full overflow-y-auto absolute bottom-0 ">
+      <div class="bg-white p-6 h-full w-full flex items-center justify-center transition-all duration-500" v-if="tradeViewUpdating">
+        <UIcon name="svg-spinners:eclipse" size="2.5em" />
+      </div>
+      <div class="bg-white p-6 h-full w-full overflow-y-auto absolute bottom-0" v-else>
 
 
         <!-- QUICK STATS -->
         <div class="flex items-center justify-between font-medium text-xs">
           <div>
             <div class="text-gray-700 font-normal">Entered At</div>
-            <p>{{ useDateTimeFormat(viewTradeObj.entryTime) }}</p>
+            <p>{{ useCreatedDateFormat(viewTradeObj.entryTime) }}</p>
           </div>
           <div>
             <div class="text-gray-700 font-normal">Outcome</div>
@@ -460,16 +487,25 @@ async function viewTrade(identifier) {
           </div>
 
         <!-- NOTE -->
-        <UFormGroup class="mt-4" label="Note" size="xs">
+        <UFormGroup label="Note" size="xs">
           <UTextarea v-model="tradeViewData.note" />
-          <div class="flex justify-end">
-            <UButton size="xs" class="mt-4" @click="updateViewTrade" :loading="tradeViewUpdating">Save</UButton>
+          <div class="flex justify-end mt-4">
+            <InputUploadScreenshot
+              v-model="tradeViewData.screenshot"
+              accept=".png, .jpg, .jpeg, .webp"
+              entity="screenshots"
+              max-size="5"
+            />
+
+            <UButton size="xs" class="ml-auto" @click="updateViewTrade" :loading="tradeViewUpdating">Save</UButton>
           </div>
         </UFormGroup>
 
         <!-- SCREENSHOTS -->
         <div class="mt-4 relative trade-overview-screenshots overflow-y-auto">
-          <NuxtImg src="" placeholder @click="viewScreenshot('')"/>
+          <div v-for="sc in viewTradeObj.screenshots">
+            <img :src="$storage(sc.file)" placeholder @click="viewScreenshot($storage(sc.file))"/>
+          </div>
         </div>
       </div>
 
@@ -490,7 +526,7 @@ async function viewTrade(identifier) {
     }"
   >
     <div class="w-full h-full flex items-center justify-center" @click="isViewingScreenshot = false">
-      <NuxtImg :src="viewingScreenshot" class="rounded-lg sm:!w-10/12 !w-10/12"/>
+      <NuxtImg :src="viewingScreenshot" class="rounded-lg sm:!w-10/12 !w-10/12 !max-h-fit"/>
     </div>
   </UModal>
 

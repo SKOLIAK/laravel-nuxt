@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { sub, format, isSameDay, type Duration } from 'date-fns'
-
-
+import { traderTimeZone } from '@/utils/global'
 import { ranges, dateRange } from '@/utils/dateRange'
 
 
@@ -12,7 +11,6 @@ function isRangeSelected(duration: Duration) {
 function selectRange(duration: Duration) {
   dateRange.value = { start: sub(new Date().setHours(0,0,0,0), duration), end: new Date().setHours(0,0,0,0) }
 }
-const timezone = ref(null);
 const rules = ref({
   hours: 0,
   minutes: 0,
@@ -53,7 +51,7 @@ const rules = ref({
           v-model="dateRange"
           @close="close"
           :rules="rules"
-          :timezone="timezone"
+          :timezone="traderTimeZone"
           class="text-xs"
         />
       </div>

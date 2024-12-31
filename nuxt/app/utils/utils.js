@@ -3,6 +3,7 @@ import { useGetFilteredTrades, useTotalTrades, useCalculateProfitAnalysis } from
 import { getOpenPositionsParse } from "./add_trades"
 import { useCharts } from "./charts"
 import { hasData } from "./global"
+import { useCalendar } from "@angelblanco/v-calendar"
 
 export async function useMountDashboard() {
   console.log('\n✅ MOUNTING DASHBOARD')
@@ -25,7 +26,8 @@ export async function useMountDashboard() {
 export async function useMountDaily() {
   console.log('\n✅ MOUNTING DAILY')
 
-  await useGetFilteredTrades()
-
+  await useLoadCalendar()
+  await useRenderPieChart()
+  await useRenderDoubleLineChart()
   // <!-- ... -->
 }
