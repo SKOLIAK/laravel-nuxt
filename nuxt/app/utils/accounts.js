@@ -9,7 +9,7 @@ export async function useGetExistingAccounts() {
       await $fetch("/accounts", {
         method: "GET",
         onResponse({ response }) {
-          tempAccList.push(response._data.data)
+          tempAccList.push(response._data)
         }
       })
     } catch (error) {
