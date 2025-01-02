@@ -8,6 +8,7 @@ use App\Http\Controllers\TradeController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\DiariesController;
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\BacktestingGroupController;
 
@@ -52,12 +53,28 @@ Route::prefix('api/v1')->group(function () {
         Route::get('backtesting/groups', [BacktestingGroupController::class, 'index'])->name('backtesting.groups.get');
         Route::post('backtesting/groups', [BacktestingGroupController::class, 'add'])->name('backtesting.groups.add');
 
+
+
+
+        Route::get('diaries', [DiariesController::class, 'index']);
+        Route::post('diaries', [DiariesController::class, 'add']);
+        Route::put('diaries', [TradeController::class, 'update']);
+        Route::get('diaries/{id}', [DiariesController::class, 'get']);
+        Route::delete('diaries/{id}', [DiariesController::class, 'destroy']);
+
+
+        Route::get('tags', [TagsController::class, 'index']);
+
     });
 
     Route::get('trades', [TradeController::class, 'index'])->name('trades.get');
     Route::put('trades', [TradeController::class, 'update'])->name('trades.update');
     Route::get('trades/{id}', [TradeController::class, 'show'])->name('trades.show');
     Route::get('ratings', [RatingController::class, 'index'])->name('rating');
+
+
+
+    Route::get('tags', [TagsController::class, 'index']);
 
     Route::get('dev', [TagsController::class, 'index'])->name('tags');
 });
