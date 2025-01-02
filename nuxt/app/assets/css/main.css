@@ -57,20 +57,49 @@ html, body {
 }
 
 .green-trade {
-    @apply font-medium !text-emerald-600;
+    @apply font-medium !text-emerald-500;
 }
 
 .bg-green-trade {
-    @apply !bg-emerald-50 hover:!bg-emerald-100;
+    @apply !bg-teal-50 hover:!bg-teal-100;
 }
 
 .red-trade {
-    @apply font-medium !text-indigo-400 select-none
+    @apply font-medium !text-violet-400 select-none
 }
 
 .bg-red-trade {
-    @apply !bg-indigo-50 hover:!bg-indigo-100;
+    @apply !bg-fuchsia-50 hover:!bg-fuchsia-100;
 }
+
+.daily-table {
+    @apply text-sm text-gray-700
+}
+
+.daily-table .red-trade {
+    @apply !bg-gradient-to-tl !from-fuchsia-400 !to-violet-400 !bg-clip-text !text-transparent
+}
+.daily-table .green-trade {
+    @apply !bg-gradient-to-b !from-emerald-400 !to-teal-500 !bg-clip-text !text-transparent
+}
+
+.rating-8-up {
+    @apply bg-gradient-to-tl from-emerald-500 to-lime-500 text-white drop-shadow
+ }
+.rating-7-up {
+   @apply bg-gradient-to-tr from-teal-500 to-emerald-400 text-white drop-shadow
+}
+.rating-5-up {
+    @apply !bg-gradient-to-tr !from-emerald-500/80 !to-indigo-300 text-white drop-shadow
+ }
+.rating-3-up {
+    @apply bg-gradient-to-tr from-indigo-400 to-purple-400 text-white drop-shadow
+}
+.rating-0-up {
+    @apply bg-gradient-to-tr from-indigo-400 to-fuchsia-400 text-white drop-shadow
+}
+
+
 .daily-card-info-title {
     @apply text-sm font-normal text-gray-400;
   }
@@ -254,4 +283,76 @@ x-vue-echarts {
 
 .trade-overview-screenshots img {
     @apply rounded-lg shadow ring-1 ring-gray-200 cursor-pointer mb-4;
+}
+
+
+h1, h2, h3 {
+    font-family: Roboto, sans-serif !important;
+}
+
+.diary h1 {
+    @apply text-3xl;
+}
+
+.diary h2 {
+    @apply text-2xl;
+}
+
+.diary h3 {
+    @apply text-xl;
+}
+
+.diary {
+    @apply text-sm;
+}
+
+div[role="textbox"] ul,
+.diary ul {
+    @apply ml-5 list-disc;
+
+    li::marker {
+        @apply dark:text-white/25 text-black/25 text-xs;
+        content: '-   '
+      }
+}
+
+.multiselect__placeholder {
+    @apply !text-white/50 !text-xs !font-medium
+}
+
+.multiselect__input::placeholder {
+    @apply !text-white/90 !text-xs !font-medium
+}
+
+.multiselect__option,
+.multiselect__option::after {
+    @apply !border-transparent border-l-4 !bg-transparent
+}
+
+.multiselect__option--selected.multiselect__option,
+.multiselect__option--selected.multiselect__option::after {
+    @apply !text-fuchsia-400 !bg-transparent;
+}
+
+.multiselect__option--selected,
+.multiselect__content-wrapper,
+.multiselect__tags {
+   @apply !bg-black !border-gray-900 !text-gray-50 !text-xs !font-medium;
+}
+
+.multiselect__tags {
+    @apply !rounded-lg !text-xs !text-white/80 mb-4;
+}
+
+.multiselect__content-wrapper {
+    @apply !rounded-lg
+}
+
+.multiselect__tag {
+    @apply !bg-emerald-500 !text-xs !font-medium !rounded;
+}
+
+.multiselect__input,
+.multiselect__single {
+    @apply !bg-transparent;
 }
