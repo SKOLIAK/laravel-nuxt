@@ -63,6 +63,7 @@
         "tailwind-variants": "^0.3.0",
         "tailwindcss-animate": "^1.0.7",
         "tinycolor2": "^1.6.0",
-        "v-calendar": "^2.4.2"
+        "v-calendar": "^2.4.2",
+        "vue-multiselect": "^3.1.0"
     }
 }
