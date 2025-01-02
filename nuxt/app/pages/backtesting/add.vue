@@ -3,11 +3,6 @@ import VChart from 'vue-echarts';
 
 import { backtestChart, backtestDataX, backtestDataY } from '@/utils/charts';
 
-
-const color = ref('#00C16A')
-const chip = computed(() => ({ backgroundColor: color.value }))
-
-
 onBeforeMount(async () => {
   await useMountDashboard()
 })
