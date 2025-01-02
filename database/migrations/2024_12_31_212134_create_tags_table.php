@@ -18,6 +18,12 @@ return new class extends Migration
             $table->string('text_color')->default('#000000');
             $table->foreignUuid('user_id')->constrained()->cascade();
         });
+
+        Schema::create('trade_tag', function (Blueprint $table) {
+            $table->id();
+            $table->foreignUuid('tag_id')->constrained()->cascade();
+            $table->foreignUuid('trade_id')->constrained()->cascade();
+        });
     }
 
     /**
