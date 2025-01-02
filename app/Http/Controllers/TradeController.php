@@ -31,6 +31,14 @@ class TradeController extends Controller
             'note' => $request['data']['note'] != null ? $request['data']['note'] : $trade->note
         ]);
 
+
+        $trade->tags()->detach();
+
+        foreach ($request['data']['tags'] as $tag) {
+            $trade->tags()->attach($tag['id']);
+        }
+
+
         if($request['data']['screenshot'] != '') {
             $trade->screenshots()->create([
                 'file' => $request['data']['screenshot'],
