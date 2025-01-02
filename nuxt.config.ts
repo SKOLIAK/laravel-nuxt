@@ -2,7 +2,16 @@
 export default defineNuxtConfig({
   extends: ['@nuxt/ui-pro'],
 
-  modules: ['@nuxt/ui', '@nuxt/fonts', '@nuxt/image', '@pinia/nuxt', 'nuxt-security', '@nuxtjs/tailwindcss', 'dayjs-nuxt'],
+  modules: [
+    '@nuxt/ui',
+    '@nuxt/fonts',
+    '@nuxt/image',
+    '@pinia/nuxt',
+    'nuxt-security',
+    '@nuxtjs/tailwindcss',
+    'dayjs-nuxt',
+    'nuxt-tiptap-editor',
+  ],
 
   compatibilityDate: '2024-07-03',
   rootDir: 'nuxt/',
