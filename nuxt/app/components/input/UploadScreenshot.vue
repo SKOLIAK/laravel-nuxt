@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width", "height"]);
-const emit = defineEmits(["update:modelValue"]);
-
-const { $storage } = useNuxtApp();
+const emit = defineEmits(["update:modelValue", "uploaded"]);
 
 const value = computed({
   get() {
@@ -15,7 +13,6 @@ const value = computed({
 
 const inputRef = ref();
 const loading = ref(false);
-const showCancel = ref(false);
 
 const onSelect = async (e: any) => {
   const file = e.target.files[0];
@@ -29,7 +26,6 @@ const onSelect = async (e: any) => {
     });
   }
 
-  showCancel.value = false;
   loading.value = true;
 
   const formData = new FormData();
@@ -53,7 +49,6 @@ const onSelect = async (e: any) => {
         });
       } else if (response._data?.ok) {
         value.value = response._data?.path;
-        showCancel.value = true
       }
 
       loading.value = false;
@@ -83,15 +78,6 @@ const onSelect = async (e: any) => {
           </div>
         </template>
       </UPopover>
-        <UButton
-          type="button"
-          color="black"
-          icon="i-heroicons-x-mark-20-solid"
-          size="2xs"
-          :disabled="loading"
-          @click="value = ''"
-          v-if="showCancel"
-        />
 
       <input
         ref="inputRef"
