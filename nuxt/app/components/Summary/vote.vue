@@ -34,7 +34,7 @@ function rateIt(_unix, _rating) {
       @click="rateIt(trade.dateUnix, 1)"
     >
       <UIcon
-        name="solar:heart-angle-bold"
+        name="solar:heart-bold"
         class="text-gray-500 group-hover:text-primary"
         :class="{
           'text-primary': trade.rating == 1,
