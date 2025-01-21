@@ -22,11 +22,50 @@
 
   dayjs.extend(customParseFormat);
 
+  import { weekCount } from '@/utils/misc'
+  import { amountCase } from '@/utils/global'
+  import { useLoadCalendar } from "@/utils/calendar";
+
   const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
+  // Number of weeks in a given month
+  const NumWeeks = ref(0)
+
+  const weeks = ref([])
+  const sumofweek = ref(0)
+  const sumofmonth = ref(0)
   onBeforeMount(async () => {
     await useLoadCalendar();
   });
+
+  onMounted(async () => {
+    await (NumWeeks.value = weekCount(dayjs(calendarData[0][0].month).format('YYYY'), dayjs(calendarData[0][0].month).format('M')))
+
+
+    /**
+     * CALCULATE WEEKLY PNL
+     */
+    weeks.value.splice(0)
+    sumofweek.value = 0
+
+    for (let index = 0; index < Object.keys(calendarData).length; index++) {
+      let el = calendarData[index]
+
+      days.forEach((day, dayindex) => {
+        let el2 = el[dayindex]
+
+        sumofweek.value = Number(sumofweek.value + Number(el2.pAndL[amountCase.value +  'Proceeds'] ?? 0))
+        sumofmonth.value = Number(sumofmonth.value + sumofweek.value)
+
+        if (dayindex == 6) { // sunday
+          weeks.value.push(sumofweek.value)
+          sumofweek.value = 0
+        }
+      })
+
+    }
+  })
+
 
   defineProps({
     small: {
@@ -34,14 +73,16 @@
       default: false
     }
   })
+
+
 </script>
 
 <template>
 
-
 <div v-if="small == true">
-  <div class="mb-5">
+  <div class="mb-3">
 
+    <!-- Calendar Month & Year -->
     <h3
       class="text-center text-sm subpixel-antialiased font-semibold leading-loose py-2"
       v-if="calendarData.hasOwnProperty(0)"
@@ -49,6 +90,7 @@
       {{ calendarData[0][0].month }}
     </h3>
 
+    <!-- Days -->
     <div class="p-1 bg-gray-100 dark:bg-gray-900 rounded-xl ring-1 ring-gray-200 dark:ring-gray-700/10">
       <div class="grid grid-cols-7">
         <div
@@ -71,6 +113,7 @@
                 line[index].day != 0 && line[index].pAndL[amountCase + 'Proceeds'] < 0
             }"
           >
+
               <!--Indicator if it's the current day-->
               <div
                 class="bg-white rounded w-4 h-1 absolute bottom-1"
@@ -81,7 +124,7 @@
 
               <UPopover
               :ui="{
-                background: '',
+                background: '!max-w-64',
                 ring: ''
               }">
                 <div class="w-full h-full">
@@ -90,7 +133,7 @@
                 <template #panel>
                   <!-- @TODO: Move to a component -->
                   <div
-                  class="text-center p-2 ring-1 ring-inset min-w-16 shadow-lg"
+                  class="text-center p-2 ring-1 ring-inset min-w-16 shadow-lg drop-shadow"
                   v-bind:class="[
                     line[index].pAndL[amountCase + 'Proceeds'] < 0 ? 'bg-red-trade dark:ring-white/10 ring-rose-500/10' :
                     line[index].pAndL[amountCase + 'Proceeds'] > 0 ? 'bg-green-trade dark:ring-white/10 ring-teal-500/10' :
@@ -105,13 +148,12 @@
 
                     <div v-else-if="line[index].pAndL[amountCase + 'Proceeds']" class="text-wrap">
 
-
                       <!-- Format if trades were placed on the same day as today -->
                       <span v-if="line[index].day == dayjs().format('D')">Today you </span>
                       <span v-else>On this day you </span>
 
 
-                      <span v-if="line[index].pAndL[amountCase + 'Proceeds'] < 0">experienced drawdown</span>
+                      <span v-if="line[index].pAndL[amountCase + 'Proceeds'] < 0">experienced a drawdown</span>
                       <span v-if="line[index].pAndL[amountCase + 'Proceeds'] > 0">were profitable</span>
 
                       <span
@@ -121,11 +163,30 @@
                         had break-even day
                       </span>
 
+
+                      <!-- Icons if the day is like or disliked -->
+                      <div class="text-white flex items-center justify-center gap-2 my-2" v-if="line[index].rating == 1">
+                        <span>You have done something that you're proud of. Look back on it</span>
+                        <UIcon name="solar:heart-angle-bold" size="5em" class="opacity-10 absolute -left-2 -bottom-1"/>
+                      </div>
+
+                      <div class="text-white flex items-center justify-center gap-2 my-2" v-if="line[index].rating == 2">
+                        <span>You've made mistakes on this day. Look back, analyse them and improve 💪</span>
+                        <UIcon name="solar:heart-broken-bold" size="5em" class="opacity-10 absolute -left-2 -bottom-1"/>
+                      </div>
+
+                      <!-- Not rated days icon based on profit -->
+                      <UIcon name="solar:course-down-bold" size="5em" class="opacity-10 absolute -left-0 -bottom-0" v-if="line[index].rating == 0 && line[index].pAndL[amountCase + 'Proceeds'] < 0"/>
+                      <UIcon name="solar:course-up-broken" size="5em" class="opacity-10 absolute -left-0 -bottom-0" v-if="line[index].rating == 0 && line[index].pAndL[amountCase + 'Proceeds'] > 0"/>
+
+
                       <!-- Show the proceeds -->
-                      <p class="text-xl font-nunito font-semibold mt-2">
+                      <div class="text-xl font-nunito font-semibold mt-2">
+
                         {{ useThousandCurrencyFormat(parseInt(line[index].pAndL[amountCase + "Proceeds"])) }}
+
                         <div class="capitalize text-2xs font-normal dropw-shadow">{{ amountCase }} return</div>
-                      </p>
+                      </div>
 
                     </div>
 
@@ -143,7 +204,46 @@
       </div>
 
 
-  </div>
+    </div>
+
+    <!-- Weeks -->
+    <div class="select-none">
+      <div class="pb-2.5 px-3 pt-1.5 font-medium text-gray-600 dark:text-gray-400 text-xs text-center">
+        <!-- Weekly Overview -->
+      </div>
+      <div class="p-1 bg-gray-100 dark:bg-gray-900 rounded-xl ring-1 ring-gray-200 dark:ring-gray-700/10" v-if="NumWeeks > 0">
+        <div class="flex items-center justify-between gap-1">
+          <template v-for="(week, wkindex) in weeks" >
+
+            <div
+              class="text-2xs font-medium bg-gray-800 rounded ring-1 ring-inset ring-gray-700/25 min-h-10 w-full h-full flex items-center justify-center drop-shadow"
+              v-bind:class="[
+                week < 0 ? 'bg-red-trade dark:ring-white/10 ring-rose-500/10' :
+                week > 0 ? 'bg-green-trade dark:ring-white/10 ring-teal-500/10' :
+                'dark:bg-gray-800 dark:ring-gray-700/25'
+              ]"
+            >
+
+                <div class="flex flex-wrap items-center justify-center" :title="useTwoDecCurrencyFormat(week)">
+                  <div>Wk. {{ wkindex + 1 }}</div>
+                  <div v-if="week != 0">
+                    {{ useTwoDecCurrencyFormat(week) }}
+                  </div>
+                </div>
+
+            </div>
+
+          </template>
+        </div>
+
+        <div class="text-xs font-medium mt-1 bg-gray-800 rounded ring-1 ring-inset ring-gray-700/25 min-h-5 w-full h-full flex items-center justify-center drop-shadow gap-2">
+          <div class="text-2xs opacity-50">This Month So Far</div>
+          <p :class="{'green-trade': sumofmonth > 0, 'red-trade': sumofmonth < 0}">{{ useTwoDecCurrencyFormat(sumofmonth) }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- end -->
+
   </div>
 </div>
 
