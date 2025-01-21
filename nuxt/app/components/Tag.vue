@@ -1,6 +1,14 @@
+<script lang="ts" setup>
+defineProps({
+  tag: Object,
+  deletable: Boolean
+})
+</script>
+
+
 <template>
   <div
-    class="flex items-center justify-between rounded text-xs font-medium ring-1 ring-inset ring-white/10 gap-x-1 drop-shadow-sm overflow-hidden h-5"
+    class="select-none flex items-center justify-between rounded text-xs font-medium ring-1 ring-inset ring-white/10 gap-x-1 drop-shadow-sm overflow-hidden h-5"
     :style="{ background: tag.color }"
   >
     <div class="text-white py-0.5 px-2">
@@ -19,12 +27,3 @@
   </div>
 
 </template>
-
-<script lang="ts" setup>
-
-defineProps({
-  tag: Object,
-  deletable: Boolean
-})
-</script>
-

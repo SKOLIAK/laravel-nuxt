@@ -58,9 +58,10 @@ class TradeController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $user = User::first();
         abort_if(!$user, 400);
         return DateUnixTradesResource::collection(
-            $user->dateUnix()->whereHas('trades', function($q) {
+            $user->dateUnix()->with('tags')->whereHas('trades', function($q) {
                 $q->whereHas('rating');
             })->get()
         );
@@ -132,6 +133,27 @@ class TradeController extends Controller
     public function getOpen(Request $request)
     {
         $user = $request->user();
+        abort_if(!$user, 403);
         return $user->trades()->where('openPosition', '1')->get();
+    }
+
+
+    public function rate(Request $request)
+    {
+        $user = $request->user();
+        abort_if(!$user, 403);
+
+        $unix = $user->dateUnix()->where('date_unix', request('unix'))->first();
+
+        if ($unix) {
+            $unix->update([
+                'rating' => $unix->rating == request('rating') ? 0 : request('rating')
+            ]);
+        }
+
+        return response()->json([
+            'rating' => $unix->rating,
+        ]);
+
     }
 }

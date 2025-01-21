@@ -30,6 +30,11 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained()->cascade();
         });
 
+        Schema::create('date_unix_tags', function (Blueprint $table) {
+            $table->id();
+            $table->foreignUuid('tag_id')->constrained()->cascade();
+            $table->foreignUuid('date_unix_id')->constrained()->cascade();
+        });
 
         Schema::table('tags', function (Blueprint $table) {
             $table->foreignUuid('tag_group_id')->constrained()->cascade();

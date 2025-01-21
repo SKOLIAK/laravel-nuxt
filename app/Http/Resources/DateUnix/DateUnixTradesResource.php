@@ -3,6 +3,7 @@
 namespace App\Http\Resources\DateUnix;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\TagResource;
 use App\Http\Resources\TradeResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,7 +27,7 @@ class DateUnixTradesResource extends JsonResource
         return [
             $this->date_unix => [
                 'rating' => $this->rating,
-                'tags' => [],
+                'tags' => TagResource::collection($this->tags),
                 'trades' => TradeResource::collection($this->trades)
             ]
         ];

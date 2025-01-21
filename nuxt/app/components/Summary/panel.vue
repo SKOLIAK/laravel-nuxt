@@ -15,10 +15,17 @@ defineProps({
   index: Number
 })
 
+function removeTag(_tag_id, _on) {
+  console.warn('remove tag', _tag_id, _on)
+}
+
+function addTag() {
+  console.warn('Want to add a tag to a day, open modal to choose')
+}
+
 </script>
 
 <template>
-
   <div
     v-if="JSON.stringify(trade) != '{}'"
     class="bg-gray-900 ring-1 rounded-lg p-1 mb-4"
@@ -30,12 +37,16 @@ defineProps({
       <!-- Date & Pnl Row -->
       <div class="flex items-center justify-between text-sm font-semibold">
 
-        <!-- Date & Rating -->
+        <!-- Date & Votes -->
         <div class="flex items-center justify-start">
-          {{ useCreatedDateFormat(trade.dateUnix) }}
-          <div>
-            Rate
-          </div>
+
+          <span class="mr-4">
+            {{ useCreatedDateFormat(trade.dateUnix) }}
+          </span>
+
+          <!-- Upvoting & Downvoting -->
+          <SummaryVote :trade="trade" v-model="trade.rating" />
+
         </div>
 
         <!-- Pnl -->
@@ -55,8 +66,8 @@ defineProps({
 
       <!-- Tag Row -->
       <div class="flex items-center justify-start gap-1 mt-1">
-        <Tag :tag="tag" v-for="tag in trade.tags"/>
-        <AddTag />
+        <Tag :tag="tag" v-for="tag in trade.tags" v-on:deleteTag="removeTag(tag.id, trade.dateUnix)" :deletable="true"/>
+        <AddTag v-on:addTag="addTag" />
       </div>
     </div>
 

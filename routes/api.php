@@ -47,7 +47,7 @@ Route::prefix('api/v1')->group(function () {
         Route::get('trades', [TradeController::class, 'index'])->name('trades.get');
         Route::post('trades', [TradeController::class, 'add'])->name('trades.add');
         Route::get('trades/open', [TradeController::class, 'getOpen'])->name('trades.getOpen');
-
+        Route::post('trades/rate', [TradeController::class, 'rate'])->name('trades.rate');
 
 
 
@@ -80,5 +80,5 @@ Route::prefix('api/v1')->group(function () {
 
     Route::get('tags', [TagsController::class, 'index']);
 
-    Route::get('dev', [TagGroupController::class, 'index'])->name('tags');
+    Route::get('dev', [TradeController::class, 'index'])->name('tags');
 });

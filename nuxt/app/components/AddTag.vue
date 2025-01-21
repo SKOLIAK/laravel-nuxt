@@ -18,12 +18,3 @@
 </button>
 
 </template>
-
-<script lang="ts" setup>
-
-defineProps({
-  tag: Object,
-  deletable: Boolean
-})
-</script>
-
