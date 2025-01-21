@@ -12,7 +12,14 @@ onBeforeMount(async () => {
   await loadTradeViewData(props.identifier)
 })
 
-
+function removeTag(_tag, _on) {
+  console.warn('remove tag', _tag, 'on', _on)
+  // @todo
+}
+function addTag() {
+  console.warn('wants to add a tag. Open modal to choose')
+  // @todo
+}
 
 
 
@@ -91,8 +98,8 @@ const screenshotUpload = ref('')
 
               <!-- Tags -->
               <div class="mt-3 flex items-center justify-start gap-x-1">
-                <Tag :tag="tag" :deletable="true" v-for="tag in loadedTradeViewData.tags"/>
-                <AddTag />
+                <Tag :tag="tag" :deletable="true" v-for="tag in loadedTradeViewData.tags" v-on:deleteTag="removeTag(tag.id, loadedTradeViewData.id)"/>
+                <AddTag v-on:addTag="addTag" />
               </div>
 
 
