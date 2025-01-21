@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Kalam&display=swap");
 
 /* Some positioning and ratios */
 .sticky-container {
@@ -26,7 +26,7 @@
 .sticky:before {
   box-shadow: -2px 2px 15px 0 rgba(0, 0, 0, 0.5);
   background-color: rgba(0, 0, 0, 0.25);
-  content: '';
+  content: "";
   width: 90%;
   left: 5px;
   height: 75%;
@@ -49,12 +49,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Kalam', cursive;
+  font-family: "Kalam", cursive;
   font-size: 1.25rem;
 
   clip-path: url(#stickyClip);
 }
-
 
 /* Position the sticky nicely, so it looks better */
 html,

@@ -10,6 +10,8 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DiariesController;
 use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\TagGroupController;
+use App\Http\Controllers\ScreenshotController;
 use App\Http\Controllers\BacktestingGroupController;
 
 Route::get('/', function () {
@@ -54,7 +56,7 @@ Route::prefix('api/v1')->group(function () {
         Route::post('backtesting/groups', [BacktestingGroupController::class, 'add'])->name('backtesting.groups.add');
 
 
-
+        Route::delete('screenshots', [ScreenshotController::class, 'delete'])->name('delete.screnshot');
 
         Route::get('diaries', [DiariesController::class, 'index']);
         Route::post('diaries', [DiariesController::class, 'add']);
@@ -64,6 +66,8 @@ Route::prefix('api/v1')->group(function () {
 
 
         Route::get('tags', [TagsController::class, 'index']);
+        Route::get('tags/groups', [TagGroupController::class, 'index'])->name('tags');
+        Route::post('tags/groups', [TagGroupController::class, 'update'])->name('tags');
 
     });
 
@@ -76,5 +80,5 @@ Route::prefix('api/v1')->group(function () {
 
     Route::get('tags', [TagsController::class, 'index']);
 
-    Route::get('dev', [TagsController::class, 'index'])->name('tags');
+    Route::get('dev', [TagGroupController::class, 'index'])->name('tags');
 });

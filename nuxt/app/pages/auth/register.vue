@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-definePageMeta({
-  middleware: ['guest'],
-  layout: 'auth'
-});
+  definePageMeta({
+    middleware: ["guest"],
+    layout: "auth",
+  });
 
-useSeoMeta({
-  title: 'Sign Up',
-})
+  useSeoMeta({
+    title: "Sign Up",
+  });
 </script>
 <template>
-  <UCard class="w-full max-w-md mx-auto my-20">
-    <h1 class="text-3xl font-medium mb-6">Sign Up</h1>
+  <UCard class="mx-auto my-20 w-full max-w-md">
+    <h1 class="mb-6 text-3xl font-medium">Sign Up</h1>
     <AuthRegister />
   </UCard>
 </template>

@@ -1,41 +1,41 @@
 <script setup lang="ts">
-import { format, isToday } from 'date-fns'
-import type { Mail } from '~/types'
+  import { format, isToday } from "date-fns";
+  import type { Mail } from "~/types";
 
-defineProps({
-  mail: {
-    type: Object as PropType<Mail>,
-    required: true
-  },
-  selected: {
-    type: Boolean,
-    default: false
-  }
-})
+  defineProps({
+    mail: {
+      type: Object as PropType<Mail>,
+      required: true,
+    },
+    selected: {
+      type: Boolean,
+      default: false,
+    },
+  });
 </script>
 
 <template>
   <UDashboardPanelContent>
     <div class="flex justify-between">
       <div class="flex items-center gap-4">
-        <UAvatar
-          v-bind="mail.from.avatar"
-          :alt="mail.from.name"
-          size="lg"
-        />
+        <UAvatar v-bind="mail.from.avatar" :alt="mail.from.name" size="lg" />
 
         <div class="min-w-0">
-          <p class="text-gray-900 dark:text-white font-semibold">
+          <p class="font-semibold text-gray-900 dark:text-white">
             {{ mail.from.name }}
           </p>
-          <p class="text-gray-500 dark:text-gray-400 font-medium">
+          <p class="font-medium text-gray-500 dark:text-gray-400">
             {{ mail.subject }}
           </p>
         </div>
       </div>
 
       <p class="font-medium text-gray-900 dark:text-white">
-        {{ isToday(new Date(mail.date)) ? format(new Date(mail.date), 'HH:mm') : format(new Date(mail.date), 'dd MMM') }}
+        {{
+          isToday(new Date(mail.date))
+            ? format(new Date(mail.date), "HH:mm")
+            : format(new Date(mail.date), "dd MMM")
+        }}
       </p>
     </div>
 

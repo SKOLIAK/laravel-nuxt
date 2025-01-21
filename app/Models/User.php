@@ -6,6 +6,8 @@ use App\Models\Tag;
 use App\Models\Trade;
 use App\Models\Accounts;
 use App\Models\DateUnix;
+use App\Models\TagGroup;
+use App\Models\Screenshot;
 use App\Models\BacktestingGroup;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -109,8 +111,20 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Tag::class);
     }
 
+    public function tag_groups(): HasMany
+    {
+        return $this->hasMany(TagGroup::class);
+    }
+
     public function diaries(): HasMany
     {
         return $this->hasMany(Diaries::class);
     }
+
+    public function screenshots(): HasMany
+    {
+        return $this->hasMany(Screenshot::class);
+    }
+
+
 }

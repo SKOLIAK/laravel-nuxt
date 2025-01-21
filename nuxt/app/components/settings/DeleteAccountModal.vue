@@ -1,21 +1,21 @@
 <script setup lang="ts">
-const model = defineModel({
-  type: Boolean
-})
+  const model = defineModel({
+    type: Boolean,
+  });
 
-const toast = useToast()
+  const toast = useToast();
 
-const loading = ref(false)
+  const loading = ref(false);
 
-function onDelete() {
-  loading.value = true
+  function onDelete() {
+    loading.value = true;
 
-  setTimeout(() => {
-    loading.value = false
-    toast.add({ icon: GetSuccessIcon, title: 'Your account has been deleted', color: 'red' })
-    model.value = false
-  }, 2000)
-}
+    setTimeout(() => {
+      loading.value = false;
+      toast.add({ icon: GetSuccessIcon, title: "Your account has been deleted", color: "red" });
+      model.value = false;
+    }, 2000);
+  }
 </script>
 
 <template>
@@ -28,25 +28,16 @@ function onDelete() {
     :close-button="null"
     :ui="{
       icon: {
-        base: 'text-red-500 dark:text-red-400'
+        base: 'text-red-500 dark:text-red-400',
       } as any,
       footer: {
-        base: 'ml-16'
-      } as any
+        base: 'ml-16',
+      } as any,
     }"
   >
     <template #footer>
-      <UButton
-        color="red"
-        label="Delete"
-        :loading="loading"
-        @click="onDelete"
-      />
-      <UButton
-        color="white"
-        label="Cancel"
-        @click="model = false"
-      />
+      <UButton color="red" label="Delete" :loading="loading" @click="onDelete" />
+      <UButton color="white" label="Cancel" @click="model = false" />
     </template>
   </UDashboardModal>
 </template>

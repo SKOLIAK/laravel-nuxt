@@ -17,26 +17,13 @@ class RatingController extends Controller
      */
     public function index(Request $request)
     {
-        $user = User::first();
-        $id = '9dd99f98-6023-4416-953f-3b367c6a4fd8';
+        abort_if(!$request->user(), 401, 'Not authorised');
 
         return DateUnixTradesResource::collection(
-            $user->dateUnix()->whereHas('trades', function($q) {
+            $request->user()->dateUnix()->whereHas('trades', function($q) {
                 $q->whereHas('rating');
             })->get()
         );
-
-
-
-
-
-        return TradeResource::collection($user->trades()->whereHas('rating', function($q){
-            // $q->where('preparation', '>', 0);
-            // $q->where('entry', '>', 0);
-            // $q->where('stop_loss', '>', 0);
-            // $q->where('management', '>', 0);
-            // $q->where('rules', '>', 0);
-         })->get());
     }
 
     /**

@@ -1,8 +1,8 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const nuxtApp = useNuxtApp()
-  const auth = useAuthStore()
+  const nuxtApp = useNuxtApp();
+  const auth = useAuthStore();
 
-  if (auth.logged && !auth.user.roles.includes('admin')) {
+  if (auth.logged && !auth.user.roles.includes("admin")) {
     return nuxtApp.runWithContext(() => {
       useToast().add({
         icon: GetErrorIcon,
@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         color: GetErrorColor,
       });
 
-      return navigateTo('/')
-    })
+      return navigateTo("/");
+    });
   }
-})
+});

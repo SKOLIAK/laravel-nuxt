@@ -1,84 +1,92 @@
-import type { FetchOptions } from 'ofetch';
-import { ofetch } from 'ofetch';
+import { ofetch } from "ofetch";
+import type { FetchOptions } from "ofetch";
 
 export default defineNuxtPlugin({
-  name: 'app',
-  enforce: 'default',
+  name: "app",
+  enforce: "default",
   parallel: true,
   async setup(nuxtApp) {
-    const config = useRuntimeConfig()
-    const auth = useAuthStore()
-    const route = useRoute()
+    const config = useRuntimeConfig();
+    const auth = useAuthStore();
+    const route = useRoute();
 
-    const authRoutes = ['auth-reset-token', 'auth-forgot', 'auth-login', 'auth-register', 'auth-verify']
+    const authRoutes = [
+      "auth-reset-token",
+      "auth-forgot",
+      "auth-login",
+      "auth-register",
+      "auth-verify",
+    ];
 
     if (!auth.logged && !authRoutes.includes(route.name)) {
-      window.location.href = '/auth/login'
+      window.location.href = "/auth/login";
     }
 
-    nuxtApp.provide('storage', (path: string): string => {
-      if (!path) return ''
+    nuxtApp.provide("storage", (path: string): string => {
+      if (!path) return "";
 
-      return path.startsWith('http://') || path.startsWith('https://') ?
-        path
-        : config.public.storageBase + path
-    })
+      return path.startsWith("http://") || path.startsWith("https://")
+        ? path
+        : config.public.storageBase + path;
+    });
 
     function buildHeaders(headers = <HeadersInit>{}): HeadersInit {
       return {
         ...headers,
         ...{
-          'Accept': 'application/json',
+          Accept: "application/json",
         },
-        ...(
-          import.meta.server ? {
-            'referer': useRequestURL().toString(),
-            ...useRequestHeaders(['x-forwarded-for', 'user-agent', 'referer']),
-          } : {}
-        ),
-        ...(
-          auth.logged ? {
-            'Authorization': `Bearer ${auth.token}`
-          } : {}
-        )
+        ...(import.meta.server
+          ? {
+              referer: useRequestURL().toString(),
+              ...useRequestHeaders(["x-forwarded-for", "user-agent", "referer"]),
+            }
+          : {}),
+        ...(auth.logged
+          ? {
+              Authorization: `Bearer ${auth.token}`,
+            }
+          : {}),
       };
     }
 
     function buildBaseURL(baseURL: string): string {
       if (baseURL) return baseURL;
 
-      return import.meta.server ?
-        config.apiLocal + config.public.apiPrefix
+      return import.meta.server
+        ? config.apiLocal + config.public.apiPrefix
         : config.public.apiBase + config.public.apiPrefix;
     }
 
     function buildSecureMethod(options: FetchOptions): void {
       if (import.meta.server) return;
 
-      const method = options.method?.toLowerCase() ?? 'get'
+      const method = options.method?.toLowerCase() ?? "get";
 
-      if (options.body instanceof FormData && method === 'put') {
-        options.method = 'POST';
-        options.body.append('_method', 'PUT');
+      if (options.body instanceof FormData && method === "put") {
+        options.method = "POST";
+        options.body.append("_method", "PUT");
       }
     }
 
     function isRequestWithAuth(baseURL: string, path: string): boolean {
-      return !baseURL
-        && !path.startsWith('/_nuxt')
-        && !path.startsWith('http://')
-        && !path.startsWith('https://');
+      return (
+        !baseURL &&
+        !path.startsWith("/_nuxt") &&
+        !path.startsWith("http://") &&
+        !path.startsWith("https://")
+      );
     }
 
     globalThis.$fetch = ofetch.create(<FetchOptions>{
       retry: false,
 
       onRequest({ request, options }) {
-        if (!isRequestWithAuth(options.baseURL ?? '', request.toString())) return
+        if (!isRequestWithAuth(options.baseURL ?? "", request.toString())) return;
 
-        options.credentials = 'include';
+        options.credentials = "include";
 
-        options.baseURL = buildBaseURL(options.baseURL ?? '');
+        options.baseURL = buildBaseURL(options.baseURL ?? "");
         options.headers = buildHeaders(options.headers);
 
         buildSecureMethod(options);
@@ -86,36 +94,35 @@ export default defineNuxtPlugin({
       onRequestError({ error }) {
         if (import.meta.server) return;
 
-        if (error.name === 'AbortError') return;
+        if (error.name === "AbortError") return;
 
         useToast().add({
           icon: GetErrorIcon,
           color: GetErrorColor,
-          title: error.message ?? 'Something went wrong',
-        })
+          title: error.message ?? "Something went wrong",
+        });
       },
 
       onResponseError({ response }) {
         if (response.status === 401) {
           if (auth.logged) {
-            auth.token = ''
-            auth.user = <User>{}
+            auth.token = "";
+            auth.user = <User>{};
           }
-
         } else if (response.status !== 422) {
           if (import.meta.client) {
             useToast().add({
               icon: GetErrorIcon,
               color: GetErrorColor,
-              title: response._data?.message ?? response.statusText ?? 'Something went wrong',
-            })
+              title: response._data?.message ?? response.statusText ?? "Something went wrong",
+            });
           }
         }
-      }
-    })
+      },
+    });
 
     if (auth.logged) {
       await auth.fetchUser();
     }
   },
-})
+});

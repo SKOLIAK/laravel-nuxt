@@ -15,6 +15,6 @@ class TagsController extends Controller
         $user = User::first();
         abort_if(!$user, 400);
 
-        return TagResource::collection($user->tags);
+        return TagResource::collection($user->tags()->with('group')->get());
     }
 }

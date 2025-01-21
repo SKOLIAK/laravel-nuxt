@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { selectedRatio, selectedRatioTypes } from '@/utils/global';
-
+  import { selectedRatio, selectedRatioTypes } from "@/utils/global";
 </script>
 
 <template>

@@ -1,28 +1,28 @@
 <script lang="ts" setup>
-definePageMeta({
-  validate: (route) => !!route.query.verify_url,
-  layout: 'auth'
-});
+  definePageMeta({
+    validate: (route) => !!route.query.verify_url,
+    layout: "auth",
+  });
 
-const route = useRoute();
-const auth = useAuthStore();
+  const route = useRoute();
+  const auth = useAuthStore();
 
-const { pending, error } = useLazyFetch<any>(route.query.verify_url as string, {
-  async onResponse({ response }) {
-    if (response._data?.ok) {
-      await auth.fetchUser();
-    }
-  },
-});
+  const { pending, error } = useLazyFetch<any>(route.query.verify_url as string, {
+    async onResponse({ response }) {
+      if (response._data?.ok) {
+        await auth.fetchUser();
+      }
+    },
+  });
 
-useSeoMeta({
-  title: 'Email Verification',
-})
+  useSeoMeta({
+    title: "Email Verification",
+  });
 </script>
 <template>
-  <UCard class="w-full max-w-md mx-auto my-20">
+  <UCard class="mx-auto my-20 w-full max-w-md">
     <div class="space-y-4">
-      <h1 class="text-3xl font-medium mb-6">
+      <h1 class="mb-6 text-3xl font-medium">
         Email Verification
         <UIcon v-if="pending" name="i-heroicons-arrow-path-solid" class="animate-spin" />
         <span v-else-if="error" class="text-red-500">Error</span>

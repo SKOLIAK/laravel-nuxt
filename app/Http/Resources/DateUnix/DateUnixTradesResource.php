@@ -25,6 +25,8 @@ class DateUnixTradesResource extends JsonResource
 
         return [
             $this->date_unix => [
+                'rating' => $this->rating,
+                'tags' => [],
                 'trades' => TradeResource::collection($this->trades)
             ]
         ];

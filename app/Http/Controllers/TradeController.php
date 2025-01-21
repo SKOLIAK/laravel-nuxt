@@ -28,7 +28,7 @@ class TradeController extends Controller
         }
 
         $trade->update([
-            'note' => $request['data']['note'] != null ? $request['data']['note'] : $trade->note
+            'note' => $request['data']['note'] == null ? '' : $request['data']['note']
         ]);
 
 
@@ -51,9 +51,7 @@ class TradeController extends Controller
 
     public function show(Request $request) {
         $user = $request->user();
-        $user = User::first();
         abort_if(!$user, 400);
-
         return new TradeResource($user->trades()->where('identifier', $request['id'])->first());
     }
 

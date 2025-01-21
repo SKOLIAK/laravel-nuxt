@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['DM Sans', ...defaultTheme.fontFamily.sans],
+        sans: ['DM Sans', '-apple-system', ...defaultTheme.fontFamily.sans],
         nunito: ['Nunito', ...defaultTheme.fontFamily.sans],
         kalam: ['Kalam', ...defaultTheme.fontFamily.sans]
       },

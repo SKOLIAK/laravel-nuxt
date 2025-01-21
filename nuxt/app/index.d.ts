@@ -1,7 +1,7 @@
-declare module '#app' {
+declare module "#app" {
   interface NuxtApp {
-    $storage(msg: string): string
+    $storage(msg: string): string;
   }
 }
 
-export { }
+export {};

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { amountCase, amountCaseTypes } from '@/utils/global';
-
+  import { amountCase, amountCaseTypes } from "@/utils/global";
 </script>
 
 <template>

@@ -1,40 +1,40 @@
 <script lang="ts" setup>
-const router = useRouter();
-const form = ref();
+  const router = useRouter();
+  const form = ref();
 
-const state = reactive({
-  name: "",
-  email: "",
-  password: "",
-  password_confirmation: "",
-});
+  const state = reactive({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+  });
 
-const { refresh: onSubmit, status: registerStatus } = useFetch<any>("register", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
-      useToast().add({
-        icon: GetSuccessIcon,
-        title: "You have been registered successfully.",
-        color: GetSuccessColor,
-        actions: [
-          {
-            label: "Log In now",
-            to: "/auth/login",
-            color: GetSuccessColor,
-          },
-        ],
-      });
+  const { refresh: onSubmit, status: registerStatus } = useFetch<any>("register", {
+    method: "POST",
+    body: state,
+    immediate: false,
+    watch: false,
+    async onResponse({ response }) {
+      if (response?.status === 422) {
+        form.value.setErrors(response._data?.errors);
+      } else if (response._data?.ok) {
+        useToast().add({
+          icon: GetSuccessIcon,
+          title: "You have been registered successfully.",
+          color: GetSuccessColor,
+          actions: [
+            {
+              label: "Log In now",
+              to: "/auth/login",
+              color: GetSuccessColor,
+            },
+          ],
+        });
 
-      router.push("/auth/login");
-    }
-  }
-});
+        router.push("/auth/login");
+      }
+    },
+  });
 </script>
 
 <template>
@@ -65,11 +65,7 @@ const { refresh: onSubmit, status: registerStatus } = useFetch<any>("register", 
       </UFormGroup>
 
       <UFormGroup label="Repeat Password" name="password_confirmation" required>
-        <UInput
-          v-model="state.password_confirmation"
-          type="password"
-          autocomplete="off"
-        />
+        <UInput v-model="state.password_confirmation" type="password" autocomplete="off" />
       </UFormGroup>
 
       <div class="flex items-center justify-end space-x-4">

@@ -1,45 +1,35 @@
 <script setup lang="ts">
-import { eachDayOfInterval } from 'date-fns'
-import type { Period, Range } from '~/types'
-import { dateRangeModel } from '@/utils/dateRange'
+  import { dateRangeModel } from "@/utils/dateRange";
+  import { eachDayOfInterval } from "date-fns";
+  import type { Period, Range } from "~/types";
 
-const props = defineProps({
-  range: {
-    type: Object as PropType<Range>,
-    required: true
-  }
-})
+  const props = defineProps({
+    range: {
+      type: Object as PropType<Range>,
+      required: true,
+    },
+  });
 
-const days = computed(() => eachDayOfInterval(props.range))
+  const days = computed(() => eachDayOfInterval(props.range));
 
-const periods = computed<Period[]>(() => {
-  if (days.value.length <= 8) {
-    return [
-      'daily'
-    ]
-  }
+  const periods = computed<Period[]>(() => {
+    if (days.value.length <= 8) {
+      return ["daily"];
+    }
 
-  if (days.value.length <= 31) {
-    return [
-      'daily',
-      'weekly'
-    ]
-  }
+    if (days.value.length <= 31) {
+      return ["daily", "weekly"];
+    }
 
-  return [
-    'weekly',
-    'monthly'
-  ]
-})
+    return ["weekly", "monthly"];
+  });
 
-// Ensure the model value is always a valid period
-watch(periods, () => {
-  if (!periods.value.includes(dateRangeModel.value)) {
-    dateRangeModel.value = periods.value[0]
-  }
-})
-
-
+  // Ensure the model value is always a valid period
+  watch(periods, () => {
+    if (!periods.value.includes(dateRangeModel.value)) {
+      dateRangeModel.value = periods.value[0];
+    }
+  });
 </script>
 
 <template>

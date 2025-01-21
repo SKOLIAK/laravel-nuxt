@@ -1,27 +1,27 @@
 <script lang="ts" setup>
-const form = ref();
+  const form = ref();
 
-const state = reactive({
-  email: "",
-});
+  const state = reactive({
+    email: "",
+  });
 
-const { refresh: onSubmit, status: forgotStatus } = useFetch<any>("forgot-password", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
-      useToast().add({
-        title: "Success",
-        description: response._data.message,
-        color: GetSuccessColor,
-      });
-    }
-  }
-});
+  const { refresh: onSubmit, status: forgotStatus } = useFetch<any>("forgot-password", {
+    method: "POST",
+    body: state,
+    immediate: false,
+    watch: false,
+    async onResponse({ response }) {
+      if (response?.status === 422) {
+        form.value.setErrors(response._data?.errors);
+      } else if (response._data?.ok) {
+        useToast().add({
+          title: "Success",
+          description: response._data.message,
+          color: GetSuccessColor,
+        });
+      }
+    },
+  });
 </script>
 
 <template>

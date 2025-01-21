@@ -1,24 +1,16 @@
 <template>
-    <UDashboardPage>
+  <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar title="Playbooks" class="sticky top-0 bg-white">
         <template #right>
-          <UButton
-            icon="i-heroicons-plus"
-            label="Add"
-            size="sm"
-            class="ml-1.5"
-          />
+          <UButton icon="i-heroicons-plus" label="Add" size="sm" class="ml-1.5" />
         </template>
       </UDashboardNavbar>
 
-      <UDashboardPanelContent class="overflow-x-hidden overflow-y-auto">
-
-  <div class="flex-wrap items-center justify-center mb-6 ">
-
-
-  <AppNoContent />
-<!--
+      <UDashboardPanelContent class="overflow-y-auto overflow-x-hidden">
+        <div class="mb-6 flex-wrap items-center justify-center">
+          <AppNoContent />
+          <!--
 
       <UCard class="base-card card-bg-glow w-full mx-auto max-w-6xl">
       <h1 class="text-2xl font-medium">Playbook title</h1>
@@ -73,19 +65,14 @@
 
     </div>
   </div>-->
-
-
-</div>
-
-
-</UDashboardPanelContent>
+        </div>
+      </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
 </template>
 
 <script lang="ts" setup>
-function addClicked() {
-  alert('clicked')
-}
-
+  function addClicked() {
+    alert("clicked");
+  }
 </script>

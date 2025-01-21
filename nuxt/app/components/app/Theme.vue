@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-const colorMode = useColorMode();
-const isDark = computed({
-  get() {
-    return colorMode.value === "dark";
-  },
-  set() {
-    colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
-  },
-});
+  const colorMode = useColorMode();
+  const isDark = computed({
+    get() {
+      return colorMode.value === "dark";
+    },
+    set() {
+      colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+    },
+  });
 </script>
 <template>
   <ClientOnly>
@@ -19,7 +19,7 @@ const isDark = computed({
       @click="isDark = !isDark"
     />
     <template #fallback>
-      <USkeleton class="w-8 h-8 rounded-md" />
+      <USkeleton class="h-8 w-8 rounded-md" />
     </template>
   </ClientOnly>
 </template>

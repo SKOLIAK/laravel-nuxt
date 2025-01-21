@@ -17,6 +17,7 @@ class TradeAccountResource extends JsonResource
         return [
             'name' => $this->name,
             'nickname' => $this->nickname,
+            'color' => $this->color
         ];
     }
 }

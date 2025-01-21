@@ -12,23 +12,21 @@ class DiariesController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
+        abort_if(!$request->user(), 401, 'Not authorised');
 
-        abort_if(!$user, 403);
-
-        return DiaryResource::collection($user->diaries()->orderBy('created_at', 'DESC')->get())->response();
+        return DiaryResource::collection($request->user()->diaries()->orderBy('created_at', 'DESC')->get())->response();
     }
 
     public function add(Request $request) : JsonResponse
     {
-        $user = $request->user();
+        abort_if(!$request->user(), 401, 'Not authorised');
 
         $validate = $request->validate([
             'content' => ['required', 'string'],
             'created' => ['required', 'date']
         ]);
 
-        $create = $user->diaries()->create($request->only(['content']));
+        $create = $request->user()->diaries()->create($request->only(['content']));
         $create->update(['created_at' => $request->created]);
 
 
@@ -40,7 +38,7 @@ class DiariesController extends Controller
 
     public function update(Request $request) : JsonResponse
     {
-        $user = $request->user();
+        abort_if(!$request->user(), 401, 'Not authorised');
         $request->validate([
             'content' => ['required', 'string'],
             'flagged' => ['required', 'boolean']
@@ -58,7 +56,7 @@ class DiariesController extends Controller
 
     public function get(Request $request)
     {
-        $user = $request->user();
+        abort_if(!$request->user(), 401, 'Not authorised');
 
         $diary = Diaries::where('id', $request->id)->first();
 
@@ -69,6 +67,7 @@ class DiariesController extends Controller
 
     public function destroy(Request $request)
     {
+        abort_if(!$request->user(), 401, 'Not authorised');
         $diary = Diaries::where('id', $request->id)->delete();
 
         return response()->json([

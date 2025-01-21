@@ -1,62 +1,62 @@
 <script lang="ts" setup>
-const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width", "height"]);
-const emit = defineEmits(["update:modelValue"]);
+  const props = defineProps(["modelValue", "entity", "accept", "maxSize", "width", "height"]);
+  const emit = defineEmits(["update:modelValue"]);
 
-const { $storage } = useNuxtApp();
+  const { $storage } = useNuxtApp();
 
-const value = computed({
-  get() {
-    return props.modelValue;
-  },
-  set(value) {
-    emit("update:modelValue", value);
-  },
-});
-
-const inputRef = ref();
-const loading = ref(false);
-
-const onSelect = async (e: any) => {
-  const file = e.target.files[0];
-  e.target.value = null;
-
-  if (file.size > props.maxSize * 1024 * 1024) {
-    return useToast().add({
-      title: "File is too large.",
-      color: GetErrorColor,
-      icon: GetErrorIcon,
-    });
-  }
-
-  loading.value = true;
-
-  const formData = new FormData();
-  formData.append("image", file);
-
-  await $fetch<any>("upload", {
-    method: "POST",
-    body: formData,
-    params: {
-      entity: props.entity,
-      width: props.width ?? null,
-      height: props.height ?? null,
+  const value = computed({
+    get() {
+      return props.modelValue;
     },
-    ignoreResponseError: true,
-    onResponse({ response }) {
-      if (response.status !== 200) {
-        useToast().add({
-          icon: GetErrorIcon,
-          color: GetErrorColor,
-          title: response._data?.message ?? response.statusText ?? 'Something went wrong',
-        });
-      } else if (response._data?.ok) {
-        value.value = response._data?.path;
-      }
-
-      loading.value = false;
+    set(value) {
+      emit("update:modelValue", value);
     },
   });
-};
+
+  const inputRef = ref();
+  const loading = ref(false);
+
+  const onSelect = async (e: any) => {
+    const file = e.target.files[0];
+    e.target.value = null;
+
+    if (file.size > props.maxSize * 1024 * 1024) {
+      return useToast().add({
+        title: "File is too large.",
+        color: GetErrorColor,
+        icon: GetErrorIcon,
+      });
+    }
+
+    loading.value = true;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    await $fetch<any>("upload", {
+      method: "POST",
+      body: formData,
+      params: {
+        entity: props.entity,
+        width: props.width ?? null,
+        height: props.height ?? null,
+      },
+      ignoreResponseError: true,
+      onResponse({ response }) {
+        if (response.status !== 200) {
+          useToast().add({
+            icon: GetErrorIcon,
+            color: GetErrorColor,
+            title: response._data?.message ?? response.statusText ?? "Something went wrong",
+          });
+        } else if (response._data?.ok) {
+          value.value = response._data?.path;
+        }
+
+        loading.value = false;
+      },
+    });
+  };
 </script>
 
 <template>
@@ -69,11 +69,7 @@ const onSelect = async (e: any) => {
         :ui="{ rounded: 'rounded-lg' }"
       />
 
-      <UTooltip
-        text="Upload"
-        class="absolute top-0 end-0 -m-2"
-        :popper="{ placement: 'right' }"
-      >
+      <UTooltip text="Upload" class="absolute end-0 top-0 -m-2" :popper="{ placement: 'right' }">
         <UButton
           type="button"
           color="gray"
@@ -84,11 +80,7 @@ const onSelect = async (e: any) => {
           @click="inputRef.click()"
         />
       </UTooltip>
-      <UTooltip
-        text="Delete"
-        class="absolute bottom-0 end-0 -m-2"
-        :popper="{ placement: 'right' }"
-      >
+      <UTooltip text="Delete" class="absolute bottom-0 end-0 -m-2" :popper="{ placement: 'right' }">
         <UButton
           type="button"
           color="gray"
@@ -99,13 +91,7 @@ const onSelect = async (e: any) => {
           @click="value = ''"
         />
       </UTooltip>
-      <input
-        ref="inputRef"
-        type="file"
-        class="hidden"
-        :accept="accept"
-        @change="onSelect"
-      />
+      <input ref="inputRef" type="file" class="hidden" :accept="accept" @change="onSelect" />
     </div>
     <div class="text-sm opacity-80">
       <div>Max upload size: {{ maxSize }}Mb</div>

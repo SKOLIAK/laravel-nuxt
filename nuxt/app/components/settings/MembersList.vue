@@ -1,51 +1,50 @@
 <script setup lang="ts">
-import type { Member } from '~/types'
+  import type { Member } from "~/types";
 
-defineProps({
-  members: {
-    type: Array as PropType<Member[]>,
-    default: () => []
+  defineProps({
+    members: {
+      type: Array as PropType<Member[]>,
+      default: () => [],
+    },
+  });
+
+  function getItems(member: Member) {
+    return [
+      [
+        {
+          label: "Edit member",
+          click: () => console.log("Edit", member),
+        },
+        {
+          label: "Remove member",
+          labelClass: "text-red-500 dark:text-red-400",
+          click: () => console.log("Remove", member),
+        },
+      ],
+    ];
   }
-})
 
-function getItems(member: Member) {
-  return [[{
-    label: 'Edit member',
-    click: () => console.log('Edit', member)
-  }, {
-    label: 'Remove member',
-    labelClass: 'text-red-500 dark:text-red-400',
-    click: () => console.log('Remove', member)
-  }]]
-}
-
-function onRoleChange(member: Member, role: string) {
-  // Do something with data
-  console.log(member.username, role)
-}
+  function onRoleChange(member: Member, role: string) {
+    // Do something with data
+    console.log(member.username, role);
+  }
 </script>
 
 <template>
-  <ul
-    role="list"
-    class="divide-y divide-gray-200 dark:divide-gray-800"
-  >
+  <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-800">
     <li
       v-for="(member, index) in members"
       :key="index"
-      class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6"
+      class="flex items-center justify-between gap-3 px-4 py-3 sm:px-6"
     >
-      <div class="flex items-center gap-3 min-w-0">
-        <UAvatar
-          v-bind="member.avatar"
-          size="md"
-        />
+      <div class="flex min-w-0 items-center gap-3">
+        <UAvatar v-bind="member.avatar" size="md" />
 
-        <div class="text-sm min-w-0">
-          <p class="text-gray-900 dark:text-white font-medium truncate">
+        <div class="min-w-0 text-sm">
+          <p class="truncate font-medium text-gray-900 dark:text-white">
             {{ member.name }}
           </p>
-          <p class="text-gray-500 dark:text-gray-400 truncate">
+          <p class="truncate text-gray-500 dark:text-gray-400">
             {{ member.username }}
           </p>
         </div>
@@ -60,15 +59,8 @@ function onRoleChange(member: Member, role: string) {
           @update:model-value="onRoleChange(member, $event)"
         />
 
-        <UDropdown
-          :items="getItems(member)"
-          position="bottom-end"
-        >
-          <UButton
-            icon="i-heroicons-ellipsis-vertical"
-            color="gray"
-            variant="ghost"
-          />
+        <UDropdown :items="getItems(member)" position="bottom-end">
+          <UButton icon="i-heroicons-ellipsis-vertical" color="gray" variant="ghost" />
         </UDropdown>
       </div>
     </li>

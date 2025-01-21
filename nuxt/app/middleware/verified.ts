@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const nuxtApp = useNuxtApp()
-  const auth = useAuthStore()
+  const nuxtApp = useNuxtApp();
+  const auth = useAuthStore();
 
   if (auth.logged && auth.user.must_verify_email) {
     return nuxtApp.runWithContext(() => {
@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         color: GetErrorColor,
       });
 
-      return navigateTo('/account/general')
-    })
+      return navigateTo("/account/general");
+    });
   }
-})
+});

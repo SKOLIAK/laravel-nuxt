@@ -1,5 +1,5 @@
 <template>
   <UDashboardPanelContent class="pb-24">
-      <TradesAccountsList  />
+    <TradesAccountsList />
   </UDashboardPanelContent>
 </template>

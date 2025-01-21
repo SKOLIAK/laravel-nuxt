@@ -1,50 +1,53 @@
 <script lang="ts" setup>
-const form = ref();
-const auth = useAuthStore();
+  const form = ref();
+  const auth = useAuthStore();
 
-const state = reactive({
-  current_password: "",
-  password: "",
-  password_confirmation: "",
-});
+  const state = reactive({
+    current_password: "",
+    password: "",
+    password_confirmation: "",
+  });
 
-const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("account/password", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
-      useToast().add({
-        icon: GetSuccessIcon,
-        title: "The password was successfully updated.",
-        color: GetSuccessColor,
-      });
+  const { refresh: onSubmit, status: accountPasswordStatus } = useFetch<any>("account/password", {
+    method: "POST",
+    body: state,
+    immediate: false,
+    watch: false,
+    async onResponse({ response }) {
+      if (response?.status === 422) {
+        form.value.setErrors(response._data?.errors);
+      } else if (response._data?.ok) {
+        useToast().add({
+          icon: GetSuccessIcon,
+          title: "The password was successfully updated.",
+          color: GetSuccessColor,
+        });
 
-      state.current_password = "";
-      state.password = "";
-      state.password_confirmation = "";
+        state.current_password = "";
+        state.password = "";
+        state.password_confirmation = "";
+      }
+    },
+  });
+
+  const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useFetch<any>(
+    "forgot-password",
+    {
+      method: "POST",
+      body: { email: auth.user.email },
+      immediate: false,
+      watch: false,
+      onResponse({ response }) {
+        if (response._data?.ok) {
+          useToast().add({
+            icon: GetSuccessIcon,
+            title: "A link to reset your password has been sent to your email.",
+            color: GetSuccessColor,
+          });
+        }
+      },
     }
-  }
-});
-
-const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = useFetch<any>("forgot-password", {
-  method: "POST",
-  body: { email: auth.user.email },
-  immediate: false,
-  watch: false,
-  onResponse({ response }) {
-    if (response._data?.ok) {
-      useToast().add({
-        icon: GetSuccessIcon,
-        title: "A link to reset your password has been sent to your email.",
-        color: GetSuccessColor,
-      });
-    }
-  }
-});
+  );
 </script>
 
 <template>
@@ -71,15 +74,16 @@ const { refresh: sendResetPasswordEmail, status: resetPasswordEmailStatus } = us
       </UFormGroup>
 
       <UFormGroup label="Repeat Password" name="password_confirmation" required>
-        <UInput
-          v-model="state.password_confirmation"
-          type="password"
-          autocomplete="off"
-        />
+        <UInput v-model="state.password_confirmation" type="password" autocomplete="off" />
       </UFormGroup>
 
       <div class="pt-2">
-        <UButton type="submit" class="btn" label="Save" :loading="accountPasswordStatus === 'pending'" />
+        <UButton
+          type="submit"
+          class="btn"
+          label="Save"
+          :loading="accountPasswordStatus === 'pending'"
+        />
       </div>
     </UForm>
 

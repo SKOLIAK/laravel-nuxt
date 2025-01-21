@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="auth py-5 flex items-center justify-center">
+  <UContainer class="auth flex items-center justify-center py-5">
     <AppLogo />
   </UContainer>
   <slot />

@@ -1,53 +1,53 @@
 <script lang="ts" setup>
-const router = useRouter();
-const route = useRoute();
-const auth = useAuthStore();
-const form = ref();
+  const router = useRouter();
+  const route = useRoute();
+  const auth = useAuthStore();
+  const form = ref();
 
-definePageMeta({
-  middleware: ['guest'],
-  layout: 'auth'
-});
+  definePageMeta({
+    middleware: ["guest"],
+    layout: "auth",
+  });
 
-const state = reactive({
-  email: route.query.email as string,
-  token: route.params.token,
-  password: "",
-  password_confirmation: "",
-});
+  const state = reactive({
+    email: route.query.email as string,
+    token: route.params.token,
+    password: "",
+    password_confirmation: "",
+  });
 
-const { refresh: onSubmit, status: resetStatus } = useFetch<any>("reset-password", {
-  method: "POST",
-  body: state,
-  immediate: false,
-  watch: false,
-  async onResponse({ response }) {
-    if (response?.status === 422) {
-      form.value.setErrors(response._data?.errors);
-    } else if (response._data?.ok) {
-      useToast().add({
-        title: "Success",
-        description: response._data.message,
-        color: GetSuccessColor,
-      });
+  const { refresh: onSubmit, status: resetStatus } = useFetch<any>("reset-password", {
+    method: "POST",
+    body: state,
+    immediate: false,
+    watch: false,
+    async onResponse({ response }) {
+      if (response?.status === 422) {
+        form.value.setErrors(response._data?.errors);
+      } else if (response._data?.ok) {
+        useToast().add({
+          title: "Success",
+          description: response._data.message,
+          color: GetSuccessColor,
+        });
 
-      if (auth.logged) {
-        await auth.fetchUser();
-        await router.push("/");
-      } else {
-        await router.push("/auth/login");
+        if (auth.logged) {
+          await auth.fetchUser();
+          await router.push("/");
+        } else {
+          await router.push("/auth/login");
+        }
       }
-    }
-  }
-});
+    },
+  });
 
-useSeoMeta({
-  title: 'Reset Password',
-})
+  useSeoMeta({
+    title: "Reset Password",
+  });
 </script>
 <template>
-  <UCard class="w-full max-w-md mx-auto my-20">
-    <h1 class="text-3xl font-black mb-6 leading-tight tracking-tight">Reset Password</h1>
+  <UCard class="mx-auto my-20 w-full max-w-md">
+    <h1 class="mb-6 text-3xl font-black leading-tight tracking-tight">Reset Password</h1>
 
     <div class="space-y-4">
       <UForm ref="form" :state="state" @submit="onSubmit" class="space-y-4">
@@ -73,11 +73,7 @@ useSeoMeta({
         </UFormGroup>
 
         <UFormGroup label="Repeat Password" name="password_confirmation" required>
-          <UInput
-            v-model="state.password_confirmation"
-            type="password"
-            autocomplete="off"
-          />
+          <UInput v-model="state.password_confirmation" type="password" autocomplete="off" />
         </UFormGroup>
 
         <div class="flex items-center justify-end space-x-4">
