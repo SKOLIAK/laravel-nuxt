@@ -55,7 +55,7 @@ export const getGreeting = (param) => {
   }
 };
 
-export function weekCount(year, month_number) {
+export function weekCount(year = '2025', month_number = '1') {
   var firstOfMonth = new Date(year, month_number - 1, 1);
   var day = firstOfMonth.getDay() || 6;
   day = day === 1 ? 0 : day;
