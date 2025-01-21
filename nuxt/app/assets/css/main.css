@@ -68,7 +68,7 @@ body {
 }
 
 .bg-green-trade {
-  @apply !bg-teal-50 hover:!bg-teal-100 dark:!bg-teal-800 dark:hover:!bg-teal-700;
+  @apply select-none !bg-teal-50 hover:!bg-teal-100 dark:!bg-teal-800 dark:hover:!bg-teal-700;
 }
 
 .red-trade {
@@ -76,7 +76,7 @@ body {
 }
 
 .bg-red-trade {
-  @apply !bg-rose-50 hover:!bg-rose-100 dark:!bg-rose-800 dark:hover:!bg-rose-700;
+  @apply select-none !bg-rose-50 hover:!bg-rose-100 dark:!bg-rose-800 dark:hover:!bg-rose-700;
 }
 
 .daily-table {
