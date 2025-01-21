@@ -94,8 +94,7 @@ export async function useLoadCalendar() {
             //Check also if not null because day in date cannot be 0
             //console.log("pAndL "+JSON.stringify(trade.pAndL))
             calData.pAndL = trade.pAndL;
-
-            calData.satisfaction = trade.satisfaction;
+            calData.rating = trade.rating;
           } else {
             calData.pAndL = [];
           }
@@ -111,6 +110,7 @@ export async function useLoadCalendar() {
       } else {
         miniCalendarsData.unshift(calendarJson);
       }
+
     };
 
     //let currentMonthNumber = dayjs(selectedMonth.value.start * 1000).month()
@@ -124,6 +124,7 @@ export async function useLoadCalendar() {
     //console.log("calendarData " + JSON.stringify(calendarData))
     //console.log("miniCalData " + JSON.stringify(miniCalendarsData))
     //console.log("resolve")
+
     resolve();
   });
 }
