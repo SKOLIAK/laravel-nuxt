@@ -54,3 +54,18 @@ export const getGreeting = (param) => {
     return "Good night, " + param + " " + emojis[Math.floor(Math.random() * emojis.length)];
   }
 };
+
+export function weekCount(year, month_number) {
+  var firstOfMonth = new Date(year, month_number - 1, 1);
+  var day = firstOfMonth.getDay() || 6;
+  day = day === 1 ? 0 : day;
+  if (day) { day-- }
+  var diff = 7 - day;
+  var lastOfMonth = new Date(year, month_number, 0);
+  var lastDate = lastOfMonth.getDate();
+  if (lastOfMonth.getDay() === 1) {
+      diff--;
+  }
+  var result = Math.ceil((lastDate - diff) / 7);
+  return result + 1;
+}
