@@ -2,8 +2,7 @@
 import dayjs from "dayjs"
 import { getGreeting, newActions } from '@/utils/misc'
 import { useMountDaily } from "@/utils/utils";
-import { amountCase } from "@/utils/global";
-
+import { spinnerLoadingPage, amountCase } from "@/utils/global";
 
 import { VisSingleContainer, VisDonut } from '@unovis/vue'
 
@@ -107,7 +106,7 @@ const dayWinRate = computed(() => {
         </template>
       </UDashboardNavbar>
 
-      <div class="overflow-y-auto">
+      <div class="overflow-y-auto" :class="{'opacity-50': spinnerLoadingPage}">
         <!-- Calendar here -->
         <div class="px-4">
           <Calendar :small="true" />
@@ -158,7 +157,7 @@ const dayWinRate = computed(() => {
       <UDashboardPanelContent>
 
         <!-- Summary Cards-->
-        <Summary :trade="itemTrade" :index="index" v-for="(itemTrade, index) in filteredTrades"/>
+        <Summary :trade="itemTrade" :index="index" v-for="(itemTrade, index) in filteredTrades" :class="{'opacity-50': spinnerLoadingPage}"/>
 
       </UDashboardPanelContent>
 
