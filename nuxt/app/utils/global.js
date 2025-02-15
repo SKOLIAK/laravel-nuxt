@@ -43,7 +43,7 @@ export const traderTimeZone = ref("");
 export function useSetTimeZone(timezone) {
   traderTimeZone.value =
     timezone && timeZones.value.includes(timezone) ? timezone.trim() : timeZones.value[0];
-  console.log(" -> TimeZone for Trades: " + traderTimeZone.value);
+  console.log("-> USING TIMEZONE:", traderTimeZone.value)
 }
 
 export const spinnerLoadingPage = ref(false);

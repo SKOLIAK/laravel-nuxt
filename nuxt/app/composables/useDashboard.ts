@@ -6,10 +6,10 @@ const _useDashboard = () => {
   const isHelpSlideoverOpen = ref(false);
 
   defineShortcuts({
-    "g-h": () => router.push("/"),
-    "g-i": () => router.push("/inbox"),
-    "g-u": () => router.push("/users"),
-    "g-s": () => router.push("/settings"),
+    'shift_h': () => router.push("/"),
+    'shift_o': () => router.push("/summary"),
+    'shift_b': () => router.push("/dev2"),
+    'shift_s': () => router.push("/settings"),
     "?": () => (isHelpSlideoverOpen.value = true),
   });
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('date_unixes', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->bigInteger('date_unix');
-            $table->foreignUuid('user_id')->constrained()->cascade();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -10,17 +10,6 @@ export default defineNuxtPlugin({
     const auth = useAuthStore();
     const route = useRoute();
 
-    const authRoutes = [
-      "auth-reset-token",
-      "auth-forgot",
-      "auth-login",
-      "auth-register",
-      "auth-verify",
-    ];
-
-    if (!auth.logged && !authRoutes.includes(route.name)) {
-      window.location.href = "/auth/login";
-    }
 
     nuxtApp.provide("storage", (path: string): string => {
       if (!path) return "";

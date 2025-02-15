@@ -14,7 +14,13 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
     "@nuxt/icon",
+    "nuxt-tradingview",
+    "nuxt-highcharts"
   ],
+
+  tradingview: {
+    prefix: 'TV'
+  },
 
   compatibilityDate: "2024-07-03",
   rootDir: "nuxt/",
@@ -122,7 +128,7 @@ export default defineNuxtConfig({
       providers: {
         google: {
           name: "Google",
-          icon: "",
+          icon: "logos:google-icon",
           color: "gray",
         },
       },

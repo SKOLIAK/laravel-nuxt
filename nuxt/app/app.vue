@@ -1,9 +1,14 @@
 <script setup lang="ts">
+  import { getSessions } from '@/utils/sessions'
+
   const colorMode = useColorMode();
 
   const auth = useAuthStore();
+
   /** Important methods */
   useSetTimeZone(auth.logged ? auth.user.timezone : "");
+  await getSessions()
+
 
   const color = computed(() => (colorMode.value === "dark" ? "#111827" : "white"));
 
@@ -21,14 +26,12 @@
 </script>
 
 <template>
-  <div class="green-background">
     <NuxtLoadingIndicator />
 
     <NuxtLayout>
-      <NuxtPage />
+        <NuxtPage />
     </NuxtLayout>
 
     <UNotifications />
     <UModals />
-  </div>
 </template>

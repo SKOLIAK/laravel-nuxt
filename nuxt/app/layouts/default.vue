@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
   import { dashboards, dashboardMode } from '@/utils/global'
 
   import { instruments, selectedInstrument, sessions, selectedSession } from '@/utils/nitro'
@@ -7,6 +7,7 @@
   import { useCharts } from "@/utils/charts";
   import { loaderText, loaderActive } from '@/utils/loader'
 
+  import { Gradient } from '@/utils/gradient'
 
 
 function closeNitro() {
@@ -71,7 +72,8 @@ function closeNitro() {
 </script>
 
 <template>
-  <UDashboardLayout>
+
+  <UDashboardLayout class="">
     <UDashboardPanel class="!border-0" :width="233" collapsible>
       <UDashboardNavbar
         class="!justify-between mt-3 !border-transparent p-6 pb-4 pr-3"

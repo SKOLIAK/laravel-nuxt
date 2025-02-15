@@ -10,6 +10,12 @@ import dayjs from "dayjs"
   import VChart from "vue-echarts";
   const auth = useAuthStore();
   //
+
+  definePageMeta({
+    middleware: ["auth"],
+  });
+
+
   const items = [
     [
       {

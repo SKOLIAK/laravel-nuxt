@@ -15,7 +15,7 @@ return new class extends Migration
             $table->Uuid('id')->primary();
             $table->string('name');
             $table->string('color')->default('#000000');
-            $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

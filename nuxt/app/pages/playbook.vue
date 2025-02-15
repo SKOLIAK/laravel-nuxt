@@ -2,7 +2,9 @@
   import type { Playbook } from "~/types";
 
   //const { data: mails } = await useFetch<Mail[]>("/api/mails", { default: () => [] });
-
+    definePageMeta({
+    middleware: ["auth"],
+  });
   const playbooks = ref([
   {
       id: '48788a4b-a49a-49f5-a354-7a323d3e4dc3',

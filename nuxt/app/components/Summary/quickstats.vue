@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { amountCase } from '@/utils/global'
+
 defineProps({
   trade: {
     type: Object,
@@ -48,7 +50,7 @@ defineProps({
               : 'red-trade bg-red-trade',
           ]"
         >
-          {{ trade[amountCase + "Status"] }}
+          {{ useTwoDecCurrencyFormat(trade[amountCase + "Proceeds"]) }}
         </p>
       </div>
 

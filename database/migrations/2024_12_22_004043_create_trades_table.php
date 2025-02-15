@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('identifier');
 
 
-            $table->foreignUuid('date_unix_id')->constrained();
-            $table->foreignUuid('user_id')->constrained();
-            $table->foreignUuid('accounts_id')->constrained();
+            $table->foreignUuid('date_unix_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('accounts_id')->constrained()->cascadeOnDelete();
 
 
             $table->string('broker');

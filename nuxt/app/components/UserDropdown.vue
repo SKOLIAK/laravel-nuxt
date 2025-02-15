@@ -2,7 +2,13 @@
   import dayjs from "dayjs";
 
   const auth = useAuthStore();
+  const router = useRouter();
   const { $storage } = useNuxtApp();
+
+    function logMeOut() {
+
+        router.push('/auth/login');
+    }
 
   const items = computed(() => [
     [

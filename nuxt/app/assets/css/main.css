@@ -171,8 +171,19 @@ x-vue-echarts {
   @apply divide-gray-200 rounded-lg bg-white px-10 py-8 ring-1 ring-gray-200 sm:p-6 dark:divide-gray-800 dark:bg-gray-900 dark:ring-gray-700/50;
 }
 
+.no-content-1 {
+  background: url("@/assets/images/search-1.gif");
+}
+.no-content-2 {
+  background: url("@/assets/images/search-2.gif");
+}
+.no-content-3 {
+  background: url("@/assets/images/search-3.gif");
+}
+.no-content-4 {
+  background: url("@/assets/images/search-4.gif");
+}
 .no-content-img {
-  background: url("@/assets/images/empty-library.gif");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -188,7 +199,7 @@ x-vue-echarts {
 }
 
 .color-select {
-  @apply form-input relative block cursor-pointer rounded border-0 px-2.5 py-1.5 text-sm font-normal uppercase text-white/80 shadow-sm;
+  @apply form-input relative block cursor-pointer rounded-md border-0 px-2.5 py-1.5 text-sm font-normal uppercase text-white/80 shadow-sm ring-1 ring-inset ring-white/20;
 }
 
 /** Date range picker */
@@ -395,5 +406,23 @@ div[role="textbox"] ul,
 }
 
 .bg-backdrop {
-  @apply !bg-gray-950/25 !backdrop-blur-none;
+  @apply !bg-gray-950/25 backdrop-blur-sm;
+}
+.folder {
+  @apply rounded-md border-gray-700 bg-gray-700 ring-1 ring-inset ring-white/10;
+  position: relative;
+  width: 92px;
+  height: 64px;
+  display: block;
+  top: 10px;
+  z-index: 1;
+}
+.folder-tab {
+  height: calc(100% - 50%);
+  @apply absolute -top-4 block w-1/2 rounded-t-md border-gray-800 bg-gray-800 ring-1 ring-inset ring-white/10;
+}
+
+.folder-top {
+  height: calc(100% - 90%);
+  @apply absolute -top-4 block w-full rounded-t-md border-gray-800 bg-gray-800;
 }

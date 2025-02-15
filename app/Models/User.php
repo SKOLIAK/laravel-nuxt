@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Tag;
 use App\Models\Trade;
+use App\Models\Session;
 use App\Models\Accounts;
 use App\Models\DateUnix;
 use App\Models\TagGroup;
@@ -124,6 +125,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function screenshots(): HasMany
     {
         return $this->hasMany(Screenshot::class);
+    }
+
+    public function sessions() : HasMany
+    {
+        return $this->hasMany(Session::class);
     }
 
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { spinnerLoadingPage, spinnerLoadingPageText } from '@/utils/global'
   import {
-    BacktestingGroups,
-    isLoading,
+    BacktestFolders,
     isModalOpen,
     useCreateGroup,
     useDeleteGroup,
@@ -39,7 +39,11 @@
   function closeModal() {
     isModalOpen.value = false;
   }
-
+  defineExpose({
+    editGroup,
+    newGroup,
+    closeModal
+  })
   onBeforeMount(async () => {
     await useGetGroups();
   });
@@ -77,7 +81,7 @@
 
       <div
         class="absolute bottom-0 left-0 right-0 top-0 bg-white/10 backdrop-blur-sm"
-        v-if="isLoading"
+        v-if="spinnerLoadingPage"
       >
         <div
           role="status"
@@ -128,7 +132,7 @@
           <h3 class="inlinetext-base font-semibold leading-6 text-gray-900 dark:text-white" v-else>
             Update Backtest Folder
           </h3>
-          <UIcon name="svg-spinners:90-ring-with-bg" v-if="isLoading" />
+          <UIcon name="svg-spinners:90-ring-with-bg" v-if="spinnerLoadingPage" />
           <UButton
             color="gray"
             variant="ghost"
@@ -143,14 +147,14 @@
       <div class="flex flex-row items-start justify-start">
         <div class="mr-4 w-full">
           <UFormGroup label="Backtesting Folder Name" name="name" required>
-            <UInput v-model="data.name" type="text" autocomplete="off" :disabled="isLoading" />
+            <UInput v-model="data.name" type="text" autocomplete="off" :disabled="spinnerLoadingPage" />
           </UFormGroup>
         </div>
 
         <div>
           <UFormGroup label="Color" name="color">
             <UPopover>
-              <button :disabled="isLoading">
+              <button :disabled="spinnerLoadingPage">
                 <div class="color-select" id="color-select" :style="{ 'background-color': data.color }">
                   <span class="drop-shadow">{{ data.color }}</span>
                 </div>
@@ -171,7 +175,7 @@
             :ui="{ base: 'base-button p-6 btn mr-2' }"
             @click.prevent="useDeleteGroup(data.id)"
             v-if="modalMode == 1"
-            :disabled="isLoading"
+            :disabled="spinnerLoadingPage"
           >
             Delete
           </UButton>
@@ -184,7 +188,7 @@
           <UButton
             :ui="{ base: 'base-button btn' }"
             @click.prevent="useCreateGroup(data)"
-            :disabled="isLoading"
+            :disabled="spinnerLoadingPage"
             >Save</UButton
           >
         </div>

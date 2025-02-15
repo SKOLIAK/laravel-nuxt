@@ -9,9 +9,12 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DiariesController;
+use App\Http\Controllers\SessionController;
 use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\BacktestController;
 use App\Http\Controllers\TagGroupController;
 use App\Http\Controllers\ScreenshotController;
+use App\Http\Controllers\BacktestTradeController;
 use App\Http\Controllers\BacktestingGroupController;
 
 Route::get('/', function () {
@@ -51,10 +54,18 @@ Route::prefix('api/v1')->group(function () {
 
 
 
+        // Backtesting folders
         Route::delete('backtesting/groups', [BacktestingGroupController::class, 'delete'])->name('backtesting.groups.delete');
         Route::get('backtesting/groups', [BacktestingGroupController::class, 'index'])->name('backtesting.groups.get');
         Route::post('backtesting/groups', [BacktestingGroupController::class, 'add'])->name('backtesting.groups.add');
 
+        // Individual backtests
+        Route::post('backtesting', [BacktestController::class, 'create']);
+        Route::delete('backtesting', [BacktestController::class, 'delete']);
+        Route::put('backtesting', [BacktestController::class, 'update']);
+
+        // Add Trades for a backtest
+        Route::post('backtesting/trades', [BacktestTradeController::class, 'add']);
 
         Route::delete('screenshots', [ScreenshotController::class, 'delete'])->name('delete.screnshot');
 
@@ -69,6 +80,17 @@ Route::prefix('api/v1')->group(function () {
         Route::get('tags/groups', [TagGroupController::class, 'index'])->name('tags');
         Route::post('tags/groups', [TagGroupController::class, 'update'])->name('tags');
 
+
+        /**
+         * Trading Sessions
+         */
+        Route::get('sessions', [SessionController::class, 'index']);
+        Route::put('sessions', [SessionController::class, 'create']);
+        Route::post('sessions', [SessionController::class, 'update']);
+        Route::delete('sessions', [SessionController::class, 'delete']);
+
+
+
     });
 
     Route::get('trades', [TradeController::class, 'index'])->name('trades.get');
@@ -80,5 +102,5 @@ Route::prefix('api/v1')->group(function () {
 
     Route::get('tags', [TagsController::class, 'index']);
 
-    Route::get('dev', [TradeController::class, 'index'])->name('tags');
+    Route::get('dev', [SessionController::class, 'index'])->name('tags');
 });

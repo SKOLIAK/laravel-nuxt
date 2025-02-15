@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\BacktestingGroup;
+use App\Http\Resources\BacktestFolderResource;
 
 class BacktestingGroupController extends Controller
 {
@@ -11,7 +13,8 @@ class BacktestingGroupController extends Controller
     public function index(Request $request) {
         $user = $request->user();
         abort_if(!$user, 403);
-        return $user->backtestingGroups()->get()->toArray();
+
+        return BacktestFolderResource::collection($user->backtestingGroups);
     }
 
     public function add(Request $request) {

@@ -22,11 +22,11 @@
 <template>
   <UCard class="mx-auto my-20 w-full max-w-md">
     <div class="space-y-4">
-      <h1 class="mb-6 text-3xl font-medium">
+      <h1 class="mb-6 text-2xl font-medium">
         Email Verification
         <UIcon v-if="pending" name="i-heroicons-arrow-path-solid" class="animate-spin" />
-        <span v-else-if="error" class="text-red-500">Error</span>
-        <span v-else class="text-emerald-500">Done</span>
+        <span v-else-if="error" class="text-rose-500">Error</span>
+        <span v-else class="text-primary">Done</span>
       </h1>
       <div v-if="error && error.data?.message">{{ error.data?.message }}</div>
 

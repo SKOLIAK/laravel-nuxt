@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('diaries', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->text('body');
-            $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

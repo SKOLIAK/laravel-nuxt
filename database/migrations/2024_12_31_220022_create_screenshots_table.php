@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('screenshots', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('file');
-            $table->foreignUuid('trade_id')->constrained()->cascade();
-            $table->foreignUuid('user_id')->constrained()->cascade();
+            $table->foreignUuid('trade_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

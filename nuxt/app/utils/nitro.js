@@ -57,10 +57,10 @@ export function getSessionTimes(StartingTime = '00:00', HowManyTimes = 1) {
 }
 
 /** Configuration to get correct time buckets */
-const sessionTimeIterations = ref({
-  'ADR': { start: '20:30', x: 12 },
-  'ODR': { start: '04:00', x: 10 },
-  'RDR': { start: '10:30', x: 12 }
+export const sessionTimeIterations = ref({
+  'ADR': { start: '19:30', x: 14 },
+  'ODR': { start: '03:00', x: 12 },
+  'RDR': { start: '09:30', x: 14 }
 })
 
 /** Currently selected Session time array */

@@ -90,7 +90,7 @@ const screenshotUpload = ref('')
                 >
                   <div class="w-3 h-5 ring-1 ring-inset ring-white/10" :style="{'background': loadedTradeViewData.account.color}"></div>
                   <div class="py-0.5 px-1.5">
-                    {{ loadedTradeViewData.account.nickname }}
+                    {{ loadedTradeViewData.account.nickname ?? loadedTradeViewData.account.name }}
                   </div>
                 </span>
               </div>

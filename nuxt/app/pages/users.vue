@@ -77,12 +77,15 @@
       selected.value.splice(index, 1);
     }
   }
-
+  definePageMeta({
+    middleware: ["auth"],
+  });
   defineShortcuts({
     "/": () => {
       input.value?.input?.focus();
     },
   });
+
 </script>
 
 <template>

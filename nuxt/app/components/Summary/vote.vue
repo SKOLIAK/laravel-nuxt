@@ -17,7 +17,7 @@ function rateIt(_unix, _rating) {
       },
       ignoreResponseError: true,
       onResponse({ response }) {
-        emit("update:modelValue", response._data.rating);
+        emit("update:modelValue", response._data.rating)
       },
     });
 }

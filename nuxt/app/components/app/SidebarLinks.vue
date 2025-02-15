@@ -11,10 +11,10 @@
         <div class="navlink-active mr-4 h-4 w-1 rounded rounded-bl-none rounded-tl-none"></div>
         <!--active-->
         <div
-          class="navlink-active-card ring-gray-300/10 ring-inset mr-4 flex grow items-center rounded-lg p-1 text-sm font-medium text-white/70 group-hover:text-white transition-all duration-500 group-hover:bg-gray-800 group-hover:ring-1"
+          class="navlink-active-card ring-white/10 ring-inset mr-4 flex grow items-center rounded-lg p-1 text-sm font-medium text-white/70 group-hover:text-white transition-all duration-500 group-hover:ring-1"
         >
           <div
-            class="icon text-base filter grayscale group-hover:grayscale-0 mr-2 flex items-center rounded-lg bg-white/5 p-2 text-gray-500 ring-1 ring-inset ring-gray-700/50 transition-all duration-500 group-hover:bg-gray-800 group-hover:ring-0"
+            class="icon text-base filter grayscale group-hover:grayscale-0 mr-2 flex items-center rounded-lg bg-white/5 p-2 text-gray-500 ring-1 ring-inset ring-white/10 transition-all duration-500 group-hover:bg-gray-800 group-hover:ring-0"
           >
             <UIcon :name="link.icon" size="1.2em" />
           </div>

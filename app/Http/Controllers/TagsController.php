@@ -12,7 +12,6 @@ class TagsController extends Controller
 {
     public function index(Request $request) {
         $user = $request->user();
-        $user = User::first();
         abort_if(!$user, 400);
 
         return TagResource::collection($user->tags()->with('group')->get());

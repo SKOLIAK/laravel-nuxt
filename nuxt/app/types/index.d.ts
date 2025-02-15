@@ -7,6 +7,46 @@ export type Accounts = {
   nickname: string;
 };
 
+export type Trade = {
+    identifier: string,
+    symbol: string,
+    symbol_tw: string,
+    direction: "long" | "short",
+    symbolOriginal: string,
+    timeframe: string,
+    entryTime: number,
+    exitTime: number,
+    day_of_week: number,
+    quantity: number,
+    entry: number,
+    target: number,
+    stop: number,
+    exit: number,
+    outcome: "win" | "loss" | "be",
+    rr: number,
+    rrr: number,
+    fees: number,
+    netProceeds: number,
+    grossProceeds: number | 0,
+    session: string | null,
+}
+
+export type Backtest = {
+  id: number|null;
+  name: string;
+  starting_balance: number;
+  ending_balance: number;
+  wins: number;
+  losses: number;
+  break_evens: number;
+  gain: number;
+  totalR: number;
+  percentage: number;
+  group: object;
+  trades: string[];
+  symbols: string[];
+};
+
 export type User = {
   ulid: string;
   name: string;

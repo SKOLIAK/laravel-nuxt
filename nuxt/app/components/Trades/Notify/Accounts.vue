@@ -2,7 +2,7 @@
   <div
     class="group flex items-center justify-center gap-x-4 rounded-lg border border-dashed border-emerald-600 bg-emerald-950 px-4 py-3 text-sm font-medium text-emerald-300 transition-all duration-200 hover:border-emerald-400"
   >
-    <UIcon name="tabler:info-triangle-filled" size="2em" />
+    <UIcon name="solar:info-square-broken" size="2em" />
     <div>
       Before you can paste trades, you need to go to
       <NuxtLink to="/settings/accounts" class="focus:outline-none" @click="$emit('navigate')">

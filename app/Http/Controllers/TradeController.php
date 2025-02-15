@@ -18,7 +18,6 @@ class TradeController extends Controller
     public function update(Request $request) {
 
         $user = $request->user();
-        $user = User::first();
         abort_if(!$user, 400);
 
         $trade = $user->trades->where('identifier', $request['data']['id'])->first();
@@ -58,7 +57,6 @@ class TradeController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $user = User::first();
         abort_if(!$user, 400);
         return DateUnixTradesResource::collection(
             $user->dateUnix()->with('tags')->whereHas('trades', function($q) {

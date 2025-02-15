@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ratings', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('trade_id')->cascade();
+            $table->foreignUuid('trade_id')->constrained()->cascadeOnDelete();
             $table->integer('preparation')->unsigned()->default(0);
             $table->integer('entry')->unsigned()->default(0);
             $table->integer('stop_loss')->unsigned()->default(0);

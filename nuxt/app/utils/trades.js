@@ -25,6 +25,9 @@ export const pAndL = reactive({});
 
 export const trades = reactive([]);
 
+
+
+
 export async function useGetFilteredTrades(param) {
   console.info("\n✅ GETTING FILTERED TRADES");
   return new Promise(async (resolve, reject) => {

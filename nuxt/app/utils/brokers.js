@@ -26,7 +26,7 @@ export const tradovateTiers = ref([
     label: "Topstep",
   },
 ]);
-export const selectedTradovateTier = ref("");
+export const selectedTradovateTier = ref(tradovateTiers.value[0]);
 
 export async function useTradovate(param) {
   return new Promise(async (resolve, reject) => {
