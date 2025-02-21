@@ -1,6 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: ["@nuxt/ui-pro"],
+  extends: [
+    // Nuxt UI Pro
+    "@nuxt/ui-pro",
+
+    // Layers
+    "nuxt/app/modules/dashboard",
+    "nuxt/app/modules/backtester",
+],
 
   modules: [
     "@nuxt/ui",
@@ -17,7 +24,6 @@ export default defineNuxtConfig({
     "nuxt-tradingview",
     "nuxt-highcharts"
   ],
-
   tradingview: {
     prefix: 'TV'
   },

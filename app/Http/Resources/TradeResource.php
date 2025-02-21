@@ -26,7 +26,7 @@ class TradeResource extends JsonResource
             'entryPrice' => $this->entryPrice,
             'exitTime' => $this->exitTime,
             'exitPrice' => $this->exitPrice,
-            'strategy' => $this->strategy,
+            'direction' => $this->direction,
             'side' => $this->side,
             'buyQuantity' => $this->buyQuantity,
             'sellQuantity' => $this->sellQuantity,

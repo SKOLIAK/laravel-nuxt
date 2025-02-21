@@ -225,7 +225,7 @@ export async function useGetFilteredTrades(param) {
               }
             }
 
-            if ((selectedRange.value.start === 0 && selectedRange.value.end === 0 ? element.td >= selectedRange.value.start : element.td >= selectedRange.value.start && element.td < selectedRange.value.end) && selectedPositions.value.includes(element.strategy) && selectedAccounts.value.includes(element.account) && tradeTagsSelected) {
+            if ((selectedRange.value.start === 0 && selectedRange.value.end === 0 ? element.td >= selectedRange.value.start : element.td >= selectedRange.value.start && element.td < selectedRange.value.end) && selectedPositions.value.includes(element.direction) && selectedAccounts.value.includes(element.account) && tradeTagsSelected) {
 
               ///
                // We're using tempArray to be able to group
@@ -414,7 +414,7 @@ export async function useTotalTrades() {
 
         * at the same time, we will push each trade inside trades
         * that way we have a list of trades that we can group
-        * according to grouping need (per date but also entry, strategy, etc.)
+        * according to grouping need (per date but also entry, direction, etc.)
         */
 
         temp1.push(el);

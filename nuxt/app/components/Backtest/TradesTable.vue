@@ -98,8 +98,8 @@ const Comp = computed(() => {
             <td class="px-3 py-2">{{ trade.symbol }}</td>
             <td class="px-3 py-2">{{ trade.session }}</td>
             <td class="px-3 py-2 capitalize">
-                {{ trade.strategy }}
-                <UIcon v-if="trade.strategy == 'long'" name="akar-icons:arrow-up-right" class="green-trade"/>
+                {{ trade.direction }}
+                <UIcon v-if="trade.direction == 'long'" name="akar-icons:arrow-up-right" class="green-trade"/>
                 <UIcon v-else name="akar-icons:arrow-down-right" class="red-trade"/>
             </td>
             <td class="px-3 py-2">

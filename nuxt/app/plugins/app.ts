@@ -93,6 +93,7 @@ export default defineNuxtPlugin({
       },
 
       onResponseError({ response }) {
+        console.log(response._data)
         if (response.status === 401) {
           if (auth.logged) {
             auth.token = "";

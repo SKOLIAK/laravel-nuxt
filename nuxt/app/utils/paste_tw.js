@@ -57,7 +57,7 @@ function buildPasteObject() {
         let types = ["LineToolRiskRewardLong", "LineToolRiskRewardShort"];
         if (types.includes(Obj.source.type)) {
             let temp = {};
-            temp.strategy = Obj.source.type.replace("LineToolRiskReward", "").toLowerCase();
+            temp.direction = Obj.source.type.replace("LineToolRiskReward", "").toLowerCase();
 
             let contractSpecs = futureContractsJson.value.filter(
                 (x) => x.symbol == Obj.source.state.symbol.split(":")[1].split("1!")[0]
@@ -145,11 +145,11 @@ function buildPasteObject() {
 
             temp.entry = Obj.source.points[0].price;
             temp.target = getTargetPrice(
-                temp.strategy,
+                temp.direction,
                 temp.entry,
                 Obj.source.state.profitLevel * ticks
             );
-            temp.stop = getStopPrice(temp.strategy, temp.entry, Obj.source.state.stopLevel * ticks);
+            temp.stop = getStopPrice(temp.direction, temp.entry, Obj.source.state.stopLevel * ticks);
             temp.quantity = Obj.source.state.qty;
             temp.outcome = Obj.source.points[3]
                 ? Obj.source.points[3].price == temp.target
@@ -175,9 +175,9 @@ function buildPasteObject() {
     resolve();
 })}
 
-function getTargetPrice(strategy, entry, ticks) {
-  return parseFloat(strategy == "long" ? entry + ticks : entry - ticks);
+function getTargetPrice(direction, entry, ticks) {
+  return parseFloat(direction == "long" ? entry + ticks : entry - ticks);
 }
-function getStopPrice(strategy, entry, ticks) {
-  return parseFloat(strategy == "long" ? entry - ticks : entry + ticks);
+function getStopPrice(direction, entry, ticks) {
+  return parseFloat(direction == "long" ? entry - ticks : entry + ticks);
 }

@@ -9,9 +9,7 @@
 html,
 body {
   @apply overflow-x-hidden;
-  font-family: "Nunito";
   @apply text-gray-900;
-  /*background: #061b16 !important;*/
   @apply bg-gray-950;
 }
 
@@ -20,10 +18,9 @@ body {
     @apply flex min-h-screen flex-col;
   }
 
-  html {
-    @apply text-gray-800 dark:bg-gray-900;
+  html.light {
+    @apply bg-white text-gray-900;
   }
-
   html.dark {
     @apply bg-gray-900 text-gray-50;
   }
@@ -328,6 +325,13 @@ x-vue-echarts {
   }
 }
 
+#gradient-canvas {
+  --gradient-color-1: theme("colors.teal.200");
+  --gradient-color-2: theme("colors.teal.500");
+  --gradient-color-3: theme("colors.teal.800");
+  --gradient-color-4: theme("colors.gray.800");
+}
+
 .trade-overview-screenshots img {
   @apply mb-4 cursor-pointer rounded-lg shadow ring-1 ring-gray-200;
 }
@@ -425,4 +429,10 @@ div[role="textbox"] ul,
 .folder-top {
   height: calc(100% - 90%);
   @apply absolute -top-4 block w-full rounded-t-md border-gray-800 bg-gray-800;
+}
+
+:root {
+  --vis-tooltip-background-color: theme("colors.gray.800") !important;
+  --vis-tooltip-border-color: theme("colors.gray.700") !important;
+  --vis-tooltip-text-color: theme("colors.white") !important;
 }

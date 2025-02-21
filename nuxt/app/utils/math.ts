@@ -132,7 +132,7 @@ export function getMode(array: number[]): number {
     for (let key in obj) {
         const value = obj[key]
 
-        if(value >= highestValue && Number(key) > highestValueKey) {
+        if(value >= highestValue) {
             highestValue    = value
             highestValueKey = Number(key)
         }

@@ -93,7 +93,7 @@ const _useTWPaste = () => {
                 trade.entryTime         = Obj.source.points[0].time_t
                 trade.exitTime          = Obj.source.points[1].time_t
                 trade.day_of_week       = Number(dayjs.unix(trade.entryTime).day())
-                trade.quantity          = Number(Obj.source.state.qty.toFixed(2))
+                trade.quantity          = Number(useTwoDecFormat(Obj.source.state.qty.toFixed(2)))
                 trade.entry             = Obj.source.points[0].price
                 trade.target            = getTargetPrice(
                                             trade.direction,

@@ -47,6 +47,13 @@ export type Backtest = {
   symbols: string[];
 };
 
+export type TradingSession = {
+    name: string,
+    start: string,
+    end: string,
+    id: string,
+    color: string
+}
 export type User = {
   ulid: string;
   name: string;
@@ -59,6 +66,12 @@ export type User = {
   timezone: string;
   unixes: string[];
   accounts: Account[];
+  sessions: TradingSession[];
+};
+
+type ChartDataRecord = {
+    riskToReward: object[];
+    sessionGain: object[];
 };
 
 export interface Playbook {

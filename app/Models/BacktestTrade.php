@@ -14,7 +14,7 @@ class BacktestTrade extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'identifier', 'strategy', 'symbol', 'symbol_tw', 'symbolOriginal', 'entryTime', 'exitTime',
+        'identifier', 'direction', 'symbol', 'symbol_tw', 'symbolOriginal', 'entryTime', 'exitTime',
         'day_of_week', 'session', 'entry', 'target', 'stop', 'quantity', 'outcome', 'rrr', 'netProceeds', 'gain',
         'timeframe'
     ];

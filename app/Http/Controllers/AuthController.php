@@ -178,12 +178,13 @@ class AuthController extends Controller
             'ok' => true,
             'user' => [
                 ...$user->toArray(),
-                'must_verify_email' => $user->mustVerifyEmail(),
-                'has_password' => (bool) $user->password,
-                'timezone' => $user->timezone,
-                'providers' => $user->userProviders()->select('name')->pluck('name'),
-                'accounts' => $user->accounts->all(),
-                'unixes' => $user->dateUnix()->select(['date_unix'])->get()->toArray()
+                'must_verify_email'     => $user->mustVerifyEmail(),
+                'has_password'          => (bool) $user->password,
+                'timezone'              => $user->timezone,
+                'providers'             => $user->userProviders()->select('name')->pluck('name'),
+                'accounts'              => $user->accounts->all(),
+                'unixes'                => $user->dateUnix()->select(['date_unix'])->get()->toArray(),
+                'sessions'              => $user->sessions
             ],
         ]);
     }

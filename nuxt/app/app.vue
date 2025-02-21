@@ -7,7 +7,7 @@
 
   /** Important methods */
   useSetTimeZone(auth.logged ? auth.user.timezone : "");
-  await getSessions()
+  //await getSessions()
 
 
   const color = computed(() => (colorMode.value === "dark" ? "#111827" : "white"));
