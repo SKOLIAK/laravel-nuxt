@@ -5,30 +5,30 @@ export default defineNuxtConfig({
     "@nuxt/ui-pro",
 
     // Layers
-    "nuxt/app/modules/auth",
-    "nuxt/app/modules/tradingview",
     "nuxt/app/modules/dashboard",
     "nuxt/app/modules/backtester",
   ],
 
-  css: [
-    "~/assets/css/main.css",
-    "~/assets/css/gradient.css"
+  modules: [
+    "@nuxt/ui",
+    "@nuxt/fonts",
+    "@nuxt/image",
+    "@pinia/nuxt",
+    "nuxt-security",
+    "@nuxtjs/tailwindcss",
+    "dayjs-nuxt",
+    "nuxt-tiptap-editor",
+    "@nuxtjs/color-mode",
+    "@vueuse/nuxt",
+    "@nuxt/icon",
+    "nuxt-highcharts"
   ],
 
-  modules: ["@nuxt/ui", "@pinia/nuxt", "@nuxtjs/color-mode", "@nuxtjs/device"],
-
-
-  devtools: { enabled: true },
-  compatibilityDate: "2025-02-26",
-  future: { compatibilityVersion: 4 },
+  compatibilityDate: "2024-07-03",
   rootDir: "nuxt/",
 
-  pinia: {
-    storesDirs: [
-      'app/stores/**',
-      'app/modules/**/stores/**'
-    ]
+  future: {
+    compatibilityVersion: 4,
   },
 
   fonts: {
@@ -60,7 +60,6 @@ export default defineNuxtConfig({
     ssr: false,
   },
 
-
   app: {
     head: {
       title: "Dashboard",
@@ -79,6 +78,8 @@ export default defineNuxtConfig({
   routeRules: {
     "auth/verify": { ssr: false },
   },
+
+  css: ["~/assets/css/main.css"],
 
   image: {
     domains: [import.meta.env.APP_URL || "http://127.0.0.1:8000"],
@@ -142,7 +143,7 @@ export default defineNuxtConfig({
   },
 
   colorMode: {
-    preference: "dark",
+    preference: 'dark',
     classSuffix: "",
   },
 

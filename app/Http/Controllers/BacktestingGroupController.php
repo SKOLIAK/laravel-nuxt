@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use stdClass;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\BacktestingGroup;
+use App\Http\Resources\Backtesting\FolderResource;
 use App\Http\Resources\BacktestFolderResource;
 
 class BacktestingGroupController extends Controller
@@ -17,42 +19,54 @@ class BacktestingGroupController extends Controller
         return BacktestFolderResource::collection($user->backtestingGroups);
     }
 
+
+    /** Create or update existing backtesting folder */
     public function add(Request $request) {
+        $user = $request->user();
+        abort_if(!$user, 403);
+
         $request->validate([
             'name' => ['required', 'string'],
             'color' => ['required']
         ]);
 
-        $user = $request->user();
-        abort_if(!$user, 403, 'Not authorised');
+        $response = [
+            'status' => 'ok',
+            'message' => '',
+            'data' => new stdClass()
+        ];
 
+        $success = false;
 
-        /** We're editing a group */
-        if (request('id') != null) {
-            $group = $user->backtestingGroups()->where('id', request('id'))->update([
-                'name' => request('name'),
-                'color' => request('color')
+        // No ID has been passed, meaning we're creating a new Folder
+        if(! $request->id) {
+        
+            $success = $response['data'] = $user->backtestingGroups()->create([
+                'name' => $request->name,
+                'color' => $request->color
             ]);
-        } else {
-            /** Creating a new group */
-            $group = $user->backtestingGroups()->create([
-                'name' => request('name'),
-                'color' => request('color')
+
+        }
+
+        if( $request->id) {
+            $response['data'] = $user->backtestingGroups()->where('id', $request->id)->first();
+            $success = $response['data']->update([
+                'name' => $request->name,
+                'color' => $request->color
             ]);
         }
 
+        $response['data'] = new FolderResource($response['data']);
 
-        return response()->json([
-            'status' => $group ? 'ok' : 'false',
-            'message' => $group ? request('id') ? 'Folder has been updated' : 'Folder has been created' : 'Something went wrong'
-        ]);
+        $response['message'] = sprintf('Folder `%s` has been %s', $response['data']->name, $request->id ? 'updated' : 'created');
+        return response()->json($response);
+
     }
 
     public function delete(Request $request) {
 
         $user = $request->user();
-        abort_if(!$user, 403);
-        abort_if(!$request['id'], 500);
+        abort_if(!$user || !$request['id'], 403);
 
         $group = $user->backtestingGroups()->where('id', $request['id'])->delete();
 

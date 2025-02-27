@@ -1,3 +1,0 @@
-<template>
-    Modules: Dashboard
-</template>

@@ -1,0 +1,6 @@
+#gradient-canvas {
+    --gradient-color-1: theme("colors.blue.200");
+    --gradient-color-2: theme("colors.gray.500");
+    --gradient-color-3: theme("colors.gray.700");
+    --gradient-color-4: theme("colors.gray.900");
+  }
