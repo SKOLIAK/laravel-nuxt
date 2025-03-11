@@ -39,6 +39,7 @@ const _useBacktester = () => {
   const ModalOpen = ref(false)
   const IsDirty = ref(false)
   const IsSaving = ref(false)
+  const selectedTrades = ref([])
 
   /** Chart Data */
   const ChartData = ref(<ChartDataRecord>{
@@ -519,7 +520,9 @@ const _useBacktester = () => {
 
     createBacktest,
     updateBacktest,
-    useDeleteBacktest
+    useDeleteBacktest,
+
+    selectedTrades
   };
 };
 
