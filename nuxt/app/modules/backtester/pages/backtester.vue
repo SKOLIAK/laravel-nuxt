@@ -17,6 +17,11 @@ import { BFolderActionsModal } from '#components';
 
       </template>
     </UDashboardNavbar>
+
+      <BTradesTable />
+
+    
+    
   </UDashboardContent>
 
 
