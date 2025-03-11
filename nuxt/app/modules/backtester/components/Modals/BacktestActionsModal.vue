@@ -65,7 +65,7 @@ defineExpose({NewBacktest, EditBacktest})
 
               <!-- Modal Title Description -->
               <p class="text-xs opacity-50">
-                  Your individual backtests belong folders. With each different backtest you can fine tune, test & optimise your strategies
+                  Your individual backtests belongs to folders. With each different backtest you can fine tune, test & optimise your strategies. 
               </p>
           </div>
           <UButton
