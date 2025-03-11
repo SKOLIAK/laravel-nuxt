@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { UDashboardSidebarLinks } from '#components'
+
 const route = useRoute()
 const toast = useToast()
 
@@ -14,39 +16,54 @@ const links = [[
   //   id: "summary",
   //   label: "Summary",
   //   icon: "unjs:defu",
-  //   to: "/summary",
+  //   to: "/1",
   // },
-  // {
-  //   id: "trades",
-  //   label: "Trades",
-  //   icon: "unjs:destr",
-  //   to: "/trades",
-  // },
+  {
+    id: "tradingPlan",
+    label: "Trading Plan",
+    //icon: "unjs:destr",
+    icon: "fxemoji:notebook",
+    to: "/trading-plan",
+    disabled: false
+  },
   // {
   //   id: "playbooks",
   //   label: "Playbooks",
   //   icon: "unjs:knitwork",
-  //   to: "/playbook",
+  //   to: "/1",
   // },
   {
     id: "backtester",
     label: "Backtester",
     icon: "unjs:unplugin",
     to: "/backtester",
-  }], 
+  }]
 
-[{
-  label: 'Feedback',
-  icon: 'i-lucide-message-circle',
-  to: 'https://github.com/nuxt-ui-pro/dashboard',
-  target: '_blank'
-}, {
-  label: 'Help & Support',
-  icon: 'i-lucide-info',
-  to: 'https://github.com/nuxt/ui-pro',
-  target: '_blank'
-}]]
+]
 
+
+
+onMounted(async () => {
+  const cookie = useCookie('cookie-consent')
+
+  toast.add({
+    title: 'We use first-party cookies to enhance your experience on our website.',
+    duration: 200,
+    close: false,
+    actions: [{
+      label: 'Accept',
+      color: 'gray',
+      variant: 'outline',
+      onClick: () => {
+        cookie.value = 'accepted'
+      }
+    }, {
+      label: 'Opt out',
+      color: 'gray',
+      variant: 'ghost'
+    }]
+  })
+})
 const groups = computed(() => [{
   id: 'links',
   label: 'Go to',
@@ -63,30 +80,6 @@ const groups = computed(() => [{
   }]
 }])
 
-onMounted(async () => {
-  const cookie = useCookie('cookie-consent')
-  if (cookie.value === 'accepted') {
-    return
-  }
-
-  toast.add({
-    title: 'We use first-party cookies to enhance your experience on our website.',
-    duration: 0,
-    close: false,
-    actions: [{
-      label: 'Accept',
-      color: 'neutral',
-      variant: 'outline',
-      onClick: () => {
-        cookie.value = 'accepted'
-      }
-    }, {
-      label: 'Opt out',
-      color: 'neutral',
-      variant: 'ghost'
-    }]
-  })
-})
 </script>
 
 <template>
@@ -107,18 +100,21 @@ onMounted(async () => {
           </template>
       </UDashboardNavbar>
 
-
-      <SidebarLinks :links="links[0]" />
-      <UDashboardSidebarLinks :links="links[1]" />
+      <UDashboardSidebarLinks :links="links[0]" />
 
 
-      <USelectMenu></USelectMenu>
+      <UCallout color="orange" icon="heroicons:exclamation-triangle" class="mx-3 text-xs">
+        Welcome to the BETA. You may encounter bugs or things not working as they're indended to. Please be patient with us as this app is still work in progress. 
+      </UCallout>
+
+
+
 
     </UDashboardPanel>
 
-    <div class="bg-white dark:bg-gray-800 no-scrollbar relative m-4 ml-0 w-full overflow-y-auto rounded-xl ring-1 ring-inset ring-gray-200 dark:ring-white/5">
+    <UDashboardPage>
       <slot />
-    </div>
+    </UDashboardPage>
    
 
   </UDashboardLayout>

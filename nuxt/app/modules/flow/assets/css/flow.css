@@ -1,0 +1,133 @@
+@import 'https://cdn.jsdelivr.net/npm/@vue-flow/core@1.42.1/dist/style.css';
+@import 'https://cdn.jsdelivr.net/npm/@vue-flow/core@1.42.1/dist/theme-default.css';
+@import 'https://cdn.jsdelivr.net/npm/@vue-flow/controls@latest/dist/style.css';
+@import 'https://cdn.jsdelivr.net/npm/@vue-flow/minimap@latest/dist/style.css';
+@import 'https://cdn.jsdelivr.net/npm/@vue-flow/node-resizer@latest/dist/style.css';
+
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+}
+
+#app {
+  font-family: 'JetBrains Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.vue-flow__controls {
+    @apply shadow-none;
+}
+
+.vue-flow__minimap {
+  transform: scale(75%);
+  transform-origin: bottom right;
+  @apply !bg-white dark:!bg-gray-700 rounded-lg 
+}
+
+.vue-flow__minimap-node, .vue-flow__minimap-mask {
+    @apply !fill-gray-100 dark:!fill-gray-800/70
+}
+
+.basic-flow .vue-flow__controls {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center
+}
+
+.basic-flow .vue-flow__controls .vue-flow__controls-button svg {
+    height:100%;
+    width:100%
+}
+
+.basic-flow .vue-flow__controls .vue-flow__controls-button {
+    @apply border-none rounded-md mr-1 ring-1 ring-inset ring-white/10
+}
+.vue-flow__controls-button {
+    @apply !bg-background !text-foreground !fill-foreground
+}
+
+.vue-flow__node .vue-flow__node-custom {
+  &.selected {
+    @apply !border-primary-500
+  }
+}
+
+
+
+
+
+
+
+
+
+.dnd-flow {
+  flex-direction:column;
+  display:flex;
+  height:100%
+}
+
+.dnd-flow aside {
+  color:#fff;
+  font-weight:700;
+  border-right:1px solid #eee;
+  padding:15px 10px;
+  font-size:12px;
+  background:#10b981bf;
+  @apply p-4;
+  -webkit-box-shadow:0px 5px 10px 0px rgba(0,0,0,.3);
+  box-shadow:0 5px 10px #0000004d
+}
+
+.dnd-flow aside .nodes>* {
+  margin-bottom:10px;
+  cursor:grab;
+  font-weight:500;
+  -webkit-box-shadow:5px 5px 10px 2px rgba(0,0,0,.25);
+  box-shadow:5px 5px 10px 2px #00000040
+}
+
+.dnd-flow aside .description {
+  margin-bottom:10px
+}
+
+.dnd-flow .vue-flow-wrapper {
+  flex-grow:1;
+  height:100%
+}
+
+@media screen and (min-width: 640px) {
+  .dnd-flow {
+  flex-direction:row
+}
+
+.dnd-flow aside {
+  min-width:25%
+}
+
+
+}
+
+@media screen and (max-width: 639px) {
+  .dnd-flow aside .nodes {
+  display:flex;
+  flex-direction:row;
+  gap:5px
+}
+
+
+}
+
+.dropzone-background {
+  @apply relative w-full h-full transition-all duration-200
+}
+.dropzone-background.active {  
+  @apply !bg-primary-500/5;
+}
+.dropzone-background .overlay {
+  @apply absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none z-10
+}

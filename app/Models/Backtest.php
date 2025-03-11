@@ -17,7 +17,7 @@ class Backtest extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name'
+        'name', 'backtesting_group_id'
     ];
 
 

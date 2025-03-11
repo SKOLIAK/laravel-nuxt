@@ -11,13 +11,6 @@
     @apply flex min-h-screen flex-col;
   }
 
-  html.light body {
-    @apply !bg-gray-100;
-  }
-  html.dark body {
-    @apply !bg-gray-900;
-  }
-
   button,
   a,
   [role="button"] {
@@ -45,19 +38,6 @@
 
 .logo-light {
   @apply !invert !filter;
-}
-
-.navlink.router-link-active {
-  .navlink-active {
-    @apply bg-white;
-  }
-  .navlink-active-card {
-    @apply bg-gray-800 text-white ring-1 ring-gray-700/25 hover:ring-gray-700/50;
-
-    .icon {
-      @apply bg-transparent !ring-0 !grayscale-0;
-    }
-  }
 }
 
 .green-trade {

@@ -1,0 +1,9 @@
+body {
+    @apply antialiased font-sans text-sm bg-background text-foreground;
+}
+.color-select {
+    @apply form-input relative block cursor-pointer rounded-md border-0 px-2.5 py-1.5 text-sm font-normal uppercase text-white/80 shadow-sm ring-1 ring-inset ring-white/20;
+}
+.ck-cp-container {
+    @apply bg-white dark:bg-background;
+}

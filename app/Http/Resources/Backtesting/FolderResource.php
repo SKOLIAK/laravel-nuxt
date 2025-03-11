@@ -18,8 +18,7 @@ class FolderResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'color' => $this->color,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'backtests' => BacktestResource::collection($this->backtests)
         ];
     }
 }

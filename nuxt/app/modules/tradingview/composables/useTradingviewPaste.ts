@@ -63,7 +63,16 @@ const _useTradingviewPaste = () => {
         let types = ["LineToolRiskRewardLong", "LineToolRiskRewardShort"]
         if (!types.includes(Obj.source.type)) return
 
-        let symbol = Obj.source.state.symbol.split(":")[1].split("1!")[0]
+        let symbol = Obj.source.state.symbol
+
+        if (symbol.includes(':')) {
+          symbol = Obj.source.state.symbol.split(":")[1].split("1!")[0]
+        } else {
+          symbol = symbol.replaceAll('1!', '')
+          symbol = symbol.replaceAll('/', '')
+        }
+
+        console.warn(symbol)
 
         /** Retrieve information about the security traded */
         let contractSpecs = futureContractsJson.value.filter(
@@ -157,7 +166,7 @@ const _useTradingviewPaste = () => {
 
 
 
-  return { PasteObject };
+  return { PasteObject, ClipboardObject };
 };
 
 export const useTradingviewPaste = createSharedComposable(_useTradingviewPaste);

@@ -2,21 +2,25 @@
 export default defineNuxtConfig({
   extends: [
     // Nuxt UI Pro
-    "@nuxt/ui-pro",
+    // "@nuxt/ui-pro",
 
     // Layers
+    "nuxt/app/modules/ui",
     "nuxt/app/modules/auth",
+    "nuxt/app/modules/flow",
     "nuxt/app/modules/tradingview",
     "nuxt/app/modules/dashboard",
     "nuxt/app/modules/backtester",
   ],
+
+  ssr: false,
 
   css: [
     "~/assets/css/main.css",
     "~/assets/css/gradient.css"
   ],
 
-  modules: ["@nuxt/ui", "@pinia/nuxt", "@nuxtjs/color-mode", "@nuxtjs/device"],
+  modules: ["@pinia/nuxt", "@nuxtjs/color-mode", "@nuxtjs/device"],
 
 
   devtools: { enabled: true },
@@ -48,18 +52,6 @@ export default defineNuxtConfig({
    * @see [Nuxt Telemetry](https://github.com/nuxt/telemetry) for more information.
    */
   telemetry: true,
-
-  $development: {
-    ssr: false,
-    devtools: {
-      enabled: true,
-    },
-  },
-
-  $production: {
-    ssr: false,
-  },
-
 
   app: {
     head: {
@@ -124,7 +116,7 @@ export default defineNuxtConfig({
     apiLocal: import.meta.env.API_LOCAL_URL,
     public: {
       apiBase: import.meta.env.APP_URL,
-      apiPrefix: "/api/v1",
+      apiPrefix: "/api/v2",
       storageBase: import.meta.env.APP_URL + "/storage/",
       providers: {
         google: {

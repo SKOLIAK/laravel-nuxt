@@ -3,10 +3,9 @@ const { SelectedFolder, SelectedBacktest } = useBacktester()
 </script>
 <template>
     <!-- Backtest Select Dropdown-->
-    <USelectMenu class="min-w-44 max-w-80" v-if="!isObjectEmpty(SelectedFolder)" :options="SelectedFolder.backtests" v-model="SelectedBacktest" searchable option-attribute="name" :search-attributes="['name']">
+    <USelectMenu class="w-full" :options="SelectedFolder.backtests" v-model="SelectedBacktest" searchable option-attribute="name" :search-attributes="['name']">
         <template #option="{ option: backtest }">
-            <div class="bg-gray-700 ring-1 ring-inset ring-white/10 rounded text-xs py-0.5 px-1 font-medium">
-                <span class="drop-shadow">
+            <UBadge color="green" size="xs">
                     <template v-if="backtest.trades.length">
                         {{ useTwoDecPercentFormat(
                             backtest.trades.filter(x => x.outcome.toLowerCase() == 'win').length /
@@ -15,8 +14,7 @@ const { SelectedFolder, SelectedBacktest } = useBacktester()
                         ) }}
                     </template>
                     <template v-else>0%</template>
-                </span>
-            </div>
+            </UBadge>
             <!-- <UIcon name="solar:document-text-line-duotone" class="w-4 h-4 shrink-0" /> -->
             <span class="truncate text-ellipsis" :title="backtest.name">
                 {{ backtest.name }}

@@ -30,10 +30,12 @@ const _useBacktester = () => {
   /** Variables */
   const Folders = ref([])
   const FolderForm = ref()
+  const BacktestForm = ref()
   const SelectedBacktest = ref({})
   const SelectedFolder = ref({})
   const SelectedTrades = ref([])
   const FolderModalOpen = ref(false)
+  const BacktestModalOpen = ref(false)
   const ModalOpen = ref(false)
   const IsDirty = ref(false)
   const IsSaving = ref(false)
@@ -53,6 +55,7 @@ const _useBacktester = () => {
 
   /** Clear chart date when changing folders */
   watch(SelectedFolder, () => {
+    SelectedBacktest.value = {}
     // ChartData.value.sessionGain.splice(0)
     // ChartData.value.riskToReward.splice(0)
     // RValues.value.mean = 0
@@ -225,26 +228,41 @@ const _useBacktester = () => {
   }
 
   /** Call methods */
-  const { refresh: fetchFolders } = useFetch<any>("backtesting/groups", {
+  const { refresh: fetchFolders } = useFetch<any>("backtesting/folders", {
     immediate: false,
     onResponse({ response }) {
       if (response.status === 200) {
         Folders.value = response._data
+        console.log('FOLDERS FETCHED')
       }
     },
   });
 
-
-  async function useCreateOrUpdateFolder(data) {
+  async function selectBacktest(_idVal: string = '') {
     return new Promise(async (resolve, reject) => {
+      await selectFolder(SelectedFolder.value.id ?? '')
+      if (_idVal != '') {
+        SelectedBacktest.value = SelectedFolder.value.backtests.filter(x => x.id == _idVal)[0] ?? {}
+      }
+      resolve(1)
+    })
+  }
 
-      BacktesterFolders.value = [];
-      SelectedFolder.value = {}
-      SelectedBacktest.value = {}
+  async function selectFolder(_idVal: string = '') {
+    return new Promise(async (resolve, reject) => {
+      await fetchFolders()
+      if (_idVal != '') {
+        SelectedFolder.value = Folders.value.filter(x => x.id == _idVal)[0] ?? {}
+      }
+      resolve(1)
+    })
+  }
+
+  async function updateFolder(data) {
+    return new Promise(async (resolve, reject) => {
       spinnerLoadingPage.value = true;
-      spinnerLoadingPageText.value = 'Creating Folder...';
 
-      await $fetch("backtesting/groups", {
+      await $fetch("backtesting/folders", {
         method: "POST",
         body: data,
         onResponse({ response }) {
@@ -256,9 +274,81 @@ const _useBacktester = () => {
             FolderForm.value.setErrors(response._data?.errors);
 
           } else if (response?.ok) {
-            fetchFolders()
+            selectFolder(response._data.data.id)
+
+            FolderModalOpen.value = false
+            useToast().add({
+              icon: GetSuccessIcon,
+              title: response._data.message,
+              color: GetSuccessColor,
+            });
+          }
+
+          resolve(1)
+
+        }
+      });
+
+    });
+  }
+
+  async function createFolder(data) {
+    return new Promise(async (resolve, reject) => {
+      spinnerLoadingPage.value = true;
+
+      await $fetch("backtesting/folders", {
+        method: "PUT",
+        body: data,
+        onResponse({ response }) {
+
+          spinnerLoadingPage.value = false;
+
+          if (response?.status === 422) {
+
+            FolderForm.value.setErrors(response._data?.errors);
+
+          } else if (response?.ok) {
+            selectFolder(response._data.data.id)
             FolderModalOpen.value = false
 
+            useToast().add({
+              icon: GetSuccessIcon,
+              title: response._data.message,
+              color: GetSuccessColor,
+            });
+          }
+
+          resolve(1)
+
+        }
+      });
+
+    });
+  }
+
+  async function useDeleteFolder(_id) {
+    return new Promise(async (resolve, reject) => {
+
+      SelectedFolder.value = {}
+      SelectedBacktest.value = {}
+      spinnerLoadingPage.value = true;
+
+      await $fetch("backtesting/folders", {
+        method: "DELETE",
+        body: { id: _id },
+        onResponse({ response }) {
+
+          spinnerLoadingPage.value = false;
+
+          if (response?.ok) {
+            fetchFolders()
+
+            if (SelectedFolder.value.id == response._data.id) {
+              SelectedFolder.value = Folders.value[0]
+              SelectedBacktest.value = SelectedFolder.value.backtests[0] ?? {}
+            }
+
+            FolderModalOpen.value = false
             useToast().add({
               icon: GetSuccessIcon,
               title: response._data.message,
@@ -274,16 +364,80 @@ const _useBacktester = () => {
     });
   }
 
-  async function useDeleteFolder(_id) {
+
+  async function updateBacktest(data) {
+    return new Promise(async (resolve, reject) => {
+      spinnerLoadingPage.value = true;
+
+      await $fetch("backtesting/backtests", {
+        method: "POST",
+        body: data,
+        onResponse({ response }) {
+
+          spinnerLoadingPage.value = false;
+
+          if (response?.status === 422) {
+
+            BacktestForm.value.setErrors(response._data?.errors);
+
+          } else if (response?.ok) {
+            BacktestModalOpen.value = false
+            useToast().add({
+              icon: GetSuccessIcon,
+              title: response._data.message,
+              color: GetSuccessColor,
+            });
+          }
+
+          resolve(1)
+
+        }
+      });
+
+    });
+  }
+
+  async function createBacktest(data) {
+    return new Promise(async (resolve, reject) => {
+      spinnerLoadingPage.value = true;
+
+      await $fetch("backtesting/backtests", {
+        method: "PUT",
+        body: data,
+        onResponse({ response }) {
+
+          spinnerLoadingPage.value = false;
+
+          if (response?.status === 422) {
+
+            BacktestForm.value.setErrors(response._data?.errors);
+
+          } else if (response?.ok) {
+            selectBacktest(response._data.data)
+            BacktestModalOpen.value = false
+
+            useToast().add({
+              icon: GetSuccessIcon,
+              title: response._data.message,
+              color: GetSuccessColor,
+            });
+          }
+
+          resolve(1)
+
+        }
+      });
+
+    });
+  }
+
+  async function useDeleteBacktest(_id) {
     return new Promise(async (resolve, reject) => {
 
-      BacktesterFolders.value = [];
-      SelectedFolder.value = {}
       SelectedBacktest.value = {}
       spinnerLoadingPage.value = true;
-      spinnerLoadingPageText.value = 'Deleting Folder...';
 
-      await $fetch("backtesting/groups", {
+      await $fetch("backtesting/backtests", {
         method: "DELETE",
         body: { id: _id },
         onResponse({ response }) {
@@ -291,8 +445,12 @@ const _useBacktester = () => {
           spinnerLoadingPage.value = false;
 
           if (response?.ok) {
-            fetchFolders()
-            FolderModalOpen.value = false
+            selectBacktest()
+
+            SelectedBacktest.value = SelectedFolder.value.backtests[0] ?? {}
+
+
+            BacktestModalOpen.value = false
             useToast().add({
               icon: GetSuccessIcon,
               title: response._data.message,
@@ -323,6 +481,7 @@ const _useBacktester = () => {
       IsDirty.value = false
       IsSaving.value = false
       FolderModalOpen.value = false
+      BacktestModalOpen.value = false
       ModalOpen.value = false
       SelectedBacktest.value = {}
       SelectedFolder.value = {}
@@ -338,7 +497,9 @@ const _useBacktester = () => {
     SelectedFolder,
     SelectedTrades,
     FolderModalOpen,
+    BacktestModalOpen,
     FolderForm,
+    BacktestForm,
     ModalOpen,
     IsDirty,
     IsSaving,
@@ -352,8 +513,13 @@ const _useBacktester = () => {
     autosaveEnabled,
     updateTrade,
 
-    useCreateOrUpdateFolder,
-    useDeleteFolder
+    createFolder,
+    updateFolder,
+    useDeleteFolder,
+
+    createBacktest,
+    updateBacktest,
+    useDeleteBacktest
   };
 };
 

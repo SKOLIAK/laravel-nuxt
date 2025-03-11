@@ -27,6 +27,7 @@ class BacktestResource extends JsonResource
             'group' => new BacktestFolderDataResource($this->group),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'favourite' => $this->favourite
         ];
     }
 }
