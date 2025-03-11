@@ -15,11 +15,11 @@ const BacktestActions = ref()
 
           <template v-if="!isObjectEmpty(SelectedFolder)">
             <UTooltip text="Update or Delete Folder">
-              <UButton icon="lucide:settings" color="white" size="sm" @click="FolderActions.EditFolder(SelectedFolder)"/>
+              <UButton icon="lucide:settings" color="white" size="sm" @click="FolderActions.EditFolder(SelectedFolder ?? {}) ?? ''"/>
             </UTooltip>
           </template>
           <UTooltip text="New Folder">
-            <UButton icon="lucide:plus" color="white" size="sm" @click="FolderActions.NewFolder()"/>
+            <UButton icon="lucide:plus" color="white" size="sm" @click="FolderActions.NewFolder() ?? ''"/>
           </UTooltip>
           
 
@@ -30,10 +30,8 @@ const BacktestActions = ref()
         <BSelectBacktest />
         <template v-if="!isObjectEmpty(SelectedBacktest)">
           <UTooltip text="Update or Delete Backtest">
-            <UButton icon="lucide:settings" color="white" size="sm"  @click="BacktestActions.EditBacktest(SelectedBacktest)"/>
+            <UButton icon="lucide:settings" color="white" size="sm"  @click="BacktestActions.EditBacktest(SelectedBacktest ?? {}) ?? ''"/>
           </UTooltip>
-
-          {{  SelectedBacktest.favourite }}
 
           <UTooltip :text="SelectedBacktest.favourite ? 'Remove from favourites' : 'Add to favourites'">
             <UButton size="sm" color="white" class="h-8" icon="solar:heart-bold" :class="{'!text-primary-600 dark:!text-primary-500': SelectedBacktest.favourite}" />
@@ -44,7 +42,7 @@ const BacktestActions = ref()
         </template>
         <template v-if="!isObjectEmpty(SelectedFolder)">
           <UTooltip text="New Backtest">
-            <UButton icon="lucide:plus" color="white" size="sm" @click="BacktestActions.NewBacktest()"/>
+            <UButton icon="lucide:plus" color="white" size="sm" @click="BacktestActions.NewBacktest() ?? ''"/>
           </UTooltip>
         </template>
       </UDashboardToolbar>
