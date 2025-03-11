@@ -30,7 +30,7 @@ const props = defineProps({
     },
     badgeColor: {
         type: String as PropType<BadgeColor>,
-        default: 'green'
+        default: 'primary'
     },
     class: {
         type: [String, Object, Array] as PropType<any>,
