@@ -7,3 +7,22 @@ body {
 .ck-cp-container {
     @apply bg-white dark:bg-background;
 }
+
+.no-content-1 {
+    background: url("@/assets/images/search-1.gif");
+  }
+  .no-content-2 {
+    background: url("@/assets/images/search-2.gif");
+  }
+  .no-content-3 {
+    background: url("@/assets/images/search-3.gif");
+  }
+  .no-content-4 {
+    background: url("@/assets/images/search-4.gif");
+  }
+  .no-content-img {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    @apply min-h-32 min-w-64 rounded-lg dark:!bg-gray-900;
+  }

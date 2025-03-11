@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 const { SelectedBacktest, SelectedBacktestComputed, selectedTrades } = useBacktester()
 const checked = ref(true)
 
@@ -62,6 +63,9 @@ function selectAllTrades() {
                     <th scope="col" class="px-3 py-2">
                         Session
                     </th>
+                    <th scope="col" class="px-3 py-2">
+                        Time
+                    </th>
                     <th scope="col" class="px-3 py-2 flex items-center justify-normal gap-x-1">
                         L/S
                         <UIcon name="akar-icons:info" title="Long or Short" />
@@ -98,6 +102,10 @@ function selectAllTrades() {
                     </td>
 
                     <td class="px-3 py-2">
+                        -
+                    </td>
+
+                    <td class="px-3 py-2">
                         <UHelpTitle text="Total number of Break-Even trades">
                             BE: {{ SelectedBacktest.trades.filter(x => x.outcome == 'BE').length }}
                         </UHelpTitle>
@@ -131,7 +139,10 @@ function selectAllTrades() {
                 <tr 
                     class="border-b border-gray-700 hover:bg-gray-700/50 transition-colors duration-200" 
                     v-for="(trade, n) in SelectedBacktest.trades" v-if="SelectedBacktest.trades.length > 0"
-                    :class="{'bg-gray-700/25 hover:!bg-gray-700/70': selectedTrades.includes(trade)}"
+                    :class="{
+                        'bg-gray-700/25 hover:!bg-gray-700/70 pasted': selectedTrades.includes(trade),
+                        'pasted': trade.isNew
+                    }"
                 >
                 <th scope="row" class="px-3 py-2"
                 @click="selectTrade(trade)">
@@ -140,33 +151,37 @@ function selectAllTrades() {
                         {{ n + 1 }}
                     </template>
                 </th>
-                <td class="px-3 py-2" @click="selectTrade(trade)">{{ trade.symbolOriginal }}</td>
-                <td class="px-3 py-2" @click="selectTrade(trade)">{{ trade.session }}</td>
-                <td class="px-3 py-2 capitalize" @click="selectTrade(trade)">
+                <td class="px-3 py-2 truncate" @click="selectTrade(trade)">{{ trade.symbolOriginal }}</td>
+                <td class="px-3 py-2 truncate" @click="selectTrade(trade)">{{ trade.session }}</td>
+                <td class="px-3 py-2 truncate" @click="selectTrade(trade)">
+                    <UTooltip :text="dayjs.unix(trade.entryTime).format('HH:mm')">
+                        {{ dayjs.unix(trade.entryTime).format('DD/MM/YY') }}
+                    </UTooltip>
+                    
+                </td>
+                <td class="px-3 py-2 capitalize truncate" @click="selectTrade(trade)">
                     {{ trade.direction }}
                     <UIcon v-if="trade.direction == 'long'" name="akar-icons:arrow-up-right" class="green-trade"/>
                     <UIcon v-else name="akar-icons:arrow-down-right" class="red-trade"/>
                 </td>
-                <td class="px-3 py-2" @click="selectTrade(trade)">
+                <td class="px-3 py-2 truncate" @click="selectTrade(trade)">
                     {{ trade.outcome }}
                 </td>
-                <td class="px-3 py-2" @click="selectTrade(trade)">
+                <td class="px-3 py-2 truncate" @click="selectTrade(trade)">
                     {{ trade.rrr }}
                 </td>
-                <td class="px-3 py-2" @click="selectTrade(trade)">
+                <td class="px-3 py-2 truncate" @click="selectTrade(trade)">
                     {{ useTwoDecCurrencyFormat(trade.netProceeds) }}
                 </td>
-                <td class="px-3 py-2" @click="selectTrade(trade)">
+                <td class="px-3 py-2 truncate" @click="selectTrade(trade)">
                     {{ useTwoDecPercentFormat(trade.gain) }}
                 </td>
                 <td class="px-3 py-2">
                     <UPopover>
                         <UButton color="white" size="2xs" variant="ghost" icon="mdi:dots-vertical"/>
                         <template #panel>
-                            <UBasePanel class="flex items-center  gap-2 p-2 w-full">
-                                <UButton color="white" variant="ghost" size="xs" class="w-full">Edit</UButton>
-                                <UDivider />
-                                <UButton color="rose" variant="ghost" size="xs" class="w-full">Delete</UButton>
+                            <UBasePanel class="flex items-center gap-2 p-1 w-full">
+                                <UButton color="orange" variant="ghost" size="xs" class="w-full">Delete</UButton>
                             </UBasePanel>
                         </template>
                     </UPopover>

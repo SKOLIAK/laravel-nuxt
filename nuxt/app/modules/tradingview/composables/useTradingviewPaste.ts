@@ -131,6 +131,10 @@ const _useTradingviewPaste = () => {
           trade.quantity
         )
 
+        trade.gain = 0
+
+
+        trade.isNew = true
 
         // let echangeFees = futuresTradovateFees.value.filter((item) => item.symbol == trade.symbol)
         let commNumber = 0;

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { BNoContentBanners } from '#components';
+
 const { SelectedFolder, SelectedBacktest } = useBacktester()
 
 const FolderActions = ref()
@@ -48,7 +50,12 @@ const BacktestActions = ref()
       </UDashboardToolbar>
 
       <div class="p-1 flex flex-col border-t border-white/10 gap-y-1">
-        ...
+        <!-- Renders messages if no content or something isn't selected -->
+        <BNoContentBanners />
+
+        <template v-if="!isObjectEmpty(SelectedBacktest) && SelectedBacktest.trades.length">
+          ...
+        </template>
       </div>
     </UDashboardPanelContent>
 

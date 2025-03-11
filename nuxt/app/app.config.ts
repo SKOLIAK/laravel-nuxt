@@ -1,7 +1,7 @@
 export default defineAppConfig({
     ui: {
         primary: "blue",
-        gray: "zinc",
+        gray: "neutral",
 
         loadingState: {
             icon: 'heroicons:document-plus'

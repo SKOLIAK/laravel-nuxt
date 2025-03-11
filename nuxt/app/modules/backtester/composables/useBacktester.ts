@@ -11,7 +11,7 @@ const _useBacktester = () => {
   const route = useRoute()
   const router = useRouter()
   const auth = useAuthStore()
-  const tradingview = useTradingviewPaste()
+  const { PasteObject } = useTradingviewPaste()
   const { useSessionColors } = useBacktesterSettings()
 
   /** Backtester View */
@@ -64,8 +64,13 @@ const _useBacktester = () => {
   })
 
   /** Watch and wait for when the trades have been pasted */
-  watch(tradingview.PasteObject.value, () => {
-    // ...
+  watch(PasteObject.value, () => {
+    if (!isObjectEmpty(SelectedBacktest.value)) {
+      PasteObject.value.forEach(trade => {
+        SelectedBacktest.value.trades.unshift(trade)
+      });
+
+    }
   })
 
   /** Compute values for the selected backtest */

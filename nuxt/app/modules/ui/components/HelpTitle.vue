@@ -19,7 +19,7 @@ const appConfig = useAppConfig()
 const config = computed(() => ({
   wrapper: 'flex items-center justify-start gap-1',
   icon: {
-    base: 'text-blue-600 dark:text-blue-400 cursor-help'
+    base: 'text-primary-600 dark:text-primary-400 cursor-help'
   }
 }))
 
