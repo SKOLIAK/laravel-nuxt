@@ -29,6 +29,6 @@ class Backtest extends Model
 
     public function trades() :  HasMany
     {
-        return $this->hasMany(BacktestTrade::class);
+        return $this->hasMany(BacktestTrade::class)->orderBy('entryTime', 'desc');
     }
 }

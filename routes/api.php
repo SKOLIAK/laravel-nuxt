@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FlowController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\RatingController;
@@ -49,6 +50,12 @@ Route::prefix('api/v2')->group(function () {
             Route::post('upload', [UploadController::class, 'image'])->name('upload.image');
         });
 
+
+        /** FLOW */
+        Route::get('flow', [FlowController::class, 'index']);
+        Route::post('flow', [FlowController::class, 'update']);
+
+
         /** CRUD: BACKTESTING FOLDERS */
         Route::get('backtesting/folders', [BacktesterController::class, 'getFolders']);
         Route::delete('backtesting/folders', [BacktesterController::class, 'deleteFolder']);
@@ -63,6 +70,7 @@ Route::prefix('api/v2')->group(function () {
 
         /** CRUD: BACKTEST TRADES */
         Route::post('backtesting/trades', [BacktesterController::class, 'updateTrade']);
+        Route::delete('backtesting/trades', [BacktesterController::class, 'deleteTrades']);
 
     });
 });

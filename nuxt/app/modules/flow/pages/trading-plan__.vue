@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { Position, VueFlow, useVueFlow } from '@vue-flow/core'
+import { Background } from '@vue-flow/background'
 import { ControlButton, Controls } from '@vue-flow/controls'
 import { MiniMap } from '@vue-flow/minimap'
 
@@ -8,30 +9,17 @@ definePageMeta({
     middleware: ['auth'],
 })
 
-
 const appConfig = useAppConfig();
 import tailwindConfig from "@/tailwind.config";
 import resolveConfig from "tailwindcss/resolveConfig";
 const { theme } = resolveConfig(tailwindConfig);
 
 import useDragAndDrop from '#flow/composables/useDragAndDrop'
+import { FCanvasNode } from '#components'
 
-const { 
-  fetchFlow,
-  saveFlow,
-  edges,
-  nodes,
-  getViewport, 
-  setViewport, 
-  selectedElement, 
-  isSaving,
-  isLocked, 
-  lockUnlock, 
-  getNodeIcon,
-  activeSidebarItem
-} = useFlow()
+const { viewport, isLocked, lockUnlock, getNodeIcon } = useFlow()
 
-const { onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop()
+const { onDragStart, onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop()
 
 
 /**
@@ -40,76 +28,60 @@ const { onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop()
  * 2. a set of event-hooks to listen to VueFlow events (like `onInit`, `onNodeDragStop`, `onConnect`, etc)
  * 3. the internal state of the VueFlow instance (like `nodes`, `edges`, `viewport`, etc)
  */
-const { 
-  onInit, 
-  onNodeDragStop, 
-  onNodeClick,
-  onEdgeClick,
-  onConnect, 
-  addEdges, 
-  onEdgesChange,
-  onNodesChange,
-  toObject, 
-  getIntersectingNodes, 
-  isNodeIntersecting, 
-  updateNode, 
-  screenToFlowCoordinate 
-} = useVueFlow()
+const { onInit, onNodeDragStop, onConnect, addEdges, setViewport, toObject, getIntersectingNodes, isNodeIntersecting, updateNode, screenToFlowCoordinate } = useVueFlow()
 
 
-onBeforeMount(async () => {
-  await fetchFlow()
-})
 
-onInit((vueFlowInstance) => {
-  // instance is the same as the return of `useVueFlow`
- if(!getViewport.value) {
-    vueFlowInstance.fitView()
-  } else {
-    vueFlowInstance.setViewport(JSON.parse(getViewport.value))
-  }
-  
-})
-
-const updateFlowData = async (edges, nodes) => {
-  await saveFlow(edges, nodes)
-}
-
-const settingsDisabled = computed(() => {
-  return isObjectEmpty(selectedElement.value)
-})
-
-const sidebarItems = ref([
+const nodes = ref([
   {
-    label: 'Nodes',
-    icon: 'i-lucide-star',
+    id: '1',
+    type: '__entry',
+    data: { label: 'Is News Day?' },
+    position: { x: 150, y: -100 },
+    outputPosition: Position.Bottom
   },
   {
-    label: 'Settings',
-    icon: 'i-lucide-lock',
-    disabled: settingsDisabled
-  }
+    id: '2',
+    type: '__true',
+    data: { label: 'Yes' },
+    position: { x: 350, y: 114 },
+  },
+  {
+    id: '3',
+    type: '__false',
+    data: { label: 'No' },
+    position: { x: 50, y: 114 },
+  },
+  {
+    id: '4',
+    type: '__output',
+    data: { label: 'Something else' },
+    position: { x: 50, y: 214 },
+  },
 ])
 
-
-
-onNodeClick(({ event, node }) => {
-  if(!isLocked.value) {
-    selectedElement.value = node
-    console.log('Node clicked:', node, event);
-    activeSidebarItem.value = 1
-  }
-});
-
-
-onEdgeClick(({ event, edge }) => {
-  if(!isLocked.value) {
-    selectedElement.value = edge
-    console.log('Edge clicked:', edge, event);
-    activeSidebarItem.value = 1
-  }
-});
-
+const edges = ref([
+{
+    id: 'e1a-2',
+    source: '1',
+    sourceHandle: 'output',
+    target: '3',
+    style: {
+      stroke: theme.colors.green[600],
+    },
+    animated: true,
+  },  
+  {
+    id: 'e1a-sa2',
+    source: '1',
+    sourceHandle: 'output',
+    target: '2',
+    style: {
+      stroke: theme.colors.gray[500],
+    },
+    
+  },
+])
 
 /**
  * This is a Vue Flow event-hook which can be listened to from anywhere you call the composable, instead of only on the main component
@@ -117,9 +89,9 @@ onEdgeClick(({ event, edge }) => {
  *
  * onInit is called when the VueFlow viewport is initialized
  */
-
-watch(toObject, (a, b) => {
-  setViewport(a.viewport)
+onInit((vueFlowInstance) => {
+  // instance is the same as the return of `useVueFlow`
+  vueFlowInstance.fitView()
 })
 
 /**
@@ -141,15 +113,14 @@ onNodeDragStop(({ event, nodes, node }) => {
  * You can add additional properties to your new edge (like a type or label) or block the creation altogether by not calling `addEdges`
  */
 onConnect((connection) => {
-  addEdges({ ...connection, ...{ style: { stroke: theme.colors.gray[400] }}, animated: false})
+  addEdges(connection)
 })
 
 /**
  * toObject transforms your current graph data to an easily persist-able object
  */
 function logToObject() {
-  console.log(JSON.stringify(toObject().nodes))
-  console.warn(JSON.stringify(toObject().edges))
+  console.log(toObject())
 }
 
 
@@ -193,16 +164,19 @@ const sidebarNodes = ref([
 ])
 
 
-
 </script>
 
 <template>
 
   <UDashboardContent>
     
-    <div class="absolute top-3 right-3 text-orange-500 ring-1 ring-inset ring-orange-500 bg-orange-200/30 dark:bg-orange-950 rounded px-1.5 py-0.5 gap-x-1 flex items-center font-bold text-xs" v-if="isLocked">
+    <div class="absolute top-2 right-2 text-cyan-500 font-bold">
+      {{ viewport }}
+    </div>
+    <div class="absolute top-3 right-3 text-rose-500 ring-1 ring-inset ring-rose-500 bg-rose-200/30 dark:bg-rose-950/30 rounded px-1.5 py-0.5 gap-x-1 flex items-center font-bold text-xs" v-if="isLocked">
       <UIcon name="lucide:lock" /> Locked
     </div>
+
 
     <div class="dnd-flow">
       <VueFlow 
@@ -257,23 +231,14 @@ const sidebarNodes = ref([
       </template>
 
       <Controls position="top-left" @interaction-change="lockUnlock">
-        <div class="flex flex-col">
-          <UTooltip text="Log `toObject`" :popper="{ placement: 'right'}">
-            <ControlButton @click="logToObject">
-              <UIcon name="unjs:h3" />
-            </ControlButton>
-          </UTooltip>
-
-          <UTooltip text="Test Button" :popper="{ placement: 'right'}">
-            <ControlButton>
-              🌊
-            </ControlButton>
-          </UTooltip>
-        </div>
-        
+        <ControlButton title="Log `toObject`" @click="logToObject">
+          <UIcon name="unjs:h3" />
+        </ControlButton>
       </Controls>
     </VueFlow>
+
     </div>
+
 
 
 
@@ -283,93 +248,32 @@ const sidebarNodes = ref([
 <!-- Sidebar -->
 <UDashboardPanel side="right" :width="300" :resizable="{min: 300, max: 600}">
   <UDashboardPanelContent>
-    
     <div class="p-4">
-      <UButton variant="soft" 
-        @click="updateFlowData(toObject().edges, toObject().nodes)" 
-        :loading="isSaving" 
-        :disabled="isSaving || isLocked"
-        label="Save"
-        leading-icon="lucide:save"
-      />
-
+      <UButton variant="soft">Save</UButton>
     </div>
     
     <UDivider class="my-2" />
-
-
     <aside class="p-4 pt-2">
+      <div class="text-foreground/70 text-xs mb-4">
+        You can drag these nodes to the pane.
+      </div>
 
-      <UTabs :items="sidebarItems" v-model="activeSidebarItem" class="w-full" />
+      <div class="flex flex-col gap-2 w-full">
 
+        <!-- Render sidebar nodes -->
+        <FNodeCard 
+          v-for="node in sidebarNodes"
+          :id="node.id"
+          :title="node.title"
+          :icon="node.icon"
+          :icon-color="node.iconColor"
+          :subtitle="node.subtitle"
+        />
 
-
-
-
-
-
-
-      <template v-if="activeSidebarItem == 1 && selectedElement">
-
-        <FEditableNodeCard 
-            v-if="selectedElement.type != 'default'"
-            :id="selectedElement.id"
-            :title="selectedElement.data.label"
-          />
-
-
-          <!-- Edge Settings -->
-          <div class="flex flex-col gap-y-3 w-full" v-if="selectedElement.type == 'default'">
-            <h3 class="text-foreground font-medium mb-4">
-              Customise this connection
-            </h3>
-            <div class="flex items-center justify-between">
-              <UPopover>
-                <div class="flex items-center gap-x-2">
-                  <span class="text-foreground/70">Color:</span>
-                  <button>
-                    <div class="color-select" id="color-select" :style="{ 'background-color': selectedElement.style.stroke }">
-                      <span class="drop-shadow">{{ selectedElement.style.stroke }}</span>
-                    </div>
-                  </button>
-                </div>
-                <template #panel>
-                  <UColorPicker v-model="selectedElement.style.stroke" />
-                </template>
-              </UPopover>
-              <UCheckbox label="Animated?" v-model="selectedElement.animated" class="ms-auto" />
-            </div>
-            <UDivider />
-            <div>
-              <UButton color="white" @click="selectedElement = null; activeSidebarItem = 0">Done</UButton>
-            </div>
-            
-          </div>
+      </div>
 
 
 
-
-
-      </template>
-      <template v-else>
-        <div class="text-foreground/70 text-xs mb-4">
-          You can drag these nodes to the pane.
-        </div>
-
-        <div class="flex flex-col gap-2 w-full">
-
-          <!-- Render sidebar nodes -->
-          <FNodeCard 
-            v-for="node in sidebarNodes"
-            :id="node.id"
-            :title="node.title"
-            :icon="node.icon"
-            :icon-color="node.iconColor"
-            :subtitle="node.subtitle"
-          />
-
-        </div>
-      </template>
     </aside>
 
 

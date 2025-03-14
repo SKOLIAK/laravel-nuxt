@@ -139,6 +139,22 @@ class BacktesterController extends Controller
         $backtest = $this->validateBacktest($request['id']);
         $folder = $this->validateFolder($request['folder']);
 
+        if(isset($request['trades']) && count($request['trades'])) {
+            $x = 0;
+            foreach (request('trades') as &$trade) {
+                $count = $backtest->trades()->where('identifier', $trade['identifier'])->count();
+    
+                if (!$count) {
+                    $backtest->trades()->create($trade);
+                    $x++;
+                } else {
+                    $backtest->trades()->where('identifier', $trade['identifier'])->update([
+                        'session' => $trade['session']
+                    ]);
+                }
+            }
+        }
+
         $request->validate([
             'name' => ['required', 'string']
         ]);
@@ -193,4 +209,16 @@ class BacktesterController extends Controller
         ]);
     }
 
+    public function deleteTrades(Request $request) { 
+        $folder = $this->validateFolder($request['folder']);
+        $backtest = $this->validateBacktest($request['backtest']);
+        if(!empty($request['trades'])) {
+            $backtest->trades()->whereIn('identifier', $request['trades'])->delete();
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => count($request['trades']) . ' Trades have been deleted'
+        ]);
+    }
 }

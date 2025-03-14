@@ -1,9 +1,28 @@
 <script lang="ts" setup>
-const { SelectedBacktest, SelectedBacktestComputed } = useBacktester()
+const { SelectedBacktest, SelectedBacktestComputed, IsDirty, DirtyTimer, autosaveDuration, autosaveEnabled, updateBacktest, SelectedFolder } = useBacktester()
 
 import type { PropType } from 'vue'
 import type { title as titleConfig } from '#backtester/ui.config'
 import type { DeepPartial, BadgeColor } from '#ui/types'
+
+function updateName () {
+
+    IsDirty.value = true
+    if (DirtyTimer.value) {
+        clearTimeout(DirtyTimer.value)
+    }
+
+
+    if(autosaveEnabled.value == true) {
+        DirtyTimer.value = setTimeout(async () => {
+            await updateBacktest({
+                id: SelectedBacktest.value.id,
+                folder: SelectedFolder.value.id,
+                name: SelectedBacktest.value.name == '' ? getRandomNameString() : SelectedBacktest.value.name
+            })
+        }, autosaveDuration.value)
+    }
+}
 
 const config = computed(() => ({
     container: 'text-lg font-medium text-foreground',
@@ -59,7 +78,7 @@ const { ui, attrs } = useUI('backtester.title', toRef(props, 'ui'), config, toRe
 
                     <div :class="ui.base">
                         <UIcon :name="icon" :class="[ui.icon.base, ui.icon.hover]" />
-                        <input v-model="SelectedBacktest.name" placeholder="Backtest Title" :class="[ui.input.base, ui.input.hover]"/>
+                        <input @input="updateName" v-model="SelectedBacktest.name" placeholder="Backtest Title" :class="[ui.input.base, ui.input.hover]"/>
                     </div>
 
             </div>

@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use App\Models\Tag;
+use App\Models\Flow;
 use App\Models\Trade;
 use App\Models\Session;
 use App\Models\Accounts;
 use App\Models\DateUnix;
 use App\Models\TagGroup;
 use App\Models\Screenshot;
+use App\Models\BacktestTrade;
 use App\Models\BacktestingGroup;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -107,6 +110,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(BacktestingGroup::class);
     }
 
+    public function backtestingTrades(): HasMany
+    {
+        return $this->hasMany(BacktestTrade::class);
+    }
+
     public function tags(): HasMany
     {
         return $this->hasMany(Tag::class);
@@ -130,6 +138,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sessions() : HasMany
     {
         return $this->hasMany(Session::class);
+    }
+
+    public function flow() : HasOne
+    {
+        return $this->hasOne(Flow::class);
     }
 
 

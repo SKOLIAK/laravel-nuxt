@@ -3,15 +3,15 @@ import type { PropType } from 'vue'
 import type { card as cardConfig } from '#ui/ui.config'
 import type { DeepPartial } from '#ui/types'
 
+
 import useDragAndDrop from '#flow/composables/useDragAndDrop'
 const { onDragStart } = useDragAndDrop()
 const slots = useSlots()
-const { isLocked } = useFlow()
 
 const config = computed(() => ({
-  wrapper: 'max-w-96 bg-background cursor-pointer p-2 rounded-md border border-black/20 dark:border-white/20 transiton-colors duration-200 hover:border-black/50 hover:dark:border-white/50 text-sm overflow-hidden',
+  wrapper: 'bg-background cursor-pointer p-2 rounded-md border border-black/20 dark:border-white/20 transiton-colors duration-200 hover:border-black/50 hover:dark:border-white/50 text-sm overflow-hidden',
   base: 'flex items-center justify-start gap-2 font-medium text-foreground',
-  title: 'max-w-72 truncate text-ellipsis',
+  title: 'truncate text-ellipsis',
   slot: 'text-xs text-foreground/70 font-normal truncate text-ellipsis',
   icon: {
     base: 'flex-shrink-0',
@@ -76,7 +76,7 @@ const { ui, attrs } = useUI('node.card', toRef(props, 'ui'), config, toRef(props
 <template>
   <div 
     :class="ui.wrapper"
-    :draggable="draggable && !canvas && !isLocked" 
+    :draggable="draggable && !canvas" 
     @dragstart="!canvas && onDragStart($event, `__${props.id}`)"
     v-bind="attrs"
   >

@@ -66,7 +66,7 @@ export default {
       :style="{
         pointerEvents: 'all',
         position: 'absolute',
-        transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`,
+        transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`
       }"
       class="nodrag nopan"
     >

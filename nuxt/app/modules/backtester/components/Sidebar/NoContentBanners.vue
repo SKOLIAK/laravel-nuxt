@@ -4,7 +4,7 @@ const { Folders, SelectedFolder, SelectedBacktest } = useBacktester()
 
 <template>
       <UNoContent v-if="Folders.length == 0">
-        <div class="drop-shadow">
+        <div class="drop-shadow-sm">
             <div class="mb-2">
                 You don't have any backtesting folders yet.
             </div>
@@ -17,7 +17,7 @@ const { Folders, SelectedFolder, SelectedBacktest } = useBacktester()
     </UNoContent>
 
     <UNoContent v-else-if="!isObjectEmpty(SelectedFolder) && SelectedFolder.backtests.length == 0">
-        <div class="drop-shadow">
+        <div class="drop-shadow-sm">
             <div class="mb-2">
                 You haven't created any backtests yet.
                 Create one to get started
@@ -26,7 +26,7 @@ const { Folders, SelectedFolder, SelectedBacktest } = useBacktester()
     </UNoContent>
 
     <UNoContent v-else-if="!isObjectEmpty(SelectedBacktest) && !SelectedBacktest.trades.length">
-        <div class="drop-shadow" v-if="!$device.isMobile">
+        <div class="drop-shadow-sm" v-if="!$device.isMobile">
             <div class="mb-2">
                 This backtest is empty. You can paste trades from TradingView once done backtesting.
             </div>
@@ -41,23 +41,23 @@ const { Folders, SelectedFolder, SelectedBacktest } = useBacktester()
             to paste trades
 
         </div>
-        <div class="drop-shadow" v-else>
+        <div class="drop-shadow-sm" v-else>
           This backtest is empty. You can paste trades from TradingView once done backtesting using a PC
         </div>
         
-        <p class="mt-4 italic text-sm drop-shadow">
+        <p class="mt-4 italic text-sm drop-shadow-sm">
             Make sure to adjust the position tool in Tradingview to start at the candle where you entered the trade and end at the candle where you exited the trade.
         </p>
     </UNoContent>
 
     <UNoContent v-else-if="isObjectEmpty(SelectedBacktest) && !isObjectEmpty(SelectedFolder) && SelectedFolder.backtests.length != 0">
-        <div class="drop-shadow">
+        <div class="drop-shadow-sm">
            No backtest is selected. Select one from the dropdown to begin
         </div>
     </UNoContent>
 
     <UNoContent v-else-if="isObjectEmpty(SelectedFolder)">
-        <div class="drop-shadow">
+        <div class="drop-shadow-sm">
             No folder is selected. Select one from the dropdown to begin
         </div>
     </UNoContent>

@@ -1,4 +1,6 @@
-import { createSharedComposable } from "@vueuse/core";
+import { createSharedComposable, useLocalStorage } from "@vueuse/core";
+import type { ViewPort as TypeViewPort } from "#flow/types"
+import { useVueFlow } from '@vue-flow/core'
 
 const _useFlow = () => {
   const route = useRoute()
@@ -6,7 +8,27 @@ const _useFlow = () => {
   const auth = useAuthStore()
   const config = useRuntimeConfig()
 
+  const edges = ref([])
+  const nodes = ref([])
+
+  const isSaving = ref(false)
   const isLocked = ref(false)
+
+  const selectedElement = ref(null)
+  const activeSidebarItem = ref(0)
+
+  const getViewport = typeof localStorage !== "undefined" ? ref(localStorage.getItem("flowViewport")) : ref(null);
+
+  const setViewport = (value: object) => {
+    localStorage.setItem("flowViewport", JSON.stringify(value))
+  }
+
+  watch(isLocked, () => {
+    if (isLocked.value == true) {
+      selectedElement.value = null
+      activeSidebarItem.value = 0
+    }
+  })
 
   const lockUnlock = (value) => {
     isLocked.value = value
@@ -41,6 +63,49 @@ const _useFlow = () => {
     }
   }
 
+  async function fetchFlow() {
+    return new Promise(async (resolve, reject) => {
+      console.log('Loading flow')
+      spinnerLoadingPage.value = true
+      await $fetch("flow", {
+        immediate: false,
+        onResponse({ response }) {
+          if (response.status === 200) {
+            edges.value = response._data.edges
+            nodes.value = response._data.nodes
+            spinnerLoadingPage.value = false
+          }
+          resolve(1)
+        },
+      });
+    })
+  }
+
+  async function saveFlow(_edges, _nodes) {
+    return new Promise(async (resolve, reject) => {
+      spinnerLoadingPage.value = true;
+      isSaving.value = true
+      await $fetch("flow", {
+        method: "POST",
+        body: { edges: _edges, nodes: _nodes },
+        onResponse({ response }) {
+          isSaving.value = false
+          spinnerLoadingPage.value = false;
+          console.log(response._data.message)
+          useToast().add({
+            icon: response?.ok ? GetSuccessIcon : GetErrorIcon,
+            title: response._data.message,
+            color: response?.ok ? GetSuccessColor : GetErrorColor,
+          })
+
+          resolve(1)
+
+        }
+      })
+
+    })
+  }
+
 
   watch(
     () => route.fullPath,
@@ -50,9 +115,19 @@ const _useFlow = () => {
   );
 
   return {
+    edges,
+    nodes,
+    fetchFlow,
+    saveFlow,
+    isSaving,
     isLocked,
     lockUnlock,
-    getNodeIcon
+    getNodeIcon,
+    getViewport,
+    setViewport,
+
+    selectedElement,
+    activeSidebarItem
   };
 };
 

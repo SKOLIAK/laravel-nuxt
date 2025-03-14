@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { BFolderActionsModal } from '#components';
+definePageMeta({
+    middleware: ['auth'],
+})
 </script>
 
 <template>
@@ -18,7 +20,9 @@ import { BFolderActionsModal } from '#components';
       </template>
     </UDashboardNavbar>
 
+    <div>
       <BTradesTable />
+    </div>
 
     
     

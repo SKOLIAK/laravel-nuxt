@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { BNoContentBanners } from '#components';
 
-const { SelectedFolder, SelectedBacktest } = useBacktester()
+const { SelectedFolder, SelectedBacktest, editingTags } = useBacktester()
 
 const FolderActions = ref()
 const BacktestActions = ref()
@@ -36,7 +36,9 @@ const BacktestActions = ref()
           </UTooltip>
 
           <UTooltip :text="SelectedBacktest.favourite ? 'Remove from favourites' : 'Add to favourites'">
-            <UButton size="sm" color="white" class="h-8" icon="solar:heart-bold" :class="{'!text-primary-600 dark:!text-primary-500': SelectedBacktest.favourite}" />
+            <UButton size="sm" :color="SelectedBacktest.favourite ? 'red' : ($colorMode.value == 'dark' ? 'white' : 'gray')" class="h-8">
+              <UIcon name="solar:heart-bold" :class="{'!text-white': SelectedBacktest.favourite}" />
+            </UButton>
           </UTooltip>
 
 
@@ -54,7 +56,10 @@ const BacktestActions = ref()
         <BNoContentBanners />
 
         <template v-if="!isObjectEmpty(SelectedBacktest) && SelectedBacktest.trades.length">
-          ...
+          <div v-if="!isObjectEmpty(editingTags)" class="p-2 flex flex-col gap-2">
+            Editing Tags for a trade <b class="text-primary-500">{{ editingTags.symbolOriginal }}</b>
+            <UButton color="white" @click="editingTags = {}" size="xs">Done Editing</UButton>
+          </div>
         </template>
       </div>
     </UDashboardPanelContent>

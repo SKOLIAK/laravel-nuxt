@@ -23,3 +23,7 @@ export function useTwoDecCurrencyFormat(param, currency: string = "USD") {
     currency: currency,
   }).format(param);
 }
+
+export function sleep(ms: number = 100) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

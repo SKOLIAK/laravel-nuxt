@@ -38,7 +38,7 @@ let defProps = defineProps({
     inputType: "HSL",
     showButtons: false,
     showAlpha: false,
-    showList: false,
+    showList: true,
     showEye: false,
     showMenu: false,
     showSet: false,

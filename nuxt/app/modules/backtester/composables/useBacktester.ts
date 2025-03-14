@@ -33,13 +33,13 @@ const _useBacktester = () => {
   const BacktestForm = ref()
   const SelectedBacktest = ref({})
   const SelectedFolder = ref({})
-  const SelectedTrades = ref([])
   const FolderModalOpen = ref(false)
   const BacktestModalOpen = ref(false)
   const ModalOpen = ref(false)
   const IsDirty = ref(false)
   const IsSaving = ref(false)
   const selectedTrades = ref([])
+  const editingTags = ref({})
 
   /** Chart Data */
   const ChartData = ref(<ChartDataRecord>{
@@ -57,17 +57,32 @@ const _useBacktester = () => {
   /** Clear chart date when changing folders */
   watch(SelectedFolder, () => {
     SelectedBacktest.value = {}
+    selectedTrades.value = []
+    editingTags.value = {}
     // ChartData.value.sessionGain.splice(0)
     // ChartData.value.riskToReward.splice(0)
     // RValues.value.mean = 0
     // RValues.value.mode = 0
   })
 
+  /** Clear selected trades when backtest is changed */
+  watch(SelectedBacktest, () => {
+    selectedTrades.value = []
+    editingTags.value = {}
+  })
+
   /** Watch and wait for when the trades have been pasted */
   watch(PasteObject.value, () => {
     if (!isObjectEmpty(SelectedBacktest.value)) {
       PasteObject.value.forEach(trade => {
-        SelectedBacktest.value.trades.unshift(trade)
+        let exists = SelectedBacktest.value.trades.filter(x => x.identifier == trade.identifier).length > 0
+        if (!exists) {
+          SelectedBacktest.value.trades.unshift(trade)
+          selectedTrades.value.push(trade)
+          IsDirty.value = true
+        } else {
+          console.warn('--> Trade on `' + trade.symbolOriginal + '` already exists in this backtest.')
+        }
       });
 
     }
@@ -79,9 +94,10 @@ const _useBacktester = () => {
 
     if (!isObjectEmpty(Obj) && Obj.trades != undefined && Obj.trades.length > 0) {
       // Calculate win rate percentage
-      let wins = Obj.trades.filter(x => x.outcome.toLowerCase() == 'win').length
-      let losses = Obj.trades.filter(x => x.outcome.toLowerCase() == 'loss').length
-      Obj.percentage = wins / (wins + losses)
+      Obj.wins = Obj.trades.filter(x => x.outcome.toLowerCase() == 'win').length
+      Obj.losses = Obj.trades.filter(x => x.outcome.toLowerCase() == 'loss').length
+      Obj.bes = Obj.trades.filter(x => x.outcome.toLowerCase() == 'be').length
+      Obj.percentage = Obj.wins / (Obj.wins + Obj.losses)
 
       // Calculate Total gain in R multiples
       Obj.totalR = _.sum(pluck(Obj.trades, ['rrr']))
@@ -248,7 +264,7 @@ const _useBacktester = () => {
     return new Promise(async (resolve, reject) => {
       await selectFolder(SelectedFolder.value.id ?? '')
       if (_idVal != '') {
-        SelectedBacktest.value = SelectedFolder.value.backtests.filter(x => x.id == _idVal)[0] ?? {}
+        await (SelectedBacktest.value = SelectedFolder.value.backtests.filter(x => x.id == _idVal)[0] ?? {})
       }
       resolve(1)
     })
@@ -374,20 +390,24 @@ const _useBacktester = () => {
   async function updateBacktest(data) {
     return new Promise(async (resolve, reject) => {
       spinnerLoadingPage.value = true;
-
+      IsSaving.value = true
+      await sleep(randomBetween(1000, 2000))
       await $fetch("backtesting/backtests", {
         method: "POST",
         body: data,
         onResponse({ response }) {
 
-          spinnerLoadingPage.value = false;
-
+          spinnerLoadingPage.value = false
+          IsSaving.value = false
+          IsDirty.value = false
           if (response?.status === 422) {
 
             BacktestForm.value.setErrors(response._data?.errors);
 
           } else if (response?.ok) {
             BacktestModalOpen.value = false
+            console.log(response._data)
+            selectBacktest(response._data.data)
             useToast().add({
               icon: GetSuccessIcon,
               title: response._data.message,
@@ -472,6 +492,35 @@ const _useBacktester = () => {
     });
   }
 
+
+  async function deleteTrades(_identifier: string[]) {
+    return new Promise(async (resolve, reject) => {
+      spinnerLoadingPage.value = true
+      IsSaving.value = true
+      await $fetch("backtesting/trades", {
+        method: "DELETE",
+        body: { trades: _identifier, folder: SelectedFolder.value.id ?? '', backtest: SelectedBacktest.value.id ?? '' },
+        onResponse({ response }) {
+
+          spinnerLoadingPage.value = false
+          IsSaving.value = false
+
+          if (response?.ok) {
+            useToast().add({
+              icon: GetSuccessIcon,
+              title: response._data.message,
+              color: GetSuccessColor,
+            });
+          }
+
+          resolve(1)
+
+        },
+      });
+    })
+  }
+
+
   /** If backtester is "dirty" (changes made without saving), alert the user before navigating out */
   router.beforeEach(() => {
     if (IsDirty.value == true) {
@@ -501,7 +550,6 @@ const _useBacktester = () => {
     SelectedBacktestComputed,
     SelectedBacktest,
     SelectedFolder,
-    SelectedTrades,
     FolderModalOpen,
     BacktestModalOpen,
     FolderForm,
@@ -527,7 +575,10 @@ const _useBacktester = () => {
     updateBacktest,
     useDeleteBacktest,
 
-    selectedTrades
+    selectedTrades,
+
+    deleteTrades,
+    editingTags
   };
 };
 

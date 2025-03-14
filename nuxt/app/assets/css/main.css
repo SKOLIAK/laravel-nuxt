@@ -36,25 +36,6 @@
   }
 }
 
-.pasted {
-  @apply bg-gray-800;
-  animation-name: blinkpaste;
-  animation-duration: 2.5s;
-}
-
-@keyframes blinkpaste {
-  0% {@apply bg-gray-800}
-  10% {@apply bg-primary-400/40}
-  2% {@apply bg-gray-800}
-  30% {@apply bg-primary-400/40}
-  4% {@apply bg-gray-800}
-  50% {@apply bg-primary-400/40}
-  60% {@apply bg-gray-800}
-  70% {@apply bg-primary-400/40}
-  80% {@apply bg-gray-800}
-  90% {@apply bg-primary-400/40}
-}
-
 .logo-light {
   @apply !invert !filter;
 }

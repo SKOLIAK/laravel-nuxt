@@ -7,6 +7,26 @@ body {
 .ck-cp-container {
     @apply bg-white dark:bg-background;
 }
+.ck-cp-local-color-conatiner {
+  @apply !border-t border-black/5 dark:!border-white/5
+}
+.ck-cp-color-list-label {
+  @apply !text-foreground
+}
+.ck-cp-color-item {
+  @apply !border-none ring-1 ring-inset dark:ring-white/20 ring-black/20
+}
+.cp-btn-save-color {
+  @apply !border-none ring-1 ring-inset ring-black/20 dark:ring-white/20 p-1
+}
+
+.cp-main-btn {
+  @apply dark:!bg-gray-800 rounded ring-1 ring-inset dark:ring-white/10 ring-black/10
+}
+.cp-btn-save-color svg,
+.cp-main-btn svg {
+  @apply !fill-foreground
+}
 
 .no-content-1 {
     background: url("@/assets/images/search-1.gif");
@@ -25,4 +45,46 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     @apply min-h-32 min-w-64 rounded-lg dark:!bg-gray-900;
+  }
+
+
+  .first-beam {
+    animation-name            : loop-anim-1;
+    animation-duration        : 1.2s;
+    animation-iteration-count : infinite;
+  }
+  .second-beam {
+    animation-name            : loop-anim-2;
+    animation-duration        : 1.2s;
+    animation-delay           : .4s;
+    animation-iteration-count : infinite;
+  }
+  @keyframes loop-anim-1 {
+    0% {
+        left  : -90%;
+        right : 100%;
+    }
+    60% {
+        left  : -90%;
+        right : 100%;
+    }
+    100% {
+        left  : 100%;
+        right : -35%;
+    }
+  }
+  
+  @keyframes loop-anim-2 {
+    0% {
+        left  : -90%;
+        right : 100%;
+    }
+    40% {
+        left  : -90%;
+        right : 100%;
+    }
+    100% {
+        left  : 100%;
+        right : -35%;
+    }
   }

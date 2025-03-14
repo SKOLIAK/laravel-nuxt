@@ -60,7 +60,12 @@ onBeforeMount(async () => {
         <div>
             <small>{{ ClipboardObject }}</small>
         </div>
+
+        <UInfiniteProgress />
+
     </div>
+
+
 
 
 </template>

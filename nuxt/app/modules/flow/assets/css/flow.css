@@ -44,11 +44,15 @@ body,
     width:100%
 }
 
+.vue-flow__controls {
+  @apply !ring-1 dark:ring-white/5  ring-black/5 rounded-md overflow-hidden
+}
+
 .basic-flow .vue-flow__controls .vue-flow__controls-button {
     @apply border-none rounded-md mr-1 ring-1 ring-inset ring-white/10
 }
 .vue-flow__controls-button {
-    @apply !bg-background !text-foreground !fill-foreground
+    @apply !bg-background !text-foreground !fill-foreground !border-none hover:!bg-gray-800 !p-2.5
 }
 
 .vue-flow__node .vue-flow__node-custom {

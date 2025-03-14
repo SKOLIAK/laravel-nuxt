@@ -72,8 +72,6 @@ const _useTradingviewPaste = () => {
           symbol = symbol.replaceAll('/', '')
         }
 
-        console.warn(symbol)
-
         /** Retrieve information about the security traded */
         let contractSpecs = futureContractsJson.value.filter(
           (x) => x.symbol == symbol
@@ -94,6 +92,7 @@ const _useTradingviewPaste = () => {
          * Check which case it is.  */
         let trade = <Trade>{}
         trade.symbol = contractSpecs[0].symbol
+        trade.identifier = Obj.source.id + "_" + trade.symbol
         trade.direction = Obj.source.type.replace("LineToolRiskReward", "").toLowerCase()
         trade.symbol_tw = Obj.source.state.symbol
         trade.symbolOriginal = contractSpecs[0].name
@@ -115,6 +114,9 @@ const _useTradingviewPaste = () => {
         )
         trade.outcome = getOutcome(Obj, trade.target, trade.stop)
         trade.exit = trade.outcome == 'win' ? trade.target : trade.outcome == 'loss' ? trade.stop : 0
+
+        trade.session = 'TEST' // @todo
+
 
         /** Realised Risk-to-Reward Ratio */
         trade.rrr = Number(Math.abs((trade.entry - trade.exit) / (trade.entry - trade.stop)).toFixed(2)) * (trade.outcome == 'loss' ? -1 : 1)
