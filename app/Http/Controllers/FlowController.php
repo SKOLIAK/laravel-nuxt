@@ -30,7 +30,7 @@ class FlowController extends Controller
 
         return response()->json([
             'status' => 'ok',
-            'message' => 'Saved'
+            'message' => 'Flow data has been saved'
         ]);
     }
 }
