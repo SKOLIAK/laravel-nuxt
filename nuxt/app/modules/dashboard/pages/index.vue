@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useEventListener } from '@vueuse/core'
 
+
 definePageMeta({
     middleware: ['auth'],
 })
@@ -41,12 +42,16 @@ onBeforeMount(async () => {
         }
     })
 })
+
+
+debug('Some debug value here', 'orange')
 </script>
 
 
 <template>
     <div class="flex flex-col gap-4">
         <h1 class="text-3xl">Home page</h1>
+
 
         <div class="flex items-center justify-start gap-x-2">
             <span>Paste a trade from</span>

@@ -18,7 +18,7 @@ const _useTradingviewPaste = () => {
       /** Check if data from TradingView has been pasted */
       if (clip.includes("data-tradingview-clip")) {
 
-        console.log('   --> Pasting trades from TradingView')
+        log('   --> Pasting trades from TradingView')
 
         /** Reconstruct */
         let clipObj = JSON.parse(
@@ -142,8 +142,8 @@ const _useTradingviewPaste = () => {
         let commNumber = 0;
 
         // if (echangeFees) {
-        //   //console.log(" -> exchange fee "+JSON.stringify(echangeFees[0].fee))
-        //   //console.log(" -> fee "+echangeFees[0].fee[selectedTradovateTier.value])
+        //   //log(" -> exchange fee "+JSON.stringify(echangeFees[0].fee))
+        //   //log(" -> fee "+echangeFees[0].fee[selectedTradovateTier.value])
         //   commNumber = echangeFees[0].fee[selectedTradovateTier.value.value] * trade.quantity
         // }
 

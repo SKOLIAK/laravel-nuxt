@@ -104,7 +104,7 @@ onInit((vueFlowInstance) => {
  * 4. any intersections with other nodes
  */
 onNodeDragStop(({ event, nodes, node }) => {
-  console.log('Node Drag Stop', { event, nodes, node })
+  log('Node Drag Stop', { event, nodes, node })
 })
 
 /**
@@ -120,7 +120,7 @@ onConnect((connection) => {
  * toObject transforms your current graph data to an easily persist-able object
  */
 function logToObject() {
-  console.log(toObject())
+  log(toObject())
 }
 
 

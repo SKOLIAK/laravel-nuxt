@@ -65,7 +65,7 @@ const _useFlow = () => {
 
   async function fetchFlow() {
     return new Promise(async (resolve, reject) => {
-      console.log('Loading flow')
+      logProccess('Loading Flow')
       spinnerLoadingPage.value = true
       await $fetch("flow", {
         immediate: false,
@@ -74,6 +74,7 @@ const _useFlow = () => {
             edges.value = response._data.edges
             nodes.value = response._data.nodes
             spinnerLoadingPage.value = false
+            logSubProccess('Flow data has been fetched')
           }
           resolve(1)
         },
@@ -91,7 +92,7 @@ const _useFlow = () => {
         onResponse({ response }) {
           isSaving.value = false
           spinnerLoadingPage.value = false;
-          console.log(response._data.message)
+          logSubProccess(response._data.message)
           useToast().add({
             icon: response?.ok ? GetSuccessIcon : GetErrorIcon,
             title: response._data.message,

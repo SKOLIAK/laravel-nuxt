@@ -45,8 +45,8 @@ const _useDnd = () => {
     draggedType.value = type
     isDragging.value = true
 
-    console.log('drag start', draggedType.value)
-    console.log('event', event)
+    log('drag start', draggedType.value)
+    log('event', event)
 
     document.addEventListener('drop', onDragEnd)
   }
@@ -85,7 +85,7 @@ const _useDnd = () => {
    * @param {DragEvent} event
    */
   function onDrop(event) {
-    console.log('drop', event)
+    log('drop', event)
     const position = screenToFlowCoordinate({
       x: event.clientX,
       y: event.clientY,
@@ -112,7 +112,7 @@ const _useDnd = () => {
 
       off()
     })
-    console.log('add', newNode)
+    log('add', newNode)
     addNodes(newNode)
   }
 

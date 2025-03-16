@@ -128,7 +128,7 @@ const _useBacktester = () => {
       RRArray.forEach((k, v) => {
         let temp = {}
         let x = Obj.trades.filter(x => x.rrr >= k && x.rrr < k + 0.5).length
-        //console.log('Range:', k, k + 0.5, 'Found:', x)
+        //log('Range:', k, k + 0.5, 'Found:', x)
         temp.x = countit
         temp.y = x
         temp.color = colorInterpolate(theme.colors[appConfig.ui.gray][700], theme.colors[appConfig.ui.primary][500], ((x - minRR) / (maxRR - minRR)))
@@ -200,7 +200,7 @@ const _useBacktester = () => {
           ChartData.value.sessionGain.push(temp)
         }
 
-        //console.log(ChartData.value.sessionGain)
+        //log(ChartData.value.sessionGain)
       }
 
 
@@ -213,14 +213,14 @@ const _useBacktester = () => {
       //     let temp = {}
       //     let x = Obj.trades.filter(x => x.session == k).length
 
-      //     //console.log('Range:', k, k + 0.5, 'Found:', x)
+      //     //log('Range:', k, k + 0.5, 'Found:', x)
       //     temp.x = countit
       //     temp.y =  x
       //     temp.y2 = 50
       //     temp.tick = k
       //     temp.color = getRandomHexColor()
       //     ChartData.value.sessionGain.push(temp)
-      //     console.log(k, v)
+      //     log(k, v)
       // })
     }
 
@@ -233,12 +233,12 @@ const _useBacktester = () => {
     let a = SelectedBacktest.value.trades.filter(x => x.identifier == id)
     if (!a.length) { return }
 
-    console.log(a)
+    log(a)
   }
 
   function recalculate() {
     if (isObjectEmpty(SelectedBacktest.value)) { return }
-    console.log('Recalculating')
+    log('Recalculating')
     let bal = SelectedBacktest.value.starting_balance
     let test = []
     SelectedBacktest.value.trades.forEach(t => {
@@ -255,7 +255,7 @@ const _useBacktester = () => {
     onResponse({ response }) {
       if (response.status === 200) {
         Folders.value = response._data
-        console.log('FOLDERS FETCHED')
+        log('FOLDERS FETCHED')
       }
     },
   });
@@ -406,7 +406,7 @@ const _useBacktester = () => {
 
           } else if (response?.ok) {
             BacktestModalOpen.value = false
-            console.log(response._data)
+            log(response._data)
             selectBacktest(response._data.data)
             useToast().add({
               icon: GetSuccessIcon,

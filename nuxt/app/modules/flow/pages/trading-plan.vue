@@ -96,7 +96,7 @@ const sidebarItems = ref([
 onNodeClick(({ event, node }) => {
   if(!isLocked.value) {
     selectedElement.value = node
-    console.log('Node clicked:', node, event);
+    debug('Node clicked: ' + JSON.stringify(node) + ' Event: ' + JSON.stringify(event));
     activeSidebarItem.value = 1
   }
 });
@@ -105,7 +105,7 @@ onNodeClick(({ event, node }) => {
 onEdgeClick(({ event, edge }) => {
   if(!isLocked.value) {
     selectedElement.value = edge
-    console.log('Edge clicked:', edge, event);
+    log('Edge clicked:', edge, event);
     activeSidebarItem.value = 1
   }
 });
@@ -132,7 +132,7 @@ watch(toObject, (a, b) => {
  * 4. any intersections with other nodes
  */
 onNodeDragStop(({ event, nodes, node }) => {
-  console.log('Node Drag Stop', { event, nodes, node })
+  log('Node Drag Stop', { event, nodes, node })
 })
 
 /**
@@ -148,7 +148,7 @@ onConnect((connection) => {
  * toObject transforms your current graph data to an easily persist-able object
  */
 function logToObject() {
-  console.log(JSON.stringify(toObject().nodes))
+  log(JSON.stringify(toObject().nodes))
   console.warn(JSON.stringify(toObject().edges))
 }
 

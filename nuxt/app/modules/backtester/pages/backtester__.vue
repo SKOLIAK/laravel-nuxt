@@ -99,7 +99,7 @@ const items = row => [
   [{
     label: 'Edit',
     icon: 'i-heroicons-pencil-square-20-solid',
-    click: () => console.log('Edit', row.id)
+    click: () => logProccess('Edit ' + row.id)
   }, {
     label: 'Duplicate',
     icon: 'i-heroicons-document-duplicate-20-solid'
